@@ -1,0 +1,10 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/BackEnd/XeGo-Microservices/.vs/XeGo-Microservices/DesignTimeBuild/.dtbcache.v2
+/BackEnd/XeGo-Microservices/Services/Location/Location.API/bin/Debug/net7.0
+/BackEnd/XeGo-Microservices/Services/Location/Location.API/obj/Debug/net7.0/ref
+/BackEnd/XeGo-Microservices/Services/Location/Location.API/obj/Debug/net7.0/refint
+/BackEnd/XeGo-Microservices/Services/Location/Location.API/obj/Debug/net7.0/staticwebassets
+/BackEnd/XeGo-Microservices/Services/Location/Location.API/obj/Debug/net7.0
