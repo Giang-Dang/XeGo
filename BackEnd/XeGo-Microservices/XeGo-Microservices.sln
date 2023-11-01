@@ -7,24 +7,24 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{02
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Location", "Location", "{88A38896-C1E4-4FE8-BD4B-0A55F28DFC9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Location.API", "Services\Location\Location.API\Location.API.csproj", "{9A45B305-D9FC-4F4B-8057-C781DFC677A4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Location.API", "Services\Location\Location.API\Location.API.csproj", "{FA69D069-3437-44C4-B8D2-EE83A9B7318A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FA69D069-3437-44C4-B8D2-EE83A9B7318A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA69D069-3437-44C4-B8D2-EE83A9B7318A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA69D069-3437-44C4-B8D2-EE83A9B7318A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA69D069-3437-44C4-B8D2-EE83A9B7318A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9A45B305-D9FC-4F4B-8057-C781DFC677A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9A45B305-D9FC-4F4B-8057-C781DFC677A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9A45B305-D9FC-4F4B-8057-C781DFC677A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9A45B305-D9FC-4F4B-8057-C781DFC677A4}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{88A38896-C1E4-4FE8-BD4B-0A55F28DFC9B} = {0222190D-254D-4891-AC10-4023DC400561}
-		{9A45B305-D9FC-4F4B-8057-C781DFC677A4} = {88A38896-C1E4-4FE8-BD4B-0A55F28DFC9B}
+		{FA69D069-3437-44C4-B8D2-EE83A9B7318A} = {88A38896-C1E4-4FE8-BD4B-0A55F28DFC9B}
 	EndGlobalSection
 EndGlobal
