@@ -1,9 +1,9 @@
-using Mango.Services.AuthAPI.Data;
-using Mango.Services.AuthAPI.Models;
-using Mango.Services.AuthAPI.Service;
-using Mango.Services.AuthAPI.Service.IService;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using XeGo.Services.Auth.AuthAPI.Data;
+using XeGo.Services.Auth.AuthAPI.Models;
+using XeGo.Services.Auth.AuthAPI.Service;
+using XeGo.Services.Auth.AuthAPI.Service.IService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,7 +43,6 @@ app.UseAuthorization();
 app.MapControllers();
 ApplyMigration();
 app.Run();
-
 
 void ApplyMigration()
 {

@@ -1,3 +1,3 @@
-API                 Port
-Location.API        7001
+API                 			Docker_Http_Port		Docker_Http_Port
+xego.services.auth.authapi        	6001				7001
 

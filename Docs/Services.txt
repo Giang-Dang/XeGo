@@ -1,0 +1,34 @@
+User Service: 
+Handles user registration, authentication, and profile management.
+
+Driver Service: 
+Manages driver profiles, vehicle details, and availability status.
+
+Ride Service: 
+Responsible for handling ride requests, matching drivers with riders, and managing ride lifecycle (start, end, payment).
+
+Location Service: 
+Tracks and updates the real-time location of drivers.
+
+Notification Service: 
+Sends notifications to users and drivers via email, SMS or push notifications.
+
+Payment Service: 
+Handles payment processing and transaction history.
+
+Rating & Review Service: 
+Allows users and drivers to rate each other and provide feedback after the ride.
+
+Pricing Service: 
+Calculates the cost of a ride based on various factors like distance, time, demand, etc.
+
+Media Service:
+Uploading and downloading images from Azure Blob Storage.
+Performing image processing tasks like resizing, cropping, or applying filters.
+Generating and managing access tokens for secure access to the images.
+
+Logging Service:
+This service should expose an API that other services can use to send their logs.
+
+Trust Core Service:
+Uses machine learning to evaluate the trustworthiness of customers

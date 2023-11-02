@@ -1,10 +1,10 @@
-﻿using Mango.Services.AuthAPI.Data;
-using Mango.Services.AuthAPI.Models;
-using Mango.Services.AuthAPI.Models.Dto;
-using Mango.Services.AuthAPI.Service.IService;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
+using XeGo.Services.Auth.AuthAPI.Data;
+using XeGo.Services.Auth.AuthAPI.Models;
+using XeGo.Services.Auth.AuthAPI.Models.Dto;
+using XeGo.Services.Auth.AuthAPI.Service.IService;
 
-namespace Mango.Services.AuthAPI.Service
+namespace XeGo.Services.Auth.AuthAPI.Service
 {
     public class AuthService : IAuthService
     {
@@ -23,7 +23,7 @@ namespace Mango.Services.AuthAPI.Service
 
         public async Task<bool> AssignRole(string email, string roleName)
         {
-            var user = _db.ApplicationUsers.FirstOrDefault(u => u.Email.ToLower() == email.ToLower());
+            var user = _db.ApplicationUsers.FirstOrDefault(u => u.Email!.ToLower() == email.ToLower());
 
             if (user != null)
             {
@@ -39,59 +39,59 @@ namespace Mango.Services.AuthAPI.Service
             return false;
         }
 
-        public async Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO)
+        public async Task<LoginResponseDto> Login(LoginRequestDto loginRequestDto)
         {
-            var user = _db.ApplicationUsers.FirstOrDefault(u => u.UserName.ToLower() == loginRequestDTO.UserName.ToLower());
+            var user = _db.ApplicationUsers.FirstOrDefault(u => u.UserName!.ToLower() == loginRequestDto.UserName.ToLower());
 
-            bool isValid = await _userManager.CheckPasswordAsync(user, loginRequestDTO.Password);
+            bool isValid = await _userManager.CheckPasswordAsync(user ?? new(), loginRequestDto.Password);
 
             if (user == null || isValid == false)
             {
-                return new LoginResponseDTO() { User = null, Token = "" };
+                return new LoginResponseDto() { User = null, Token = "" };
             }
 
             //if user was found, generate jwt token
             string token = _jwtTokenGenerator.GenerateToken(user);
 
-            UserDTO userDTO = new()
+            UserDto? userDto = new()
             {
                 Email = user.Email,
-                ID = user.Id,
+                Id = user.Id,
                 Name = user.Name,
                 PhoneNumber = user.PhoneNumber
             };
 
-            LoginResponseDTO loginResponseDTO = new()
+            LoginResponseDto loginResponseDto = new()
             {
-                User = userDTO,
+                User = userDto,
                 Token = token,
             };
 
-            return loginResponseDTO;
+            return loginResponseDto;
         }
 
-        public async Task<string> Register(RegistrationRequestDTO registerationRequestDTO)
+        public async Task<string> Register(RegistrationRequestDto registrationRequestDto)
         {
             ApplicationUser user = new()
             {
-                UserName = registerationRequestDTO.Email,
-                Email = registerationRequestDTO.Email,
-                NormalizedEmail = registerationRequestDTO.Email.ToUpper(),
-                Name = registerationRequestDTO.Name,
-                PhoneNumber = registerationRequestDTO.PhoneNumber,
+                UserName = registrationRequestDto.Email,
+                Email = registrationRequestDto.Email,
+                NormalizedEmail = registrationRequestDto.Email.ToUpper(),
+                Name = registrationRequestDto.Name,
+                PhoneNumber = registrationRequestDto.PhoneNumber,
             };
 
             try
             {
-                var result = await _userManager.CreateAsync(user, registerationRequestDTO.Password);
+                var result = await _userManager.CreateAsync(user, registrationRequestDto.Password);
                 if (result.Succeeded)
                 {
-                    var userToReturn = _db.ApplicationUsers.First(u => u.UserName == registerationRequestDTO.Email);
+                    var userToReturn = _db.ApplicationUsers.First(u => u.UserName == registrationRequestDto.Email);
 
-                    UserDTO userDTO = new()
+                    UserDto userDto = new()
                     {
                         Email = userToReturn.Email,
-                        ID = userToReturn.Id,
+                        Id = userToReturn.Id,
                         Name = userToReturn.Name,
                         PhoneNumber = userToReturn.PhoneNumber
                     };
@@ -100,15 +100,13 @@ namespace Mango.Services.AuthAPI.Service
                 }
                 else
                 {
-                    return result.Errors.FirstOrDefault().Description;
+                    return result.Errors.FirstOrDefault()?.Description ?? "Error Encountered";
                 }
             }
             catch (Exception ex)
             {
-
+                return ex.Message;
             }
-
-            return "Error Encountered";
         }
     }
 }

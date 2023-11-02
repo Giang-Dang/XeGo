@@ -1,4 +1,4 @@
-﻿namespace Mango.Services.AuthAPI.Models
+﻿namespace XeGo.Services.Auth.AuthAPI.Models
 {
     public class JwtOptions
     {

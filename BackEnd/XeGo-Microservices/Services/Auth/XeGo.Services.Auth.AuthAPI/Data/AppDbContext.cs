@@ -1,8 +1,8 @@
-﻿using Mango.Services.AuthAPI.Models;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using XeGo.Services.Auth.AuthAPI.Models;
 
-namespace Mango.Services.AuthAPI.Data
+namespace XeGo.Services.Auth.AuthAPI.Data
 {
     public class AppDbContext : IdentityDbContext<ApplicationUser>
     {

@@ -1,11 +1,11 @@
-﻿using Mango.Services.AuthAPI.Models.Dto;
+﻿using XeGo.Services.Auth.AuthAPI.Models.Dto;
 
-namespace Mango.Services.AuthAPI.Service.IService
+namespace XeGo.Services.Auth.AuthAPI.Service.IService
 {
     public interface IAuthService
     {
-        Task<string> Register(RegistrationRequestDTO registerationRequestDTO);
-        Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO);
+        Task<string> Register(RegistrationRequestDto registrationRequestDto);
+        Task<LoginResponseDto> Login(LoginRequestDto loginRequestDto);
         Task<bool> AssignRole(string email, string roleName);
     }
 }

@@ -1,60 +1,60 @@
-﻿using Mango.Services.AuthAPI.Models.Dto;
-using Mango.Services.AuthAPI.Service.IService;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using XeGo.Services.Auth.AuthAPI.Models.Dto;
+using XeGo.Services.Auth.AuthAPI.Service.IService;
 
-namespace Mango.Services.AuthAPI.Controllers
+namespace XeGo.Services.Auth.AuthAPI.Controllers
 {
     [Route("api/auth")]
     [ApiController]
-    public class AuthAPIController : ControllerBase
+    public class AuthApiController : ControllerBase
     {
         private readonly IAuthService _authService;
-        protected ResponseDto _responseDto;
+        protected ResponseDto ResponseDto;
 
-        public AuthAPIController(IAuthService authService)
+        public AuthApiController(IAuthService authService)
         {
             _authService = authService ?? throw new ArgumentNullException(nameof(authService));
-            _responseDto = new();
+            ResponseDto = new();
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegistrationRequestDTO model)
+        public async Task<IActionResult> Register([FromBody] RegistrationRequestDto model)
         {
             var errorMessage = await _authService.Register(model);
             if (!string.IsNullOrEmpty(errorMessage))
             {
-                _responseDto.IsSuccess = true;
-                _responseDto.Message = errorMessage;
-                return BadRequest(_responseDto);
+                ResponseDto.IsSuccess = true;
+                ResponseDto.Message = errorMessage;
+                return BadRequest(ResponseDto);
             }
-            return Ok(_responseDto);
+            return Ok(ResponseDto);
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequestDTO model)
+        public async Task<IActionResult> Login([FromBody] LoginRequestDto model)
         {
             var loginResponse = await _authService.Login(model);
             if (loginResponse.User == null)
             {
-                _responseDto.IsSuccess = false;
-                _responseDto.Message = "Username or password is incorrect";
-                return BadRequest(_responseDto);
+                ResponseDto.IsSuccess = false;
+                ResponseDto.Message = "Username or password is incorrect";
+                return BadRequest(ResponseDto);
             }
-            _responseDto.Result = loginResponse;
-            return Ok(_responseDto);
+            ResponseDto.Result = loginResponse;
+            return Ok(ResponseDto);
         }
 
-        [HttpPost("assignrole")]
-        public async Task<IActionResult> AssignRole([FromBody] RegistrationRequestDTO model)
+        [HttpPost("assign-role")]
+        public async Task<IActionResult> AssignRole([FromBody] RegistrationRequestDto model)
         {
             var assignRoleSuccessful = await _authService.AssignRole(model.Email, model.Role.ToUpper());
             if (!assignRoleSuccessful)
             {
-                _responseDto.IsSuccess = false;
-                _responseDto.Message = "Error encountered";
-                return BadRequest(_responseDto);
+                ResponseDto.IsSuccess = false;
+                ResponseDto.Message = "Error encountered";
+                return BadRequest(ResponseDto);
             }
-            return Ok(_responseDto);
+            return Ok(ResponseDto);
         }
     }
 }

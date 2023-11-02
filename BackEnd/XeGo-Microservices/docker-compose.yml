@@ -9,3 +9,9 @@ services:
     build:
       context: .
       dockerfile: Services/Auth/XeGo.Services.Auth.AuthAPI/Dockerfile
+
+  portainer:
+    image: portainer/portainer-ce 
+
+volumes:
+  portainer_data:

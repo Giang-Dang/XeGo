@@ -1,13 +1,41 @@
 version: '3.4'
 
 services:
+  authdb:
+    container_name: authdb
+    environment:
+        SA_PASSWORD: "admin1234@A"
+        ACCEPT_EULA: "Y"
+    restart: always
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-authdb:/var/opt/mssql
+
   xego.services.auth.authapi:
+    container_name: xego.services.auth.authapi
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ConnectionStrings__DefaultConnection=Server=authdb;Database=XeGoAuthDb;User Id=sa;Password=admin1234@A;TrustServerCertificate=True
+      - ApiSettings__JwtOptions__Secret=adfh@JDFDKSAF1234sdf*%$#feifkdmvcoaerDSJFAOEDFDFJffDSAFjkAjdfA485723AjdfAJfDjfAjdfdjferYGjASDJfEjfvdav
+      - ApiSettings__JwtOptions__Issuer=xego-auth-api
+      - ApiSettings__JwtOptions__Audience=xego-client    
     ports:
-      - "80"
-      - "443"
+      - "6001:80"
+      - "7001:443"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+  portainer:
+    container_name: portainer
+    restart: always
+    ports:
+      - "8080:8000"
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+
+volumes:
+  sqlserver-authdb:

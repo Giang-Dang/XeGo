@@ -1,11 +1,11 @@
-﻿namespace Mango.Services.AuthAPI.Models.Dto
+﻿namespace XeGo.Services.Auth.AuthAPI.Models.Dto
 {
-    public class UserDTO
+    public class UserDto
     {
-        public string ID { get; set; }
-        public string Email { get; set; }
-        public string Name { get; set; }
-        public string PhoneNumber { get; set; }
+        public string? Id { get; set; }
+        public string? Email { get; set; }
+        public string? Name { get; set; }
+        public string? PhoneNumber { get; set; }
 
     }
 }
