@@ -41,18 +41,27 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
 ApplyMigration();
+
 app.Run();
 
 void ApplyMigration()
 {
-    using var scope = app.Services.CreateScope();
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-    if (db.Database.GetPendingMigrations().Any())
+    try
     {
-        db.Database.Migrate();
-    }
+        using var scope = app.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-    scope.Dispose();
+        if (db.Database.GetPendingMigrations().Any())
+        {
+            db.Database.Migrate();
+        }
+
+        scope.Dispose();
+    }
+    catch (Exception a)
+    {
+        Console.WriteLine(a);
+    }
 }

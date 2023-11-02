@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Location", "Location", "{88
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Auth", "Auth", "{445F6B54-01BC-4B2F-B502-8E7AA7A6E6F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XeGo.Services.Auth.AuthAPI", "Services\Auth\XeGo.Services.Auth.AuthAPI\XeGo.Services.Auth.AuthAPI.csproj", "{A555C2E1-A43F-40D9-8C55-EDD25E110A23}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XeGo.Services.Auth.API", "Services\Auth\XeGo.Services.Auth.AuthAPI\XeGo.Services.Auth.API.csproj", "{A555C2E1-A43F-40D9-8C55-EDD25E110A23}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{C09E190B-AB40-4829-83A1-CECF76E291FF}"
 EndProject

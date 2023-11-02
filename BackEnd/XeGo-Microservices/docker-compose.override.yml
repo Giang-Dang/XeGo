@@ -19,7 +19,9 @@ services:
       - ConnectionStrings__DefaultConnection=Server=authdb;Database=XeGoAuthDb;User Id=sa;Password=admin1234@A;TrustServerCertificate=True
       - ApiSettings__JwtOptions__Secret=adfh@JDFDKSAF1234sdf*%$#feifkdmvcoaerDSJFAOEDFDFJffDSAFjkAjdfA485723AjdfAJfDjfAjdfdjferYGjASDJfEjfvdav
       - ApiSettings__JwtOptions__Issuer=xego-auth-api
-      - ApiSettings__JwtOptions__Audience=xego-client    
+      - ApiSettings__JwtOptions__Audience=xego-client   
+    depends_on:
+      - authdb
     ports:
       - "6001:80"
       - "7001:443"
@@ -39,3 +41,4 @@ services:
 
 volumes:
   sqlserver-authdb:
+  portainer_data:  
