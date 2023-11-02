@@ -1,0 +1,11 @@
+version: '3.4'
+
+services:
+  authdb:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+
+  xego.services.auth.authapi:
+    image: ${DOCKER_REGISTRY-}xegoservicesauthauthapi
+    build:
+      context: .
+      dockerfile: Services/Auth/XeGo.Services.Auth.AuthAPI/Dockerfile

@@ -3,6 +3,6 @@
 ################################################################################
 
 /BackEnd/XeGo-Microservices/.vs/
-/BackEnd/XeGo-Microservices/Services/Location/Location.API/bin/
-/BackEnd/XeGo-Microservices/Services/Location/Location.API/obj/
-/BackEnd/XeGo-Microservices/Services/Location/Location.API/Debug/
+/BackEnd/XeGo-Microservices/obj/
+/BackEnd/XeGo-Microservices/Services/Auth/XeGo.Services.Auth.AuthAPI/bin/
+/BackEnd/XeGo-Microservices/Services/Auth/XeGo.Services.Auth.AuthAPI/obj/
