@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using XeGo.Services.Auth.AuthAPI.Models.Dto;
-using XeGo.Services.Auth.AuthAPI.Service.IService;
+using XeGo.Services.Auth.API.Models.Dto;
+using XeGo.Services.Auth.API.Service.IService;
 
-namespace XeGo.Services.Auth.AuthAPI.Controllers
+namespace XeGo.Services.Auth.API.Controllers
 {
     [Route("api/auth")]
     [ApiController]

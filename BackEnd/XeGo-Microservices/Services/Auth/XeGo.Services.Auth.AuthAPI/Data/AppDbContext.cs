@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using XeGo.Services.Auth.AuthAPI.Models;
+using XeGo.Services.Auth.API.Entities;
 
-namespace XeGo.Services.Auth.AuthAPI.Data
+namespace XeGo.Services.Auth.API.Data
 {
     public class AppDbContext : IdentityDbContext<ApplicationUser>
     {

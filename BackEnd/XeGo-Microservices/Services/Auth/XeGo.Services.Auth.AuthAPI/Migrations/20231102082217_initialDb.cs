@@ -1,9 +1,8 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace XeGo.Services.Auth.AuthAPI.Migrations
+namespace XeGo.Services.Auth.API.Migrations
 {
     /// <inheritdoc />
     public partial class initialDb : Migration
