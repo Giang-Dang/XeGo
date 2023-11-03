@@ -1,6 +1,6 @@
-﻿using XeGo.Services.Auth.API.Models.Dto;
+﻿using XeGo.Services.Auth.AuthAPI.Models.Dto;
 
-namespace XeGo.Services.Auth.API.Service.IService
+namespace XeGo.Services.Auth.AuthAPI.Service.IService
 {
     public interface IAuthService
     {

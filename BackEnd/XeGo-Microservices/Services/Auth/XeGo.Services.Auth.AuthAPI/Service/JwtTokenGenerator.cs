@@ -3,11 +3,10 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using XeGo.Services.Auth.API.Entities;
-using XeGo.Services.Auth.API.Models;
-using XeGo.Services.Auth.API.Service.IService;
+using XeGo.Services.Auth.AuthAPI.Models;
+using XeGo.Services.Auth.AuthAPI.Service.IService;
 
-namespace XeGo.Services.Auth.API.Service
+namespace XeGo.Services.Auth.AuthAPI.Service
 {
     public class JwtTokenGenerator : IJwtTokenGenerator
     {

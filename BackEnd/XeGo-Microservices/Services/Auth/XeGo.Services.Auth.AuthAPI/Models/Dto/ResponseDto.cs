@@ -1,4 +1,4 @@
-﻿namespace XeGo.Services.Auth.API.Models.Dto
+﻿namespace XeGo.Services.Auth.AuthAPI.Models.Dto
 {
     public class ResponseDto
     {

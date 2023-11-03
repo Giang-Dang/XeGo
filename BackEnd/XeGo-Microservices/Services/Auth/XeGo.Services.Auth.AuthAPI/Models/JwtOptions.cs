@@ -1,4 +1,4 @@
-﻿namespace XeGo.Services.Auth.API.Models
+﻿namespace XeGo.Services.Auth.AuthAPI.Models
 {
     public class JwtOptions
     {

@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using XeGo.Services.Auth.API.Data;
+using XeGo.Services.Auth.AuthAPI.Data;
 
 #nullable disable
 
-namespace XeGo.Services.Auth.API.Migrations
+namespace XeGo.Services.Auth.AuthAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot

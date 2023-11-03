@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace XeGo.Services.Auth.API.Entities
+namespace XeGo.Services.Auth.AuthAPI.Models
 {
     public class ApplicationUser : IdentityUser
     {

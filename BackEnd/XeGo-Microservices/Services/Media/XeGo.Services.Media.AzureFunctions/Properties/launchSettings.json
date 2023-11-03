@@ -1,9 +1,0 @@
-{
-  "profiles": {
-    "XeGo.Services.Media.AzureFunctions": {
-      "commandName": "Project",
-      "commandLineArgs": "--port 7000",
-      "launchBrowser": false
-    }
-  }
-}
