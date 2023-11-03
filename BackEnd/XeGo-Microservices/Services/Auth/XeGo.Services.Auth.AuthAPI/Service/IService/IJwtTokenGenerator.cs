@@ -1,6 +1,6 @@
-﻿using XeGo.Services.Auth.AuthAPI.Models;
+﻿using XeGo.Services.Auth.API.Entities;
 
-namespace XeGo.Services.Auth.AuthAPI.Service.IService
+namespace XeGo.Services.Auth.API.Service.IService
 {
     public interface IJwtTokenGenerator
     {

@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using XeGo.Services.Auth.AuthAPI.Data;
+using XeGo.Services.Auth.API.Data;
 
 #nullable disable
 
-namespace XeGo.Services.Auth.AuthAPI.Migrations
+namespace XeGo.Services.Auth.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20231102082217_initialDb")]

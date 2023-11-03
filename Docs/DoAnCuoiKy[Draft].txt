@@ -1,0 +1,42 @@
+Hệ thống Điều phối Taxi là một ứng dụng đa nền tảng cho phép khách hàng đặt xe taxi thông qua cuộc gọi, ứng dụng di động hoặc trang web. Hệ thống sẽ tìm và gửi thông tin đặt xe tới tài xế thích hợp dựa trên khoảng cách và các yêu cầu khác.
+
+Các thành phần trong hệ thống:
+
+1. Hệ thống tổng đài đặt xe CallCenter(Web/WPF/Winforms):
+Cho phép khách hàng đặt xe thông qua cuộc gọi điện thoại.
+Thu thập thông tin như số điện thoại, địa chỉ đặt xe từ cuộc gọi.
+Mở rộng: Hỗ trợ đặt xe theo hẹn giờ chỉ dành cho khách hàng VIP.
+
+2. App Khách Hàng(Mobile):
+Cho phép khách hàng đặt xe thông qua ứng dụng di động.
+Thu thập thông tin như số điện thoại, địa chỉ và tọa độ GPS của khách hàng.
+Mở rộng: Hỗ trợ chức năng hẹn giờ đặt xe.
+
+Broadcast thông tin:
+Khi có thông tin đặt xe từ khách hàng, hệ thống sẽ broadcast thông tin như số điện thoại khách hàng, địa chỉ và tọa độ GPS cho tài xế qua ứng dụng tài xế (Driver Apps).
+Thông tin sẽ được gửi đến tài xế có khoảng cách GPS gần nhất.
+
+
+3. App tài xế (Mobile):
+N tài xế nhận thông tin đặt xe và chọn tài xế nhanh nhất để xác nhận.
+Nếu tài xế đã được xác nhận và hủy, hệ thống sẽ broadcast cho tài xế kế tiếp trong danh sách.
+Sau khi đã có tài xế xác nhận, hệ thống sẽ gửi thông tin về tài xế (tên, số điện thoại, số tài, hình đại diện) cho khách hàng.
+Nếu khách hàng không sử dụng ứng dụng, hệ thống sẽ gửi tin nhắn SMS cho khách hàng.
+Nếu khách hàng sử dụng ứng dụng, hệ thống sẽ gửi thông báo qua ứng dụng cho khách hàng.
+
+*Theo dõi realtime vị trí tài xế trên ứng dụng khách hàng
+
+
+Điểm mở rộng(điểm cộng)
++ Áp dụng machine learning để đánh giá độ tin tưởng của khách hàng
+
+Technology :
++ Real-time : .Net(SignalR, Websocket), Node.js(Websocket), Provider Services
++ Message Queue/Message Brokers
++ Elastic Search
++ Design Patterns
++ Solid Principles
++ Google Maps/VietBando/...=> Proxy,....
++ Micro-Services
++ Log Request/Response=> Debug
++ Authentication (RefreshToken/AccessToken)

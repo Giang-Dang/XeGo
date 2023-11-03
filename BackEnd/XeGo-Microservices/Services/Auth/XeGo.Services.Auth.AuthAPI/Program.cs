@@ -1,9 +1,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using XeGo.Services.Auth.AuthAPI.Data;
-using XeGo.Services.Auth.AuthAPI.Models;
-using XeGo.Services.Auth.AuthAPI.Service;
-using XeGo.Services.Auth.AuthAPI.Service.IService;
+using XeGo.Services.Auth.API.Data;
+using XeGo.Services.Auth.API.Entities;
+using XeGo.Services.Auth.API.Models;
+using XeGo.Services.Auth.API.Service;
+using XeGo.Services.Auth.API.Service.IService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,7 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -46,6 +48,8 @@ ApplyMigration();
 
 app.Run();
 
+
+#region Private Method
 void ApplyMigration()
 {
     try
@@ -65,3 +69,4 @@ void ApplyMigration()
         Console.WriteLine(a);
     }
 }
+#endregion Private Method

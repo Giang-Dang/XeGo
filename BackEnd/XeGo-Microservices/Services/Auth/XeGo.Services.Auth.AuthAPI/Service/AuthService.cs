@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using XeGo.Services.Auth.AuthAPI.Data;
-using XeGo.Services.Auth.AuthAPI.Models;
-using XeGo.Services.Auth.AuthAPI.Models.Dto;
-using XeGo.Services.Auth.AuthAPI.Service.IService;
+using XeGo.Services.Auth.API.Data;
+using XeGo.Services.Auth.API.Entities;
+using XeGo.Services.Auth.API.Models.Dto;
+using XeGo.Services.Auth.API.Service.IService;
 
-namespace XeGo.Services.Auth.AuthAPI.Service
+namespace XeGo.Services.Auth.API.Service
 {
     public class AuthService : IAuthService
     {
