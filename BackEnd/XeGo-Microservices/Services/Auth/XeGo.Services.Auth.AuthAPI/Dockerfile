@@ -7,16 +7,17 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["Services/Auth/XeGo.Services.Auth.AuthAPI/XeGo.Services.Auth.AuthAPI.csproj", "Services/Auth/XeGo.Services.Auth.AuthAPI/"]
-RUN dotnet restore "Services/Auth/XeGo.Services.Auth.AuthAPI/XeGo.Services.Auth.AuthAPI.csproj"
+COPY ["Services/Auth/XeGo.Services.Auth.AuthAPI/XeGo.Services.Auth.API.csproj", "Services/Auth/XeGo.Services.Auth.AuthAPI/"]
+COPY ["Shared/XeGo.Shared.Lib/XeGo.Shared.Lib.csproj", "Shared/XeGo.Shared.Lib/"]
+RUN dotnet restore "Services/Auth/XeGo.Services.Auth.AuthAPI/XeGo.Services.Auth.API.csproj"
 COPY . .
 WORKDIR "/src/Services/Auth/XeGo.Services.Auth.AuthAPI"
-RUN dotnet build "XeGo.Services.Auth.AuthAPI.csproj" -c Release -o /app/build
+RUN dotnet build "XeGo.Services.Auth.API.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "XeGo.Services.Auth.AuthAPI.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "XeGo.Services.Auth.API.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "XeGo.Services.Auth.AuthAPI.dll"]
+ENTRYPOINT ["dotnet", "XeGo.Services.Auth.API.dll"]

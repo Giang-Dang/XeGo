@@ -12,6 +12,17 @@ services:
     volumes:
       - sqlserver-authdb:/var/opt/mssql
 
+  codevaluedb:
+    container_name: codevaluedb
+    environment:
+        SA_PASSWORD: "admin1234@A"
+        ACCEPT_EULA: "Y"
+    restart: always
+    ports:
+      - "1434:1433"
+    volumes:
+      - sqlserver-codevaluedb:/var/opt/mssql
+
   xego.services.auth.authapi:
     container_name: xego.services.auth.authapi
     environment:
@@ -29,6 +40,20 @@ services:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
 
+
+  xego.services.codevalue.api:
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=codevaluedb;Database=XeGoCodeValueDb;User Id=sa;Password=admin1234@A;TrustServerCertificate=True
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - codevaluedb
+    ports:
+      - "6002:80"
+      - "7002:443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
   portainer:
     container_name: portainer
     restart: always
@@ -38,7 +63,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
-
 volumes:
   sqlserver-authdb:
+  sqlserver-codevaluedb:
   portainer_data:  

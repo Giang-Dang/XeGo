@@ -4,6 +4,9 @@ services:
   authdb:
     image: mcr.microsoft.com/mssql/server:2022-latest
 
+  codevaluedb:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+
   xego.services.auth.authapi:
     image: ${DOCKER_REGISTRY-}xegoservicesauthauthapi
     build:
@@ -13,5 +16,13 @@ services:
   portainer:
     image: portainer/portainer-ce 
 
+  xego.services.codevalue.api:
+    image: ${DOCKER_REGISTRY-}xegoservicescodevalueapi
+    build:
+      context: .
+      dockerfile: Services/CodeValue/XeGo.Services.CodeValue.API/Dockerfile
+
 volumes:
   portainer_data:
+
+
