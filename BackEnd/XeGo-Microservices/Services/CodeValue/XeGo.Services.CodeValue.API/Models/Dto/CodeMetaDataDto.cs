@@ -1,11 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using XeGo.Shared.Lib.Entities;
 
-namespace XeGo.Services.CodeValue.API.Entities
+namespace XeGo.Services.CodeValue.API.Models.Dto
 {
-    [Index(nameof(Name), IsUnique = true)]
-    public class CodeMetaData : BaseEntity
+    public class CodeMetaDataDto : BaseEntity
     {
         [Required]
         public string Name { get; set; } = string.Empty!;

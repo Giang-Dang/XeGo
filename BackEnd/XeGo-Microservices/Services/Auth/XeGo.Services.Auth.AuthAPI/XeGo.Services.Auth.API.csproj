@@ -29,4 +29,8 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Shared\XeGo.Shared.Lib\XeGo.Shared.Lib.csproj" />
+  </ItemGroup>
+
 </Project>

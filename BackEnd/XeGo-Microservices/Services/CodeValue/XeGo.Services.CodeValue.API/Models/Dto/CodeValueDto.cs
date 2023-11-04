@@ -2,19 +2,17 @@
 using System.ComponentModel.DataAnnotations;
 using XeGo.Shared.Lib.Entities;
 
-namespace XeGo.Services.CodeValue.API.Entities
+namespace XeGo.Services.CodeValue.API.Models.Dto
 {
     [Index(nameof(Name), IsUnique = false)]
-    public class CodeValue : BaseEntity
+    public class CodeValueDto : BaseEntity
     {
         [Required]
         public string Name { get; set; } = string.Empty!;
         public string? ShortDesc { get; set; }
         public string? LongDesc { get; set; }
         public int? SortOrder { get; set; } = null;
-        [Required]
         public DateTime EffectiveStartDate { get; set; } = DateTime.UtcNow;
-        [Required]
         public DateTime EffectiveEndDate { get; set; } = DateTime.MaxValue;
         [MaxLength(100)]
         public string? Value1 { get; set; }

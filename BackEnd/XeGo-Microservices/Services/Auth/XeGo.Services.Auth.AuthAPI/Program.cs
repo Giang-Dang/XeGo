@@ -64,9 +64,9 @@ void ApplyMigration()
 
         scope.Dispose();
     }
-    catch (Exception a)
+    catch (Exception e)
     {
-        Console.WriteLine(a);
+        Console.WriteLine(e);
     }
 }
 #endregion Private Method

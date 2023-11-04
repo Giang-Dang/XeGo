@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace XeGo.Services.CodeValue.API.Entities
+namespace XeGo.Shared.Lib.Entities
 {
     public abstract class BaseEntity
     {

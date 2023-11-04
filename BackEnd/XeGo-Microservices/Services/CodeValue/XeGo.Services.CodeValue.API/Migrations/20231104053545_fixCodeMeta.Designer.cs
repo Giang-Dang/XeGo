@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using XeGo.Services.CodeValue.API.Data;
 
@@ -11,9 +12,11 @@ using XeGo.Services.CodeValue.API.Data;
 namespace XeGo.Services.CodeValue.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231104053545_fixCodeMeta")]
+    partial class fixCodeMeta
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,7 +52,7 @@ namespace XeGo.Services.CodeValue.API.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ShortDesc")
                         .HasColumnType("nvarchar(max)");
@@ -115,9 +118,6 @@ namespace XeGo.Services.CodeValue.API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("RowId");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
 
                     b.ToTable("CodeMetaData");
                 });

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using XeGo.Services.CodeValue.API.Data;
+using XeGo.Services.CodeValue.API.Mapping;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+builder.Services.AddAutoMapper(
+    typeof(CodeValueProfile),
+    typeof(CodeMetaProfile)
+    );
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

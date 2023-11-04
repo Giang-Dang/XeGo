@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using XeGo.Services.Auth.API.Models.Dto;
 using XeGo.Services.Auth.API.Service.IService;
+using XeGo.Shared.Lib.Models;
 
 namespace XeGo.Services.Auth.API.Controllers
 {
@@ -40,7 +41,7 @@ namespace XeGo.Services.Auth.API.Controllers
                 ResponseDto.Message = "Username or password is incorrect";
                 return BadRequest(ResponseDto);
             }
-            ResponseDto.Result = loginResponse;
+            ResponseDto.Data = loginResponse;
             return Ok(ResponseDto);
         }
 
