@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option csharp_namespace = "XeGo.Services.CodeValue.Grpc.Protos";
+
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/struct.proto";
+
+service CodeValueProtoService {
+	rpc GetByCodeName (GetByCodeNameRequest) returns (Response);
+}
+
+message GetByCodeNameRequest {
+	string codeName = 1;
+	google.protobuf.BoolValue isActive = 2;
+	google.protobuf.BoolValue isEffective = 3;
+}
+
+message Response {
+  google.protobuf.Struct data = 1;
+  bool isSuccess = 2;
+  string message = 3;
+}

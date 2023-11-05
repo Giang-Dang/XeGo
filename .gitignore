@@ -9,6 +9,8 @@
 /BackEnd/XeGo-Microservices/Services/Auth/XeGo.Services.Auth.AuthAPI/obj/
 /BackEnd/XeGo-Microservices/Services/CodeValue/XeGo.Services.CodeValue.API/bin/
 /BackEnd/XeGo-Microservices/Services/CodeValue/XeGo.Services.CodeValue.API/obj/
+/BackEnd/XeGo-Microservices/Services/CodeValue/XeGo.Services.CodeValue.Grpc/bin/
+/BackEnd/XeGo-Microservices/Services/CodeValue/XeGo.Services.CodeValue.Grpc/obj/
 /BackEnd/XeGo-Microservices/Services/Location/XeGo.Services.Location.API/bin/
 /BackEnd/XeGo-Microservices/Services/Location/XeGo.Services.Location.API/obj/
 /BackEnd/XeGo-Microservices/Services/Media/XeGo.Services.Media.API/bin/
