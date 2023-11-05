@@ -5,6 +5,8 @@ using XeGo.Services.Auth.API.Entities;
 using XeGo.Services.Auth.API.Models;
 using XeGo.Services.Auth.API.Service;
 using XeGo.Services.Auth.API.Service.IService;
+using XeGo.Services.CodeValue.Grpc.Protos;
+using XeGo.Shared.GrpcConsumer.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,7 +26,10 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
-
+builder.Services.AddGrpcClient<CodeValueProtoService.CodeValueProtoServiceClient>(o =>
+    o.Address = new Uri(builder.Configuration["GrpcSettings:CodeValueGrpcUrl"])
+    );
+builder.Services.AddScoped<CodeValueGrpcService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

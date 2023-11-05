@@ -7,5 +7,8 @@
 
         public const string AccessTokenExpirationName = "ACCESS_TOKEN_EXPIRATION";
         public const string RefreshTokenExpirationName = "REFRESH_TOKEN_EXPIRATION";
+
+        public const string RefreshTokenDaysToExpireVariableName = "REFRESH_TOKEN_DAYS_TO_EXPIRE";
+        public const string TokenProperty = "TOKEN_PROPERTY";
     }
 }

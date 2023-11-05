@@ -52,7 +52,7 @@ namespace XeGo.Services.Auth.API.Service
             }
 
             //if user was found, generate jwt token
-            string accessToken = _jwtTokenGenerator.GenerateAccessToken(user, loginRequestDto.FromApp);
+            string accessToken = await _jwtTokenGenerator.GenerateAccessTokenAsync(user, loginRequestDto.FromApp);
             string refreshToken = _jwtTokenGenerator.GenerateRefreshToken();
 
             TokenDto tokenDto = new TokenDto()
