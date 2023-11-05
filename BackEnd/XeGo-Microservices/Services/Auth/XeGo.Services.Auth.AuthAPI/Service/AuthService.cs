@@ -3,6 +3,7 @@ using XeGo.Services.Auth.API.Data;
 using XeGo.Services.Auth.API.Entities;
 using XeGo.Services.Auth.API.Models.Dto;
 using XeGo.Services.Auth.API.Service.IService;
+using XeGo.Shared.Lib.Constants;
 
 namespace XeGo.Services.Auth.API.Service
 {
@@ -47,11 +48,18 @@ namespace XeGo.Services.Auth.API.Service
 
             if (user == null || isValid == false)
             {
-                return new LoginResponseDto() { User = null, Token = "" };
+                return new LoginResponseDto() { User = null, Tokens = new() };
             }
 
             //if user was found, generate jwt token
-            string token = _jwtTokenGenerator.GenerateToken(user);
+            string accessToken = _jwtTokenGenerator.GenerateAccessToken(user, loginRequestDto.FromApp);
+            string refreshToken = _jwtTokenGenerator.GenerateRefreshToken();
+
+            TokenDto tokenDto = new TokenDto()
+            {
+                AccessToken = accessToken,
+                RefreshToken = refreshToken,
+            };
 
             UserDto? userDto = new()
             {
@@ -64,8 +72,10 @@ namespace XeGo.Services.Auth.API.Service
             LoginResponseDto loginResponseDto = new()
             {
                 User = userDto,
-                Token = token,
+                Tokens = tokenDto,
             };
+
+            await StoreTokensToDb(user, tokenDto, loginRequestDto.FromApp);
 
             return loginResponseDto;
         }
@@ -108,5 +118,35 @@ namespace XeGo.Services.Auth.API.Service
                 return ex.Message;
             }
         }
+
+        #region Private Methods
+
+        private async Task StoreTokensToDb(ApplicationUser user, TokenDto tokens, string loginApp)
+        {
+            await RemoveExistingTokens(user, loginApp);
+            await AddNewTokens(user, tokens, loginApp);
+        }
+
+        private async Task RemoveExistingTokens(ApplicationUser user, string loginApp)
+        {
+            // remove existing tokens
+            await _userManager.RemoveAuthenticationTokenAsync(user, loginApp, TokenConstants.AccessTokenName);
+            await _userManager.RemoveAuthenticationTokenAsync(user, loginApp, TokenConstants.RefreshTokenName);
+            await _userManager.RemoveAuthenticationTokenAsync(user, loginApp, TokenConstants.RefreshTokenExpirationName);
+        }
+
+        private async Task AddNewTokens(ApplicationUser user, TokenDto tokens, string loginApp)
+        {
+            // add new tokens
+            var expirationDate = DateTime.UtcNow.AddDays(7);
+            await _userManager.SetAuthenticationTokenAsync(user, loginApp, TokenConstants.AccessTokenName,
+                tokens.AccessToken);
+            await _userManager.SetAuthenticationTokenAsync(user, loginApp, TokenConstants.RefreshTokenName,
+                tokens.RefreshToken);
+            await _userManager.SetAuthenticationTokenAsync(user, loginApp, TokenConstants.RefreshTokenExpirationName,
+                expirationDate.ToString("O"));
+        }
+
+        #endregion
     }
 }

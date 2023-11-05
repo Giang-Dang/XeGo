@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using XeGo.Services.Auth.API.Entities;
 using XeGo.Services.Auth.API.Models;
@@ -18,7 +19,7 @@ namespace XeGo.Services.Auth.API.Service
             _jwtOptions = jwtOptions.Value ?? throw new ArgumentNullException(nameof(jwtOptions));
         }
 
-        public string GenerateToken(ApplicationUser applicationUser)
+        public string GenerateAccessToken(ApplicationUser applicationUser, string loginApp)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
 
@@ -29,6 +30,7 @@ namespace XeGo.Services.Auth.API.Service
                 new Claim(JwtRegisteredClaimNames.Email, applicationUser.Email ?? ""),
                 new Claim(JwtRegisteredClaimNames.Sub, applicationUser.Id),
                 new Claim(JwtRegisteredClaimNames.Name, applicationUser.UserName ?? ""),
+                new Claim("loginApp", loginApp)
             };
 
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -43,6 +45,16 @@ namespace XeGo.Services.Auth.API.Service
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
             return tokenHandler.WriteToken(token);
+        }
+
+        public string GenerateRefreshToken(int size = 256)
+        {
+            var randomNumber = new byte[size];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomNumber);
+                return Convert.ToBase64String(randomNumber);
+            }
         }
     }
 }

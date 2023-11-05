@@ -1,16 +1,27 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using XeGo.Services.Auth.API.Entities;
 
 namespace XeGo.Services.Auth.API.Data
 {
-    public class AppDbContext : IdentityDbContext<ApplicationUser>
+    public class AppDbContext :
+        IdentityDbContext<
+            ApplicationUser,
+            IdentityRole,
+            string,
+            IdentityUserClaim<string>,
+            IdentityUserRole<string>,
+            IdentityUserLogin<string>,
+            IdentityRoleClaim<string>,
+            ApplicationUserToken>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
 
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        public DbSet<ApplicationUserToken> ApplicationTokens { get; set; }
         public DbSet<RoleFunction> RoleFunction { get; set; }
         public DbSet<Function> Functions { get; set; }
 
