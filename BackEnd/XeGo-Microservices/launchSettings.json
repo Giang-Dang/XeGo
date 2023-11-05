@@ -5,7 +5,8 @@
       "commandVersion": "1.0",
       "serviceActions": {
         "xego.services.auth.authapi": "StartDebugging",
-        "xego.services.codevalue.api": "StartDebugging"
+        "xego.services.codevalue.api": "StartDebugging",
+        "xego.services.codevalue.grpc": "StartDebugging"
       }
     }
   }

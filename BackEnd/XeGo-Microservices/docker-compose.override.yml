@@ -28,6 +28,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=authdb;Database=XeGoAuthDb;User Id=sa;Password=admin1234@A;TrustServerCertificate=True
+      - GrpcSettings__CodeValueGrpcUrl=http://xego.services.codevalue.grpc
       - ApiSettings__JwtOptions__Secret=adfh@JDFDKSAF1234sdf*%$#feifkdmvcoaerDSJFAOEDFDFJffDSAFjkAjdfA485723AjdfAJfDjfAjdfdjferYGjASDJfEjfvdav
       - ApiSettings__JwtOptions__Issuer=xego-auth-api
       - ApiSettings__JwtOptions__Audience=xego-client   
@@ -42,6 +43,7 @@ services:
 
 
   xego.services.codevalue.api:
+    container_name: xego.services.codevalue.api
     environment:
       - ConnectionStrings__DefaultConnection=Server=codevaluedb;Database=XeGoCodeValueDb;User Id=sa;Password=admin1234@A;TrustServerCertificate=True
       - ASPNETCORE_ENVIRONMENT=Development
@@ -50,6 +52,19 @@ services:
     ports:
       - "6002:80"
       - "7002:443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+  xego.services.codevalue.grpc:
+    container_name: xego.services.codevalue.grpc
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=codevaluedb;Database=XeGoCodeValueDb;User Id=sa;Password=admin1234@A;TrustServerCertificate=True
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - codevaluedb
+    ports:
+      - "6003:80"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
@@ -63,7 +78,10 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
+
+
 volumes:
   sqlserver-authdb:
   sqlserver-codevaluedb:
   portainer_data:  
+

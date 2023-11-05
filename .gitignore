@@ -15,6 +15,10 @@
 /BackEnd/XeGo-Microservices/Services/Location/XeGo.Services.Location.API/obj/
 /BackEnd/XeGo-Microservices/Services/Media/XeGo.Services.Media.API/bin/
 /BackEnd/XeGo-Microservices/Services/Media/XeGo.Services.Media.API/obj/
+/BackEnd/XeGo-Microservices/Services/Log/XeGo.Services.Log.API/bin/
+/BackEnd/XeGo-Microservices/Services/Log/XeGo.Services.Log.API/obj/
+/BackEnd/XeGo-Microservices/Services/Log/XeGo.Services.Log.Grpc/bin/
+/BackEnd/XeGo-Microservices/Services/Log/XeGo.Services.Log.Grpc/obj/
 /BackEnd/XeGo-Microservices/Shared/XeGo.Shared.Lib/bin/
 /BackEnd/XeGo-Microservices/Shared/XeGo.Shared.Lib/obj/
 /BackEnd/XeGo-Microservices/Shared/XeGo.Shared.GrpcConsumer/bin/

@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XeGo.Services.Auth.API", "S
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{C09E190B-AB40-4829-83A1-CECF76E291FF}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "User", "User", "{862D3C13-A041-4021-BCAB-AB7A0896A8D6}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Rider", "Rider", "{862D3C13-A041-4021-BCAB-AB7A0896A8D6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XeGo.Services.Location.API", "Services\Location\XeGo.Services.Location.API\XeGo.Services.Location.API.csproj", "{99F3F93A-016F-46E1-A0AA-E9A8E3179C63}"
 EndProject
@@ -31,7 +31,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Coupon", "Coupon", "{FC492F
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Media", "Media", "{954D90AE-520E-4123-B94E-D185C35A1CD0}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Logging", "Logging", "{38983008-2353-4F4E-8838-1AB1E45820D7}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Log", "Log", "{38983008-2353-4F4E-8838-1AB1E45820D7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UserTrustScore", "UserTrustScore", "{FE05932F-C354-4742-B840-17BF88337931}"
 EndProject
@@ -48,6 +48,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XeGo.Services.CodeValue.Grpc", "Services\CodeValue\XeGo.Services.CodeValue.Grpc\XeGo.Services.CodeValue.Grpc.csproj", "{75365CFE-3152-4FD3-8D40-C7A468042D7B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XeGo.Shared.GrpcConsumer", "Shared\XeGo.Shared.GrpcConsumer\XeGo.Shared.GrpcConsumer.csproj", "{E9E29229-59F2-4051-9058-8CD6FD805FDB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XeGo.Services.Log.API", "Services\Log\XeGo.Services.Log.API\XeGo.Services.Log.API.csproj", "{0EE3992D-01F9-46E5-A9A0-34E5CAB63D49}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XeGo.Services.Log.Grpc", "Services\Log\XeGo.Services.Log.Grpc\XeGo.Services.Log.Grpc.csproj", "{88B7B970-328F-4AEA-9AA9-E354762D2675}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -87,6 +91,14 @@ Global
 		{E9E29229-59F2-4051-9058-8CD6FD805FDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E9E29229-59F2-4051-9058-8CD6FD805FDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E9E29229-59F2-4051-9058-8CD6FD805FDB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0EE3992D-01F9-46E5-A9A0-34E5CAB63D49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EE3992D-01F9-46E5-A9A0-34E5CAB63D49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EE3992D-01F9-46E5-A9A0-34E5CAB63D49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EE3992D-01F9-46E5-A9A0-34E5CAB63D49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88B7B970-328F-4AEA-9AA9-E354762D2675}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88B7B970-328F-4AEA-9AA9-E354762D2675}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88B7B970-328F-4AEA-9AA9-E354762D2675}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88B7B970-328F-4AEA-9AA9-E354762D2675}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -112,6 +124,8 @@ Global
 		{3B844A12-57DB-42D0-A1DB-F9F4FA0DBAF0} = {C8659B39-395E-408D-9A71-75B31961D123}
 		{75365CFE-3152-4FD3-8D40-C7A468042D7B} = {1B9A9A50-681F-43A4-8530-48FF5A1225F4}
 		{E9E29229-59F2-4051-9058-8CD6FD805FDB} = {C8659B39-395E-408D-9A71-75B31961D123}
+		{0EE3992D-01F9-46E5-A9A0-34E5CAB63D49} = {38983008-2353-4F4E-8838-1AB1E45820D7}
+		{88B7B970-328F-4AEA-9AA9-E354762D2675} = {38983008-2353-4F4E-8838-1AB1E45820D7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {837CBB2D-FE62-4B52-A8A4-D37FE9935AA9}

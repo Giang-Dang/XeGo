@@ -8,6 +8,7 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["Services/Auth/XeGo.Services.Auth.AuthAPI/XeGo.Services.Auth.API.csproj", "Services/Auth/XeGo.Services.Auth.AuthAPI/"]
+COPY ["Shared/XeGo.Shared.GrpcConsumer/XeGo.Shared.GrpcConsumer.csproj", "Shared/XeGo.Shared.GrpcConsumer/"]
 COPY ["Shared/XeGo.Shared.Lib/XeGo.Shared.Lib.csproj", "Shared/XeGo.Shared.Lib/"]
 RUN dotnet restore "Services/Auth/XeGo.Services.Auth.AuthAPI/XeGo.Services.Auth.API.csproj"
 COPY . .

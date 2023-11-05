@@ -22,7 +22,14 @@ services:
       context: .
       dockerfile: Services/CodeValue/XeGo.Services.CodeValue.API/Dockerfile
 
+  xego.services.codevalue.grpc:
+    image: ${DOCKER_REGISTRY-}xegoservicescodevaluegrpc
+    build:
+      context: .
+      dockerfile: Services/CodeValue/XeGo.Services.CodeValue.Grpc/Dockerfile
+
 volumes:
   portainer_data:
+
 
 
