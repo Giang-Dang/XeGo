@@ -7,17 +7,13 @@ services:
   codevaluedb:
     image: mcr.microsoft.com/mssql/server:2022-latest
 
-  rabbitmq:
-    image: rabbitmq:3.12-management-alpine
-
   xego.services.auth.authapi:
     image: ${DOCKER_REGISTRY-}xegoservicesauthauthapi
     build:
       context: .
-      dockerfile: Services/Auth/XeGo.Services.Auth.AuthAPI/Dockerfile
+      dockerfile: Services/Auth/XeGo.Services.Auth.API/Dockerfile
 
-  portainer:
-    image: portainer/portainer-ce 
+
 
   xego.services.codevalue.api:
     image: ${DOCKER_REGISTRY-}xegoservicescodevalueapi
@@ -31,8 +27,20 @@ services:
       context: .
       dockerfile: Services/CodeValue/XeGo.Services.CodeValue.Grpc/Dockerfile
 
+  rabbitmq:
+    image: rabbitmq:3.12-management-alpine
+
+  portainer:
+    image: portainer/portainer-ce 
+
+  elasticsearch:
+    image: elasticsearch:8.10.4
+
+  kibana:
+    image: kibana:8.10.4
+
 volumes:
   portainer_data:
-
+  elasticsearch-data:
 
 
