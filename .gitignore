@@ -23,3 +23,5 @@
 /BackEnd/XeGo-Microservices/Shared/XeGo.Shared.Lib/obj/
 /BackEnd/XeGo-Microservices/Shared/XeGo.Shared.GrpcConsumer/bin/
 /BackEnd/XeGo-Microservices/Shared/XeGo.Shared.GrpcConsumer/obj/
+/BackEnd/XeGo-Microservices/Shared/XeGo.Shared.Log.Producer/bin/
+/BackEnd/XeGo-Microservices/Shared/XeGo.Shared.Log.Producer/obj/

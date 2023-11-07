@@ -7,6 +7,9 @@ services:
   codevaluedb:
     image: mcr.microsoft.com/mssql/server:2022-latest
 
+  rabbitmq:
+    image: rabbitmq:3.12-management-alpine
+
   xego.services.auth.authapi:
     image: ${DOCKER_REGISTRY-}xegoservicesauthauthapi
     build:

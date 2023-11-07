@@ -15,12 +15,14 @@ namespace XeGo.Services.CodeValue.API.Controllers
     {
         private readonly AppDbContext _dbContext;
         private readonly IMapper _mapper;
+        private readonly ILogger _logger;
         private ResponseDto ResponseDto { get; set; }
 
-        public CodeMetaController(AppDbContext dbContext, IMapper mapper)
+        public CodeMetaController(AppDbContext dbContext, IMapper mapper, ILogger logger)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger)); ;
             ResponseDto = new();
         }
 
@@ -31,6 +33,9 @@ namespace XeGo.Services.CodeValue.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetByCodeName(string codeName)
         {
+            string? requestId = RequestIdHelpers.GetRequestId(HttpContext);
+
+            _logger.LogInformation($"{requestId}");
             try
             {
                 codeName = codeName.ToUpper();

@@ -14,4 +14,8 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Shared\XeGo.Shared.Lib\XeGo.Shared.Lib.csproj" />
+  </ItemGroup>
+
 </Project>

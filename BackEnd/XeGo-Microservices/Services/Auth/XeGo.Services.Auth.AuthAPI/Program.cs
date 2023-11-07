@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
+using System.Reflection;
 using XeGo.Services.Auth.API.Data;
 using XeGo.Services.Auth.API.Entities;
 using XeGo.Services.Auth.API.Models;
@@ -7,6 +9,7 @@ using XeGo.Services.Auth.API.Service;
 using XeGo.Services.Auth.API.Service.IService;
 using XeGo.Services.CodeValue.Grpc.Protos;
 using XeGo.Shared.GrpcConsumer.Services;
+using XeGo.Shared.Lib.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +33,12 @@ builder.Services.AddGrpcClient<CodeValueProtoService.CodeValueProtoServiceClient
     o.Address = new Uri(builder.Configuration["GrpcSettings:CodeValueGrpcUrl"])
     );
 builder.Services.AddScoped<CodeValueGrpcService>();
+
+// Add logging service
+LoggingHelpers loggingHelpers = new();
+loggingHelpers.ConfigureLogging(Assembly.GetExecutingAssembly().GetName().Name);
+builder.Host.UseSerilog();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

@@ -23,6 +23,13 @@ services:
     volumes:
       - sqlserver-codevaluedb:/var/opt/mssql
 
+  rabbitmq:
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
   xego.services.auth.authapi:
     container_name: xego.services.auth.authapi
     environment:

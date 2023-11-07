@@ -1,6 +1,9 @@
 using Azure.Storage.Blobs;
+using Serilog;
+using System.Reflection;
 using XeGo.Services.Media.API.Services;
 using XeGo.Services.Media.API.Services.IServices;
+using XeGo.Shared.Lib.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +13,11 @@ builder.Services.AddSingleton(_ =>
 );
 builder.Services.AddSingleton<IBlobService, BlobService>();
 builder.Services.AddScoped<IImageService, ImageService>();
+
+// Add logging service
+LoggingHelpers loggingHelpers = new();
+loggingHelpers.ConfigureLogging(Assembly.GetExecutingAssembly().GetName().Name);
+builder.Host.UseSerilog();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
