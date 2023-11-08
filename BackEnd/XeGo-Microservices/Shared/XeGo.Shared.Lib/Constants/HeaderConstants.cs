@@ -2,6 +2,6 @@
 {
     public static class HeaderConstants
     {
-        public static string RequestIdHeaderName = "X-Request-ID";
+        public const string RequestIdHeaderName = "X-Request-ID";
     }
 }

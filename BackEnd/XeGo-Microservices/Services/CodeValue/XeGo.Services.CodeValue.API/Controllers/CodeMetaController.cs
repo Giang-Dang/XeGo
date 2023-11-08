@@ -15,10 +15,10 @@ namespace XeGo.Services.CodeValue.API.Controllers
     {
         private readonly AppDbContext _dbContext;
         private readonly IMapper _mapper;
-        private readonly ILogger _logger;
+        private readonly ILogger<CodeMetaController> _logger;
         private ResponseDto ResponseDto { get; set; }
 
-        public CodeMetaController(AppDbContext dbContext, IMapper mapper, ILogger logger)
+        public CodeMetaController(AppDbContext dbContext, IMapper mapper, ILogger<CodeMetaController> logger)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -28,10 +28,7 @@ namespace XeGo.Services.CodeValue.API.Controllers
 
 
         [HttpGet("by-code-name")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetByCodeName(string codeName)
+        public async Task<ResponseDto> GetByCodeName(string codeName)
         {
             string? requestId = RequestIdHelpers.GetRequestId(HttpContext);
 
@@ -47,31 +44,27 @@ namespace XeGo.Services.CodeValue.API.Controllers
                     ResponseDto.Data = null;
                     ResponseDto.Message = "Not found!";
 
-                    return new NotFoundObjectResult(ResponseDto);
+                    return ResponseDto;
                 }
 
                 ResponseDto.IsSuccess = true;
                 ResponseDto.Data = codeMeta;
-                return new OkObjectResult(ResponseDto);
+
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-
-                return new ContentResult()
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Content = e.Message
-                };
+                _logger.LogError($"{nameof(CodeMetaController)}>{nameof(GetByCodeName)}: {e.Message}");
+                ResponseDto.IsSuccess = false;
+                ResponseDto.Data = null;
+                ResponseDto.Message = e.Message;
             }
+
+            return ResponseDto;
 
         }
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Create([FromBody] CodeMetaDataDto requestDto)
+        public async Task<ResponseDto> Create([FromBody] CodeMetaDataDto requestDto)
         {
             try
             {
@@ -84,7 +77,7 @@ namespace XeGo.Services.CodeValue.API.Controllers
                     ResponseDto.Data = null;
                     ResponseDto.Message = "Already Existed";
 
-                    return new BadRequestObjectResult(ResponseDto);
+                    return ResponseDto;
                 }
 
                 var createObject = _mapper.Map<CodeMetaData>(requestDto);
@@ -96,26 +89,20 @@ namespace XeGo.Services.CodeValue.API.Controllers
                 ResponseDto.IsSuccess = true;
                 ResponseDto.Data = createdObject;
 
-                return new CreatedAtActionResult(
-                    nameof(GetByCodeName),
-                    nameof(CodeMetaController).Replace("Controller", ""),
-                    new { codeName = requestDto.Name },
-                    ResponseDto
-                    );
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                return new ContentResult()
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Content = e.Message
-                };
+                _logger.LogError($"{nameof(CodeMetaController)}>{nameof(GetByCodeName)}: {e.Message}");
+                ResponseDto.IsSuccess = false;
+                ResponseDto.Data = null;
+                ResponseDto.Message = e.Message;
             }
+
+            return ResponseDto;
         }
 
         [HttpPut]
-        public async Task<IActionResult> Edit([FromBody] CodeMetaDataDto requestDto)
+        public async Task<ResponseDto> Edit([FromBody] CodeMetaDataDto requestDto)
         {
             try
             {
@@ -127,7 +114,7 @@ namespace XeGo.Services.CodeValue.API.Controllers
                     ResponseDto.Data = null;
                     ResponseDto.Message = "This code meta does not exist.";
 
-                    return new BadRequestObjectResult(ResponseDto);
+                    return ResponseDto;
                 }
 
                 _mapper.Map(requestDto, codeMeta);
@@ -136,18 +123,16 @@ namespace XeGo.Services.CodeValue.API.Controllers
                 ResponseDto.IsSuccess = true;
                 ResponseDto.Data = codeMeta;
 
-                return new OkObjectResult(ResponseDto);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-
-                return new ContentResult()
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Content = e.Message
-                };
+                _logger.LogError($"{nameof(CodeMetaController)}>{nameof(GetByCodeName)}: {e.Message}");
+                ResponseDto.IsSuccess = false;
+                ResponseDto.Data = null;
+                ResponseDto.Message = e.Message;
             }
+
+            return ResponseDto;
         }
 
         #region Private Methods

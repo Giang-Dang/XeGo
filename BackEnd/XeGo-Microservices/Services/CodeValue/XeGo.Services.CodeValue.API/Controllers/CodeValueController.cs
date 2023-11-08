@@ -16,12 +16,14 @@ namespace XeGo.Services.CodeValue.API.Controllers
     {
         private readonly AppDbContext _dbContext;
         private readonly IMapper _mapper;
+        private readonly ILogger<CodeValueController> _logger;
         private ResponseDto ResponseDto { get; set; }
 
-        public CodeValueController(AppDbContext dbContext, IMapper mapper)
+        public CodeValueController(AppDbContext dbContext, IMapper mapper, ILogger<CodeValueController> logger)
         {
             _dbContext = dbContext;
             _mapper = mapper;
+            _logger = logger;
             ResponseDto = new();
         }
 
@@ -29,7 +31,7 @@ namespace XeGo.Services.CodeValue.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetByCodeName(string codeName, bool? isActive, bool? isEffective)
+        public async Task<ResponseDto> GetByCodeName(string codeName, bool? isActive, bool? isEffective)
         {
             try
             {
@@ -56,7 +58,7 @@ namespace XeGo.Services.CodeValue.API.Controllers
                     ResponseDto.IsSuccess = true;
                     ResponseDto.Data = null;
                     ResponseDto.Message = $"Code value with code name {codeName} is not found";
-                    return new NotFoundObjectResult(ResponseDto);
+                    return ResponseDto;
                 }
 
                 List<List<object?>?> result =
@@ -69,25 +71,24 @@ namespace XeGo.Services.CodeValue.API.Controllers
                 ResponseDto.Data = result;
                 ResponseDto.IsSuccess = true;
 
-                return new OkObjectResult(ResponseDto);
+
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                _logger.LogError($"{nameof(CodeValueController)}>{nameof(GetByCodeName)}: {e.Message}");
 
-                return new ContentResult()
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Content = e.Message
-                };
+                ResponseDto.IsSuccess = false;
+                ResponseDto.Data = null;
+                ResponseDto.Message = e.Message;
             }
+            return ResponseDto;
         }
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Create([FromBody] CodeValueDto requestDto)
+        public async Task<ResponseDto> Create([FromBody] CodeValueDto requestDto)
         {
             try
             {
@@ -99,7 +100,7 @@ namespace XeGo.Services.CodeValue.API.Controllers
                     ResponseDto.IsSuccess = false;
                     ResponseDto.Data = null;
                     ResponseDto.Message = $"Code meta with Name {requestDto.Name} does not exists. Please create that Code meta first before adding Code value";
-                    return new BadRequestObjectResult(ResponseDto);
+                    return ResponseDto;
                 }
 
 
@@ -108,7 +109,7 @@ namespace XeGo.Services.CodeValue.API.Controllers
                     ResponseDto.IsSuccess = false;
                     ResponseDto.Data = null;
                     ResponseDto.Message = "The length of the input CodeValue does not match with the length of CodeMetaData.";
-                    return new BadRequestObjectResult(ResponseDto);
+                    return ResponseDto;
                 }
 
                 if (!MatchIso8601Format(requestDto, codeMeta))
@@ -117,7 +118,7 @@ namespace XeGo.Services.CodeValue.API.Controllers
                     ResponseDto.Data = null;
                     ResponseDto.Message = "Ensure that the format of the provided CodeValue aligns with the format defined in CodeMetaData, " +
                                           "and that the CodeValue is in ISO 8601 format.";
-                    return new BadRequestObjectResult(ResponseDto);
+                    return ResponseDto;
                 }
 
                 var createDto = _mapper.Map<Entities.CodeValue>(requestDto);
@@ -128,7 +129,7 @@ namespace XeGo.Services.CodeValue.API.Controllers
                     ResponseDto.IsSuccess = false;
                     ResponseDto.Data = null;
                     ResponseDto.Message = $"Code value with Name {requestDto.Name} is already existed.";
-                    return new BadRequestObjectResult(ResponseDto);
+                    return ResponseDto;
                 }
 
                 await _dbContext.CodeValues.AddAsync(createDto);
@@ -139,30 +140,24 @@ namespace XeGo.Services.CodeValue.API.Controllers
                 ResponseDto.IsSuccess = true;
                 ResponseDto.Data = createdObject;
 
-                return new CreatedAtActionResult(
-                        nameof(GetByCodeName),
-                        nameof(CodeValueController).Replace("Controller", ""),
-                        new { codeName = requestDto.Name, isActive = requestDto.IsActive },
-                        ResponseDto
-                    );
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-
-                return new ContentResult()
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Content = e.Message
-                };
+                _logger.LogError($"{nameof(CodeValueController)}>{nameof(Create)}: {e.Message}");
+                ResponseDto.IsSuccess = false;
+                ResponseDto.Data = null;
+                ResponseDto.Message = e.Message;
             }
+
+            return ResponseDto;
+
         }
 
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Edit([FromBody] CodeValueDto requestDto)
+        public async Task<ResponseDto> Edit([FromBody] CodeValueDto requestDto)
         {
             try
             {
@@ -174,7 +169,8 @@ namespace XeGo.Services.CodeValue.API.Controllers
                     ResponseDto.IsSuccess = false;
                     ResponseDto.Data = null;
                     ResponseDto.Message = $"Code meta with Name {requestDto.Name} does not exists. Please create that Code meta first before editing Code value";
-                    return new BadRequestObjectResult(ResponseDto);
+                    return ResponseDto;
+
                 }
 
                 var codeValue = await _dbContext.CodeValues.FirstOrDefaultAsync(e => e.Name == requestDto.Name);
@@ -183,7 +179,7 @@ namespace XeGo.Services.CodeValue.API.Controllers
                     ResponseDto.IsSuccess = false;
                     ResponseDto.Data = null;
                     ResponseDto.Message = $"Code value with Name {requestDto.Name} does not exist.";
-                    return new BadRequestObjectResult(ResponseDto);
+                    return ResponseDto;
                 }
 
                 _mapper.Map(requestDto, codeValue);
@@ -191,19 +187,15 @@ namespace XeGo.Services.CodeValue.API.Controllers
 
                 ResponseDto.IsSuccess = true;
                 ResponseDto.Data = codeValue;
-
-                return new OkObjectResult(ResponseDto);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-
-                return new ContentResult()
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Content = e.Message
-                };
+                _logger.LogError($"{nameof(CodeValueController)}>{nameof(Edit)}: {e.Message}");
+                ResponseDto.IsSuccess = false;
+                ResponseDto.Data = null;
+                ResponseDto.Message = e.Message;
             }
+            return ResponseDto;
         }
 
         #region Private Methods

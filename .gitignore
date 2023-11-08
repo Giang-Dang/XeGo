@@ -13,6 +13,8 @@
 /BackEnd/XeGo-Microservices/Services/CodeValue/XeGo.Services.CodeValue.Grpc/obj/
 /BackEnd/XeGo-Microservices/Services/Location/XeGo.Services.Location.API/bin/
 /BackEnd/XeGo-Microservices/Services/Location/XeGo.Services.Location.API/obj/
+/BackEnd/XeGo-Microservices/Services/Location/XeGo.Services.Location.Grpc/bin/
+/BackEnd/XeGo-Microservices/Services/Location/XeGo.Services.Location.Grpc/obj/
 /BackEnd/XeGo-Microservices/Services/Media/XeGo.Services.Media.API/bin/
 /BackEnd/XeGo-Microservices/Services/Media/XeGo.Services.Media.API/obj/
 /BackEnd/XeGo-Microservices/Services/Driver/XeGo.Services.Driver.API/bin/

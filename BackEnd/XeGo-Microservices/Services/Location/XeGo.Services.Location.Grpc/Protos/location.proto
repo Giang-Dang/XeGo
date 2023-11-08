@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option csharp_namespace = "XeGo.Services.Location.Grpc.Protos";
+
+service LocationProtoService {
+	rpc FindNearbyDrivers(FindNearbyDriversRequest) returns (Response);
+}
+
+message FindNearbyDriversRequest {
+	double Latitude = 1;
+	double Longitude = 2;
+}
+
+message Response {
+  string data = 1;
+  bool isSuccess = 2;
+  string message = 3;
+}

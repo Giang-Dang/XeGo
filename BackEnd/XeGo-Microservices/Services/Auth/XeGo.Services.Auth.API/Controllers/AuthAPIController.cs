@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using XeGo.Services.Auth.API.Models.Dto;
 using XeGo.Services.Auth.API.Service.IService;
-using XeGo.Shared.Lib.Helpers;
 using XeGo.Shared.Lib.Models;
 
 namespace XeGo.Services.Auth.API.Controllers
@@ -22,58 +21,84 @@ namespace XeGo.Services.Auth.API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegistrationRequestDto model)
+        public async Task<ResponseDto> Register([FromBody] RegistrationRequestDto model)
         {
-            string? requestId = RequestIdHelpers.GetRequestId(HttpContext);
-            RequestIdHelpers.MapReqIdToRespHeaders(HttpContext, requestId ?? "");
+            _logger.LogInformation("{class}>{function}: Received", nameof(AuthApiController), nameof(Register));
 
-            _logger.LogInformation("RequestId:{requestId} - {class}>{function}: Received", requestId, nameof(AuthApiController), nameof(Register));
-            var errorMessage = await _authService.Register(model);
-            if (!string.IsNullOrEmpty(errorMessage))
+            try
             {
+                var errorMessage = await _authService.Register(model);
+                if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    ResponseDto.IsSuccess = false;
+                    ResponseDto.Message = errorMessage;
+                    _logger.LogInformation("{class}>{function}: Registration Failed", nameof(AuthApiController), nameof(Register));
+                    return ResponseDto;
+                }
+
                 ResponseDto.IsSuccess = true;
-                ResponseDto.Message = errorMessage;
-                _logger.LogInformation("RequestId:{requestId} - {class}>{function}: Succeed", requestId, nameof(AuthApiController), nameof(Register));
-                return BadRequest(ResponseDto);
+                ResponseDto.Data = null;
+                ResponseDto.Message = "Registration succeed";
+                _logger.LogInformation("{class}>{function}: Registration Succeed", nameof(AuthApiController), nameof(Register));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"{nameof(AuthApiController)}>{nameof(Register)}: {e.Message}");
+                ResponseDto.IsSuccess = false;
+                ResponseDto.Data = null;
+                ResponseDto.Message = e.Message;
             }
 
-            _logger.LogInformation("RequestId:{requestId} - {class}>{function}: Succeed", requestId, nameof(AuthApiController), nameof(Register));
-            return Ok(ResponseDto);
+            return ResponseDto;
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequestDto model)
+        public async Task<ResponseDto> Login([FromBody] LoginRequestDto model)
         {
-            string? requestId = RequestIdHelpers.GetRequestId(HttpContext);
-            RequestIdHelpers.MapReqIdToRespHeaders(HttpContext, requestId ?? "");
+            _logger.LogInformation("{class}>{function}: Received", nameof(AuthApiController), nameof(Register));
 
-            _logger.LogInformation("RequestId:{requestId} - {class}>{function}: Received", requestId, nameof(AuthApiController), nameof(Register));
-
-            var loginResponse = await _authService.Login(model);
-            if (loginResponse.User == null)
+            try
             {
-                ResponseDto.IsSuccess = false;
-                ResponseDto.Message = "Username or password is incorrect";
-                _logger.LogInformation("RequestId:{requestId} - {class}>{function}: Succeed", requestId,
-                    nameof(AuthApiController), nameof(Register));
-                return BadRequest(ResponseDto);
+                var loginResponse = await _authService.Login(model);
+                if (loginResponse.User == null)
+                {
+                    ResponseDto.IsSuccess = false;
+                    ResponseDto.Message = "Username or password is incorrect";
+                    _logger.LogInformation("{class}>{function}: Login Failed",
+                        nameof(AuthApiController), nameof(Register));
+                    return ResponseDto;
+                }
+
+                ResponseDto.IsSuccess = true;
+                ResponseDto.Data = loginResponse;
+                _logger.LogInformation("{class}>{function}: Login Succeed", nameof(AuthApiController), nameof(Register));
+
             }
-            ResponseDto.Data = loginResponse;
-            _logger.LogInformation("RequestId:{requestId} - {class}>{function}: Succeed", requestId, nameof(AuthApiController), nameof(Register));
-            return Ok(ResponseDto);
+            catch (Exception e)
+            {
+                _logger.LogError($"{nameof(AuthApiController)}>{nameof(Register)}: {e.Message}");
+                ResponseDto.IsSuccess = false;
+                ResponseDto.Data = null;
+                ResponseDto.Message = e.Message;
+            }
+
+            return ResponseDto;
+
         }
 
         [HttpPost("assign-role")]
-        public async Task<IActionResult> AssignRole([FromBody] RegistrationRequestDto model)
+        public async Task<ResponseDto> AssignRole([FromBody] RegistrationRequestDto model)
         {
             var assignRoleSuccessful = await _authService.AssignRole(model.Email, model.Role.ToUpper());
             if (!assignRoleSuccessful)
             {
                 ResponseDto.IsSuccess = false;
                 ResponseDto.Message = "Error encountered";
-                return BadRequest(ResponseDto);
+                return ResponseDto;
+
             }
-            return Ok(ResponseDto);
+            return ResponseDto;
+
         }
     }
 }
