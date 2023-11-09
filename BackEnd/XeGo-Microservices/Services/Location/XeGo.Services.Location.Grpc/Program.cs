@@ -1,10 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System.Reflection;
+using XeGo.Services.CodeValue.Grpc.Protos;
 using XeGo.Services.Location.API.Data;
 using XeGo.Services.Location.API.Services;
 using XeGo.Services.Location.API.Services.IServices;
 using XeGo.Services.Location.Grpc.Services;
+using XeGo.Shared.GrpcConsumer.Services;
 using XeGo.Shared.Lib.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +25,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+builder.Services.AddGrpcClient<CodeValueProtoService.CodeValueProtoServiceClient>(o =>
+    o.Address = new Uri(builder.Configuration["GrpcSettings:CodeValueGrpcUrl"])
+);
+
+builder.Services.AddScoped<CodeValueGrpcService>();
 
 builder.Services.AddSingleton<IGeoHashService, GeoHashService>();
 

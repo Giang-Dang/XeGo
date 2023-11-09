@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="..\..\Services\CodeValue\XeGo.Services.CodeValue.Grpc\Protos\codevalue.proto" GrpcServices="Client">
+    <Protobuf Include="..\..\Services\CodeValue\XeGo.Services.CodeValue.Grpc\Protos\codevalue.proto" GrpcServices="Client" Access="Public">
       <Link>Protos\codevalue.proto</Link>
     </Protobuf>
     <Protobuf Include="..\..\Services\Location\XeGo.Services.Location.Grpc\Protos\location.proto" GrpcServices="Client">

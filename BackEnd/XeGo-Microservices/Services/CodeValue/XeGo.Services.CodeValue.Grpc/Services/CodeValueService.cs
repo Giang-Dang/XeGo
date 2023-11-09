@@ -12,12 +12,14 @@ namespace XeGo.Services.CodeValue.Grpc.Services
     {
         private readonly AppDbContext _dbContext;
         private readonly IMapper _mapper;
+        private readonly ILogger<CodeValueService> _logger;
         private Response Response { get; set; }
 
-        public CodeValueService(AppDbContext dbContext, IMapper mapper)
+        public CodeValueService(AppDbContext dbContext, IMapper mapper, ILogger<CodeValueService> logger)
         {
             _dbContext = dbContext;
             _mapper = mapper;
+            _logger = logger;
             Response = new();
         }
 
@@ -61,18 +63,39 @@ namespace XeGo.Services.CodeValue.Grpc.Services
 
                 Response.Data = json;
                 Response.IsSuccess = true;
-
-                return Response;
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
                 Response.IsSuccess = false;
                 Response.Data = null;
-                Response.Message = $"Internal Server Error";
+                Response.Message = $"Internal Server Error: {e.Message}";
 
-                return Response;
+                _logger.LogError($"Internal Server Error: {e.Message}");
             }
+            return Response;
+        }
+
+        public override async Task<Response> GetValue2(GetValue2Request request, ServerCallContext context)
+        {
+            try
+            {
+                IQueryable<string> query = _dbContext.CodeValues
+                    .Where(c => c.Name == request.CodeName && c.Value1 == request.Value1)
+                    .Select(c => c.Value2 ?? "");
+
+                var res = await query.ToListAsync();
+                Response.Data = res[0];
+                Response.IsSuccess = true;
+            }
+            catch (Exception e)
+            {
+                Response.IsSuccess = false;
+                Response.Data = null;
+                Response.Message = $"Internal Server Error: {e.Message}";
+
+                _logger.LogError($"Internal Server Error: {e.Message}");
+            }
+            return Response;
         }
 
         #region Private Methods
@@ -88,7 +111,7 @@ namespace XeGo.Services.CodeValue.Grpc.Services
             {
                 if (codeValue.Value1 != null && codeMeta is { Value1Name: not null, Value1Type: not null })
                 {
-                    var returnValue = CovertToType(codeValue.Value1, codeMeta.Value1Type);
+                    var returnValue = ConvertToType(codeValue.Value1, codeMeta.Value1Type);
                     if (returnValue != null)
                     {
                         results.Add(returnValue);
@@ -96,7 +119,7 @@ namespace XeGo.Services.CodeValue.Grpc.Services
                 }
                 if (codeValue.Value2 != null && codeMeta is { Value2Name: not null, Value2Type: not null })
                 {
-                    var returnValue = CovertToType(codeValue.Value2, codeMeta.Value2Type);
+                    var returnValue = ConvertToType(codeValue.Value2, codeMeta.Value2Type);
                     if (returnValue != null)
                     {
                         results.Add(returnValue);
@@ -104,7 +127,7 @@ namespace XeGo.Services.CodeValue.Grpc.Services
                 }
                 if (codeValue.Value3 != null && codeMeta is { Value3Name: not null, Value3Type: not null })
                 {
-                    var returnValue = CovertToType(codeValue.Value3, codeMeta.Value3Type);
+                    var returnValue = ConvertToType(codeValue.Value3, codeMeta.Value3Type);
                     if (returnValue != null)
                     {
                         results.Add(returnValue);
@@ -112,7 +135,7 @@ namespace XeGo.Services.CodeValue.Grpc.Services
                 }
                 if (codeValue.Value4 != null && codeMeta is { Value4Name: not null, Value4Type: not null })
                 {
-                    var returnValue = CovertToType(codeValue.Value4, codeMeta.Value4Type);
+                    var returnValue = ConvertToType(codeValue.Value4, codeMeta.Value4Type);
                     if (returnValue != null)
                     {
                         results.Add(returnValue);
@@ -120,7 +143,7 @@ namespace XeGo.Services.CodeValue.Grpc.Services
                 }
                 if (codeValue.Value5 != null && codeMeta is { Value5Name: not null, Value5Type: not null })
                 {
-                    var returnValue = CovertToType(codeValue.Value5, codeMeta.Value5Type);
+                    var returnValue = ConvertToType(codeValue.Value5, codeMeta.Value5Type);
                     if (returnValue != null)
                     {
                         results.Add(returnValue);
@@ -128,7 +151,7 @@ namespace XeGo.Services.CodeValue.Grpc.Services
                 }
                 if (codeValue.Value6 != null && codeMeta is { Value6Name: not null, Value6Type: not null })
                 {
-                    var returnValue = CovertToType(codeValue.Value6, codeMeta.Value6Type);
+                    var returnValue = ConvertToType(codeValue.Value6, codeMeta.Value6Type);
                     if (returnValue != null)
                     {
                         results.Add(returnValue);
@@ -136,7 +159,7 @@ namespace XeGo.Services.CodeValue.Grpc.Services
                 }
                 if (codeValue.Value7 != null && codeMeta is { Value7Name: not null, Value7Type: not null })
                 {
-                    var returnValue = CovertToType(codeValue.Value7, codeMeta.Value7Type);
+                    var returnValue = ConvertToType(codeValue.Value7, codeMeta.Value7Type);
                     if (returnValue != null)
                     {
                         results.Add(returnValue);
@@ -144,7 +167,7 @@ namespace XeGo.Services.CodeValue.Grpc.Services
                 }
                 if (codeValue.Value8 != null && codeMeta is { Value8Name: not null, Value8Type: not null })
                 {
-                    var returnValue = CovertToType(codeValue.Value8, codeMeta.Value8Type);
+                    var returnValue = ConvertToType(codeValue.Value8, codeMeta.Value8Type);
                     if (returnValue != null)
                     {
                         results.Add(returnValue);
@@ -152,7 +175,7 @@ namespace XeGo.Services.CodeValue.Grpc.Services
                 }
                 if (codeValue.Value9 != null && codeMeta is { Value9Name: not null, Value9Type: not null })
                 {
-                    var returnValue = CovertToType(codeValue.Value9, codeMeta.Value9Type);
+                    var returnValue = ConvertToType(codeValue.Value9, codeMeta.Value9Type);
                     if (returnValue != null)
                     {
                         results.Add(returnValue);
@@ -160,7 +183,7 @@ namespace XeGo.Services.CodeValue.Grpc.Services
                 }
                 if (codeValue.Value10 != null && codeMeta is { Value10Name: not null, Value10Type: not null })
                 {
-                    var returnValue = CovertToType(codeValue.Value10, codeMeta.Value10Type);
+                    var returnValue = ConvertToType(codeValue.Value10, codeMeta.Value10Type);
                     if (returnValue != null)
                     {
                         results.Add(returnValue);
@@ -170,13 +193,13 @@ namespace XeGo.Services.CodeValue.Grpc.Services
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                _logger.LogError($"{nameof(CodeValueService)}>{nameof(ConvertToOriginalObject)}: {e.Message}");
                 throw;
             }
 
             return results;
         }
-        private dynamic? CovertToType(string inputValue, string outputType)
+        private dynamic? ConvertToType(string inputValue, string outputType)
         {
             try
             {
@@ -200,7 +223,7 @@ namespace XeGo.Services.CodeValue.Grpc.Services
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                _logger.LogError($"{nameof(CodeValueService)}>{nameof(ConvertToType)}: {e.Message}");
                 return null;
             }
         }

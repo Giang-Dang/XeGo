@@ -38,47 +38,27 @@ namespace XeGo.Services.Location.Grpc.Services
                 usersList.AddRange(users);
             }
 
-
+            Response.IsSuccess = true;
+            Response.Data = JsonConvert.SerializeObject(usersList);
+            return Response;
         }
 
         #region Private Methods
 
         private async Task<double> GetGeoSquareSideMeters()
         {
-            var response = await _codeValueGrpcService.GetByCodeName(GeohashConstants.GeohashName, null, null);
-            var dataList = JsonConvert.DeserializeObject<List<List<object?>?>>(response.Data.ToString());
+            var response = await _codeValueGrpcService
+                .GetValue2(GeohashConstants.GeohashName, GeohashConstants.SquareSideLengthInMetersName, null, null);
 
-            string? res = null;
-
-            foreach (var innerList in dataList)
-            {
-                if (innerList is [string and GeohashConstants.SquareSideLengthInMetersName, _, _])
-                {
-                    res = innerList[1] as string;
-                    break;
-                }
-            }
-
-            return Convert.ToDouble(res);
+            return Convert.ToDouble(response.Data);
         }
 
         private async Task<double> GetRadiusInMeters()
         {
-            var response = await _codeValueGrpcService.GetByCodeName(GeohashConstants.GeohashName, null, null);
-            var dataList = JsonConvert.DeserializeObject<List<List<object?>?>>(response.Data.ToString());
+            var response = await _codeValueGrpcService
+                .GetValue2(GeohashConstants.GeohashName, GeohashConstants.RadiusInMetersName, null, null);
 
-            string? res = null;
-
-            foreach (var innerList in dataList)
-            {
-                if (innerList is [string and GeohashConstants.RadiusInMetersName, _, _])
-                {
-                    res = innerList[1] as string;
-                    break;
-                }
-            }
-
-            return Convert.ToDouble(res);
+            return Convert.ToDouble(response.Data);
         }
 
         #endregion

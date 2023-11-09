@@ -23,6 +23,17 @@ services:
     volumes:
       - sqlserver-codevaluedb:/var/opt/mssql
 
+  locationdb:
+    container_name: locationdb
+    environment:
+        SA_PASSWORD: "admin1234@A"
+        ACCEPT_EULA: "Y"
+    restart: always
+    ports:
+      - "1435:1433"
+    volumes:
+      - sqlserver-locationdb:/var/opt/mssql
+
   rabbitmq:
     container_name: rabbitmq
     restart: always
@@ -91,6 +102,44 @@ services:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
 
+  xego.services.location.api:
+    container_name: xego.services.location.api
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=codevaluedb;Database=XeGoLocation;User Id=sa;Password=admin1234@A;TrustServerCertificate=True
+      - ASPNETCORE_ENVIRONMENT=Development
+      - Serilog__MinimumLevel__Default=Debug
+      - Serilog__MinimumLevel__Override__Microsoft=Debug
+      - Serilog__MinimumLevel__Override__System=Warning
+      - ElasticConfiguration__Uri=http://elasticsearch 
+      - GrpcSettings__CodeValueGrpcUrl=http://xego.services.codevalue.grpc
+    depends_on:
+      - codevaluedb
+      - elasticsearch
+    ports:
+      - "6004:80"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+  xego.services.location.grpc:
+    container_name: xego.services.location.grpc
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=codevaluedb;Database=XeGoLocation;User Id=sa;Password=admin1234@A;TrustServerCertificate=True
+      - ASPNETCORE_ENVIRONMENT=Development
+      - Serilog__MinimumLevel__Default=Debug
+      - Serilog__MinimumLevel__Override__Microsoft=Debug
+      - Serilog__MinimumLevel__Override__System=Warning
+      - ElasticConfiguration__Uri=http://elasticsearch 
+      - GrpcSettings__CodeValueGrpcUrl=http://xego.services.codevalue.grpc
+    depends_on:
+      - codevaluedb
+      - elasticsearch
+    ports:
+      - "6005:80"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
   portainer:
     container_name: portainer
     restart: always
@@ -133,5 +182,8 @@ networks:
 volumes:
   sqlserver-authdb:
   sqlserver-codevaluedb:
+  sqlserver-locationdb:
   portainer_data:  
   elasticsearch-data:
+
+

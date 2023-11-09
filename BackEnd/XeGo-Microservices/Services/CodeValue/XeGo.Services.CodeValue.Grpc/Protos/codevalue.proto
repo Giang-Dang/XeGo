@@ -6,12 +6,20 @@ import "google/protobuf/wrappers.proto";
 
 service CodeValueProtoService {
 	rpc GetByCodeName (GetByCodeNameRequest) returns (Response);
+	rpc GetValue2 (GetValue2Request) returns (Response);
 }
 
 message GetByCodeNameRequest {
 	string codeName = 1;
 	google.protobuf.BoolValue isActive = 2;
 	google.protobuf.BoolValue isEffective = 3;
+}
+
+message GetValue2Request {
+	string codeName = 1;
+	string value1 = 2;
+	google.protobuf.BoolValue isActive = 3;
+	google.protobuf.BoolValue isEffective = 4;
 }
 
 message Response {

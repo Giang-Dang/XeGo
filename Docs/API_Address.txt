@@ -1,4 +1,6 @@
 API                 			Docker_Https_Port	Docker_Http_Port	Docker_DbName		Docker_DbPort
 Xego.Services.Auth.API        		7001:443		6001:80			authdb			1433
-Xego.Services.Codevalue.API		7002:444		6002:81			codevaluedb		1434
-
+Xego.Services.Codevalue.API		7002:443		6002:80			codevaluedb		1434
+Xego.Services.Codevalue.Grpc					6003:80			codevaluedb		1434
+Xego.Services.Location.API		7002:443		6004:80			codevaluedb		1434
+Xego.Services.Location.Grpc					6005:80			codevaluedb		1434

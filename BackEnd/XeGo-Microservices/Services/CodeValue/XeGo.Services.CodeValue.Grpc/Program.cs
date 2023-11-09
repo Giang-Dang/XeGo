@@ -1,7 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+using Serilog;
+using System.Reflection;
 using XeGo.Services.CodeValue.Grpc.Data;
 using XeGo.Services.CodeValue.Grpc.Mapping;
 using XeGo.Services.CodeValue.Grpc.Services;
+using XeGo.Shared.Lib.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +21,11 @@ builder.Services.AddAutoMapper(
     typeof(CodeValueProfile),
     typeof(CodeMetaProfile)
 );
+
+// Add logging service
+LoggingHelpers loggingHelpers = new();
+loggingHelpers.ConfigureLogging(Assembly.GetExecutingAssembly().GetName().Name);
+builder.Host.UseSerilog();
 
 builder.Services.AddGrpc();
 

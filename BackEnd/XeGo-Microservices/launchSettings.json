@@ -6,7 +6,9 @@
       "serviceActions": {
         "xego.services.auth.authapi": "StartDebugging",
         "xego.services.codevalue.api": "StartDebugging",
-        "xego.services.codevalue.grpc": "StartDebugging"
+        "xego.services.codevalue.grpc": "StartDebugging",
+        "xego.services.location.api": "StartDebugging",
+        "xego.services.location.grpc": "StartDebugging"
       }
     }
   }

@@ -22,5 +22,18 @@ namespace XeGo.Shared.GrpcConsumer.Services
 
             return await _service.GetByCodeNameAsync(request);
         }
+
+        public async Task<Response> GetValue2(string codeName, string value1, bool? isActive, bool? isEffective)
+        {
+            var request = new GetValue2Request
+            {
+                CodeName = codeName,
+                Value1 = value1,
+                IsActive = isActive,
+                IsEffective = isEffective,
+            };
+
+            return _service.GetValue2(request);
+        }
     }
 }

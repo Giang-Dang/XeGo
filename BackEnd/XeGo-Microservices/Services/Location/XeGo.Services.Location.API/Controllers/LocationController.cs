@@ -5,6 +5,8 @@ using XeGo.Services.Location.API.Data;
 using XeGo.Services.Location.API.Entities;
 using XeGo.Services.Location.API.Models.Dto;
 using XeGo.Services.Location.API.Services.IServices;
+using XeGo.Shared.GrpcConsumer.Services;
+using XeGo.Shared.Lib.Constants;
 using XeGo.Shared.Lib.Models;
 
 namespace XeGo.Services.Location.API.Controllers
@@ -17,14 +19,16 @@ namespace XeGo.Services.Location.API.Controllers
         private readonly IMapper _mapper;
         private readonly ILogger<LocationController> _logger;
         private readonly IGeoHashService _geoHashService;
+        private readonly CodeValueGrpcService _codeValueGrpcService;
         private ResponseDto ResponseDto { get; set; }
 
-        public LocationController(AppDbContext dbContext, IMapper mapper, ILogger<LocationController> logger, IGeoHashService geoHashService)
+        public LocationController(AppDbContext dbContext, IMapper mapper, ILogger<LocationController> logger, IGeoHashService geoHashService, CodeValueGrpcService codeValueGrpcService)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _geoHashService = geoHashService;
+            _codeValueGrpcService = codeValueGrpcService;
             ResponseDto = new();
         }
 
@@ -69,7 +73,9 @@ namespace XeGo.Services.Location.API.Controllers
                     return ResponseDto;
                 }
 
-                var geoHash = _geoHashService.Geohash(requestDto.Latitude, requestDto.Longitude, 500.0);
+                //double geoSquareSideMeters = 500.0;
+                double geoSquareSideMeters = await GetGeoSquareSideMeters();
+                var geoHash = _geoHashService.Geohash(requestDto.Latitude, requestDto.Longitude, geoSquareSideMeters);
                 var userLocationRes =
                     await _dbContext.UserLocations.FirstOrDefaultAsync(e => e.UserId == requestDto.UserId);
 
@@ -98,6 +104,10 @@ namespace XeGo.Services.Location.API.Controllers
                 userLocationRes.Latitude = requestDto.Latitude;
                 userLocationRes.Longitude = requestDto.Longitude;
 
+                ResponseDto.Message = "Location updated";
+                ResponseDto.IsSuccess = true;
+                ResponseDto.Data = null;
+
                 _dbContext.UserLocations.Update(userLocationRes);
                 await _dbContext.SaveChangesAsync();
 
@@ -113,20 +123,25 @@ namespace XeGo.Services.Location.API.Controllers
             return ResponseDto;
         }
 
-        [HttpPost("/nearby-drivers")]
-        public async Task<List<string>> FindNearbyDrivers([FromBody] UserLocationRequestDto requestDto)
+        #region Private Methods
+
+        private async Task<double> GetGeoSquareSideMeters()
         {
-            var neighborsGeohash = _geoHashService.GetNeighbors(requestDto.Latitude, requestDto.Longitude, 500, 1000);
+            var response = await _codeValueGrpcService
+                .GetValue2(GeohashConstants.GeohashName, GeohashConstants.SquareSideLengthInMetersName, null, null);
 
-            var usersList = new List<string>();
-            foreach (var geohash in neighborsGeohash)
-            {
-                var users = await _dbContext.UserLocations.AsNoTracking().Where(u => u.Geohash == geohash).Select(u => u.UserId).ToListAsync();
-                usersList.AddRange(users);
-            }
-
-            return usersList;
+            return Convert.ToDouble(response.Data);
         }
+
+        private async Task<double> GetRadiusInMeters()
+        {
+            var response = await _codeValueGrpcService
+                .GetValue2(GeohashConstants.GeohashName, GeohashConstants.RadiusInMetersName, null, null);
+
+            return Convert.ToDouble(response.Data);
+        }
+
+        #endregion
 
     }
 }
