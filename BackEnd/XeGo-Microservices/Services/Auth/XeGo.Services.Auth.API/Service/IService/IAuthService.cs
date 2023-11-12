@@ -7,5 +7,6 @@ namespace XeGo.Services.Auth.API.Service.IService
         Task<string> Register(RegistrationRequestDto registrationRequestDto);
         Task<LoginResponseDto> Login(LoginRequestDto loginRequestDto);
         Task<bool> AssignRole(string email, string roleName);
+        bool CreateRole(CreateRoleRequestDto requestDto);
     }
 }

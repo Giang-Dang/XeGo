@@ -1,14 +1,17 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using XeGo.Shared.Lib.Entities;
 
 namespace XeGo.Services.CodeValue.API.Models.Dto
 {
     public class CodeMetaDataDto : BaseEntity
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
         [Required]
         public string Name { get; set; } = string.Empty!;
-        public string? ShortDesc { get; set; }
-        public string? LongDesc { get; set; }
+        public string? Description { get; set; }
         public string? Value1Name { get; set; }
         public string? Value1Type { get; set; }
         public string? Value2Name { get; set; }

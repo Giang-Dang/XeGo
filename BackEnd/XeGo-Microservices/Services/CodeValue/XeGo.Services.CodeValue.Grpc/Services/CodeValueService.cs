@@ -67,7 +67,7 @@ namespace XeGo.Services.CodeValue.Grpc.Services
             catch (Exception e)
             {
                 Response.IsSuccess = false;
-                Response.Data = null;
+                Response.Data = "";
                 Response.Message = $"Internal Server Error: {e.Message}";
 
                 _logger.LogError($"Internal Server Error: {e.Message}");
@@ -90,7 +90,7 @@ namespace XeGo.Services.CodeValue.Grpc.Services
             catch (Exception e)
             {
                 Response.IsSuccess = false;
-                Response.Data = null;
+                Response.Data = "";
                 Response.Message = $"Internal Server Error: {e.Message}";
 
                 _logger.LogError($"Internal Server Error: {e.Message}");
@@ -106,7 +106,7 @@ namespace XeGo.Services.CodeValue.Grpc.Services
                 return null;
             }
 
-            List<object> results = new();
+            List<object?>? results = new();
             try
             {
                 if (codeValue.Value1 != null && codeMeta is { Value1Name: not null, Value1Type: not null })

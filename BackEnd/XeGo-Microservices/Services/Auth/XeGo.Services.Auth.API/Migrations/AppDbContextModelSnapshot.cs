@@ -161,10 +161,6 @@ namespace XeGo.Services.Auth.API.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -229,11 +225,11 @@ namespace XeGo.Services.Auth.API.Migrations
 
             modelBuilder.Entity("XeGo.Services.Auth.API.Entities.Function", b =>
                 {
-                    b.Property<int>("RowId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RowId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -253,18 +249,18 @@ namespace XeGo.Services.Auth.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("RowId");
+                    b.HasKey("Id");
 
                     b.ToTable("Functions");
                 });
 
             modelBuilder.Entity("XeGo.Services.Auth.API.Entities.RoleFunction", b =>
                 {
-                    b.Property<int>("RowId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RowId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -287,7 +283,7 @@ namespace XeGo.Services.Auth.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("RowId");
+                    b.HasKey("Id");
 
                     b.HasIndex("FunctionId");
 

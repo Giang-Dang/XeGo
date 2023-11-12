@@ -1,13 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace XeGo.Shared.Lib.Entities
+﻿namespace XeGo.Shared.Lib.Entities
 {
     public abstract class BaseEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int RowId { get; set; }
         public string CreatedBy { get; set; } = string.Empty!;
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
         public string LastModifiedBy { get; set; } = string.Empty!;

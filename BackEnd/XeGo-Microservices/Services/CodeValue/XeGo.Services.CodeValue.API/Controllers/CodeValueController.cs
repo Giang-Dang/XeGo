@@ -11,7 +11,7 @@ using XeGo.Shared.Lib.Models;
 namespace XeGo.Services.CodeValue.API.Controllers
 {
     [ApiController]
-    [Route("api/v1/code-values")]
+    [Route("api/code-values")]
     public class CodeValueController
     {
         private readonly AppDbContext _dbContext;
@@ -27,7 +27,7 @@ namespace XeGo.Services.CodeValue.API.Controllers
             ResponseDto = new();
         }
 
-        [HttpGet("by-code-name")]
+        [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

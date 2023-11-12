@@ -13,16 +13,20 @@ namespace XeGo.Shared.Lib.Repository
             this._dbSet = _db.Set<T>();
         }
 
-        public async Task CreateAsync(T? entity)
+        public async Task<T?> CreateAsync(T? entity)
         {
-            await _dbSet.AddAsync(entity);
+            _dbSet.Add(entity);
             await SaveAsync();
+            return entity;
         }
-        public async Task UpdateAsync(T? entity)
+
+        public async Task<T?> UpdateAsync(T? entity)
         {
             _dbSet.Update(entity);
             await SaveAsync();
+            return entity;
         }
+
 
         public async Task<T?> GetAsync(Expression<Func<T, bool>>? filter = null, bool tracked = true, string? includeProperties = null)
         {
@@ -72,6 +76,15 @@ namespace XeGo.Shared.Lib.Repository
                 }
             }
             return await query.ToListAsync();
+        }
+
+        public async Task<bool> AnyAsync(Expression<Func<T?, bool>>? predicate = null)
+        {
+            if (predicate != null)
+            {
+                return await _dbSet.AnyAsync(predicate);
+            }
+            return await _dbSet.AnyAsync();
         }
 
         public async Task RemoveAsync(T? entity)

@@ -7,8 +7,9 @@ namespace XeGo.Shared.Lib.Repository
         Task<List<T?>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeProperties = null,
             int pageSize = 0, int pageNumber = 1);
         Task<T?> GetAsync(Expression<Func<T, bool>>? filter = null, bool tracked = true, string? includeProperties = null);
-        Task CreateAsync(T? entity);
-        Task UpdateAsync(T? entity);
+        Task<T?> CreateAsync(T? entity);
+        Task<T?> UpdateAsync(T? entity);
+        Task<bool> AnyAsync(Expression<Func<T?, bool>>? predicate = null);
         Task RemoveAsync(T? entity);
         Task SaveAsync();
     }

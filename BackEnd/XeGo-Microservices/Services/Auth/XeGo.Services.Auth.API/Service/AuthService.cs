@@ -40,6 +40,22 @@ namespace XeGo.Services.Auth.API.Service
             return false;
         }
 
+        public bool CreateRole(CreateRoleRequestDto requestDto)
+        {
+            if (string.IsNullOrWhiteSpace(requestDto.RoleName))
+            {
+                return false;
+            }
+            if (_roleManager.RoleExistsAsync(requestDto.RoleName).GetAwaiter().GetResult())
+            {
+                return false;
+
+            }
+
+            _roleManager.CreateAsync(new IdentityRole(requestDto.RoleName)).GetAwaiter().GetResult();
+            return true;
+        }
+
         public async Task<LoginResponseDto> Login(LoginRequestDto loginRequestDto)
         {
             var user = _db.ApplicationUsers.FirstOrDefault(u => u.UserName!.ToLower() == loginRequestDto.UserName.ToLower());
@@ -65,7 +81,6 @@ namespace XeGo.Services.Auth.API.Service
             {
                 Email = user.Email,
                 Id = user.Id,
-                Name = user.Name,
                 PhoneNumber = user.PhoneNumber
             };
 
@@ -87,7 +102,6 @@ namespace XeGo.Services.Auth.API.Service
                 UserName = registrationRequestDto.Email,
                 Email = registrationRequestDto.Email,
                 NormalizedEmail = registrationRequestDto.Email.ToUpper(),
-                Name = registrationRequestDto.Name,
                 PhoneNumber = registrationRequestDto.PhoneNumber,
             };
 
@@ -102,7 +116,6 @@ namespace XeGo.Services.Auth.API.Service
                     {
                         Email = userToReturn.Email,
                         Id = userToReturn.Id,
-                        Name = userToReturn.Name,
                         PhoneNumber = userToReturn.PhoneNumber
                     };
 

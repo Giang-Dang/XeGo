@@ -8,8 +8,8 @@ namespace XeGo.Services.Location.API.Mapping
     {
         public UserLocationProfile()
         {
-            CreateMap<UserLocation, UserLocationRequestDto>().ReverseMap();
-            CreateMap<UserLocation, UserLocationResponseDto>().ReverseMap();
+            CreateMap<DriverLocation, RiderLocationRequestDto>().ReverseMap();
+            CreateMap<DriverLocation, DriverLocationResponseDto>().ReverseMap();
 
         }
     }

@@ -24,11 +24,11 @@ namespace XeGo.Services.CodeValue.API.Migrations
 
             modelBuilder.Entity("XeGo.Services.CodeValue.API.Entities.CodeMetaData", b =>
                 {
-                    b.Property<int>("RowId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RowId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -37,6 +37,9 @@ namespace XeGo.Services.CodeValue.API.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("LastModifiedBy")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -44,15 +47,9 @@ namespace XeGo.Services.CodeValue.API.Migrations
                     b.Property<DateTime>("LastModifiedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("LongDesc")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ShortDesc")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Value10Name")
                         .HasColumnType("nvarchar(max)");
@@ -114,7 +111,7 @@ namespace XeGo.Services.CodeValue.API.Migrations
                     b.Property<string>("Value9Type")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("RowId");
+                    b.HasKey("Id");
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -124,11 +121,11 @@ namespace XeGo.Services.CodeValue.API.Migrations
 
             modelBuilder.Entity("XeGo.Services.CodeValue.API.Entities.CodeValue", b =>
                 {
-                    b.Property<int>("RowId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RowId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -153,20 +150,15 @@ namespace XeGo.Services.CodeValue.API.Migrations
                     b.Property<DateTime>("LastModifiedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("LongDesc")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ShortDesc")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("SortOrder")
                         .HasColumnType("int");
 
                     b.Property<string>("Value1")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -206,9 +198,11 @@ namespace XeGo.Services.CodeValue.API.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.HasKey("RowId");
+                    b.HasKey("Id");
 
                     b.HasIndex("Name");
+
+                    b.HasIndex("Value1");
 
                     b.ToTable("CodeValues");
                 });

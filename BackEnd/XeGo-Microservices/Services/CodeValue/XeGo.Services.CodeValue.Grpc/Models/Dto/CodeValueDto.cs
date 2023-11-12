@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using XeGo.Shared.Lib.Entities;
 
 namespace XeGo.Services.CodeValue.Grpc.Models.Dto
@@ -7,10 +8,11 @@ namespace XeGo.Services.CodeValue.Grpc.Models.Dto
     [Index(nameof(Name), IsUnique = false)]
     public class CodeValueDto : BaseEntity
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
         [Required]
         public string Name { get; set; } = string.Empty!;
-        public string? ShortDesc { get; set; }
-        public string? LongDesc { get; set; }
         public int? SortOrder { get; set; } = null;
         public DateTime EffectiveStartDate { get; set; } = DateTime.UtcNow;
         public DateTime EffectiveEndDate { get; set; } = DateTime.MaxValue;

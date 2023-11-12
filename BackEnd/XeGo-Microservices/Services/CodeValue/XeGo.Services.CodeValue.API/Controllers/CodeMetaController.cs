@@ -9,7 +9,7 @@ using XeGo.Shared.Lib.Models;
 
 namespace XeGo.Services.CodeValue.API.Controllers
 {
-    [Route("api/v1/code-meta")]
+    [Route("api/code-meta")]
     [ApiController]
     public class CodeMetaController : ControllerBase
     {
@@ -27,7 +27,7 @@ namespace XeGo.Services.CodeValue.API.Controllers
         }
 
 
-        [HttpGet("by-code-name")]
+        [HttpGet]
         public async Task<ResponseDto> GetByCodeName(string codeName)
         {
             string? requestId = RequestIdHelpers.GetRequestId(HttpContext);

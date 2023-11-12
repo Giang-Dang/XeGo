@@ -1,8 +1,8 @@
 ﻿using Grpc.Core;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using XeGo.Services.Location.API.Data;
 using XeGo.Services.Location.API.Services.IServices;
+using XeGo.Services.Location.Grpc.Data;
 using XeGo.Services.Location.Grpc.Protos;
 using XeGo.Shared.GrpcConsumer.Services;
 using XeGo.Shared.Lib.Constants;
@@ -29,12 +29,12 @@ namespace XeGo.Services.Location.Grpc.Services
         {
             double geoSquareSideMeters = await GetGeoSquareSideMeters();
             double radiusInMeters = await GetRadiusInMeters();
-            var neighborsGeohash = _geoHashService.GetNeighbors(request.Latitude, request.Longitude, geoSquareSideMeters, radiusInMeters);
+            var neighborsGeohash = _geoHashService.GetNeighbors(request.Latitude, request.Longitude, geoSquareSideMeters, radiusInMeters * request.ExpandTimes);
 
             var usersList = new List<string>();
             foreach (var geohash in neighborsGeohash)
             {
-                var users = await _dbContext.UserLocations.AsNoTracking().Where(u => u.Geohash == geohash).Select(u => u.UserId).ToListAsync();
+                var users = await _dbContext.DriverLocations.AsNoTracking().Where(u => u.Geohash == geohash).Select(u => u.UserId).ToListAsync();
                 usersList.AddRange(users);
             }
 

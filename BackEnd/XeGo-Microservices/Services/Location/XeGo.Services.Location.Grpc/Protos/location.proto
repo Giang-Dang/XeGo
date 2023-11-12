@@ -9,6 +9,7 @@ service LocationProtoService {
 message FindNearbyDriversRequest {
 	double Latitude = 1;
 	double Longitude = 2;
+	double ExpandTimes = 3;
 }
 
 message Response {

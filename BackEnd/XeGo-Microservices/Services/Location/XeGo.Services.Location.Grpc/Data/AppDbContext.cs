@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using XeGo.Services.Location.API.Entities;
+using XeGo.Services.Location.Grpc.Entities;
 
-namespace XeGo.Services.Location.API.Data
+namespace XeGo.Services.Location.Grpc.Data
 {
     public class AppDbContext : DbContext
     {
@@ -10,15 +10,23 @@ namespace XeGo.Services.Location.API.Data
 
         }
 
-        public DbSet<UserLocation> UserLocations { get; set; }
+        public DbSet<DriverLocation> DriverLocations { get; set; }
+        public DbSet<RiderLocation> RiderLocations { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<UserLocation>()
+            modelBuilder.Entity<DriverLocation>()
                 .HasIndex(p => p.UserId);
 
-            modelBuilder.Entity<UserLocation>()
+            modelBuilder.Entity<DriverLocation>()
+                .HasIndex(p => p.Geohash);
+
+            modelBuilder.Entity<RiderLocation>()
+                .HasIndex(p => p.UserId);
+
+            modelBuilder.Entity<RiderLocation>()
                 .HasIndex(p => p.Geohash);
         }
     }

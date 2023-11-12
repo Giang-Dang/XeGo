@@ -100,5 +100,19 @@ namespace XeGo.Services.Auth.API.Controllers
             return ResponseDto;
 
         }
+
+        [HttpPost("create-role")]
+        public async Task<ResponseDto> CreateRole([FromBody] string roleName)
+        {
+            var roleCreatedSuccessfully = _authService.CreateRole(new CreateRoleRequestDto(roleName.ToUpper()));
+            if (!roleCreatedSuccessfully)
+            {
+                ResponseDto.IsSuccess = false;
+                ResponseDto.Message = "Error encountered";
+                return ResponseDto;
+            }
+            return ResponseDto;
+        }
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
@@ -17,10 +18,12 @@ namespace XeGo.Services.Auth.API.Service
     {
         private readonly JwtOptions _jwtOptions;
         private readonly CodeValueGrpcService _codeValueGrpcService;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public JwtTokenGenerator(IOptions<JwtOptions> jwtOptions, CodeValueGrpcService codeValueGrpcService)
+        public JwtTokenGenerator(IOptions<JwtOptions> jwtOptions, CodeValueGrpcService codeValueGrpcService, UserManager<ApplicationUser> userManager)
         {
             _codeValueGrpcService = codeValueGrpcService ?? throw new ArgumentNullException(nameof(codeValueGrpcService));
+            _userManager = userManager;
             _jwtOptions = jwtOptions.Value ?? throw new ArgumentNullException(nameof(jwtOptions));
         }
 
@@ -29,6 +32,7 @@ namespace XeGo.Services.Auth.API.Service
             var tokenHandler = new JwtSecurityTokenHandler();
 
             var key = Encoding.ASCII.GetBytes(_jwtOptions.Secret);
+            var userRoles = await _userManager.GetRolesAsync(applicationUser);
 
             var claimList = new List<Claim>
             {
@@ -37,6 +41,10 @@ namespace XeGo.Services.Auth.API.Service
                 new Claim(JwtRegisteredClaimNames.Name, applicationUser.UserName ?? ""),
                 new Claim("loginApp", loginApp)
             };
+            foreach (var role in userRoles)
+            {
+                claimList.Add(new Claim(ClaimTypes.Role, role));
+            }
 
             int daysToExpire = await GetRefreshTokenDaysToExpire();
 
