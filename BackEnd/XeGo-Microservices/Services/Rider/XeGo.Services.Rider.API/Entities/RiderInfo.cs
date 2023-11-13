@@ -1,10 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using XeGo.Shared.Lib.Entities;
 
-namespace XeGo.Services.Driver.API.Models
+namespace XeGo.Services.Rider.API.Entities
 {
-    public class CreateDriverInfoRequestDto
+    [Index(nameof(UserId), IsUnique = true)]
+    [Index(nameof(Email), IsUnique = true)]
+    [Index(nameof(PhoneNumber), IsUnique = true)]
+    public class RiderInfo : BaseEntity
     {
-        [Required] public string UserId { get; set; } = string.Empty!;
+        [Key] public string UserId { get; set; } = string.Empty!;
         [Required] public string FirstName { get; set; } = string.Empty!;
         [Required] public string LastName { get; set; } = string.Empty!;
         [Required] public string Email { get; set; } = string.Empty!;
@@ -12,6 +17,5 @@ namespace XeGo.Services.Driver.API.Models
         [Required] public string Address { get; set; } = string.Empty!;
         [Required] public string District { get; set; } = string.Empty!;
         [Required] public string City { get; set; } = string.Empty!;
-        public string? ModifiedBy { get; set; }
     }
 }

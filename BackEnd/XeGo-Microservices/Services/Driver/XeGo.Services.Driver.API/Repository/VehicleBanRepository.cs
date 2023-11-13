@@ -5,11 +5,11 @@ using XeGo.Shared.Lib.Repository;
 
 namespace XeGo.Services.Driver.API.Repository
 {
-    public class BanRepository : Repository<DriverBan>, IBanRepository
+    public class VehicleBanRepository : Repository<VehicleBan>, IVehicleBanRepository
     {
         private readonly AppDbContext _dbContext;
 
-        public BanRepository(AppDbContext db) : base(db)
+        public VehicleBanRepository(AppDbContext db) : base(db)
         {
             _dbContext = db;
         }

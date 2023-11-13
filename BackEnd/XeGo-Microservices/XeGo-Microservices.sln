@@ -59,6 +59,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BatchJobs", "BatchJobs", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XeGo.Services.Location.Grpc", "Services\Location\XeGo.Services.Location.Grpc\XeGo.Services.Location.Grpc.csproj", "{552B93E9-6DCA-492C-AB9B-78D712C2F295}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Review", "Review", "{FF357E99-FBCF-4065-AE6C-7BD11AB13EC9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -147,6 +149,7 @@ Global
 		{C33C7CA1-9561-47FC-9971-54A1B50B0E89} = {FFE40D9A-17C0-4B7E-8D13-56DD531CA158}
 		{FA072230-4844-4CB8-B2FA-6C5DD5B24DDC} = {0222190D-254D-4891-AC10-4023DC400561}
 		{552B93E9-6DCA-492C-AB9B-78D712C2F295} = {88A38896-C1E4-4FE8-BD4B-0A55F28DFC9B}
+		{FF357E99-FBCF-4065-AE6C-7BD11AB13EC9} = {0222190D-254D-4891-AC10-4023DC400561}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {837CBB2D-FE62-4B52-A8A4-D37FE9935AA9}

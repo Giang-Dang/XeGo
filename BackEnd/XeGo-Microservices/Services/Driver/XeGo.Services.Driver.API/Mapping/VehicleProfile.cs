@@ -1,17 +1,18 @@
 ﻿using AutoMapper;
+using XeGo.Services.Driver.API.Entities;
 using XeGo.Services.Driver.API.Models;
 
 namespace XeGo.Services.Driver.API.Mapping
 {
-    public class DriverInfoProfiles : Profile
+    public class VehicleProfile : Profile
     {
-        public DriverInfoProfiles()
+        public VehicleProfile()
         {
-            CreateMap<CreateDriverInfoRequestDto, DriveInfo>()
+            CreateMap<CreateVehicleRequestDto, Vehicle>()
                 .ReverseMap()
                 .ForAllMembers(opt =>
                     opt.Condition((src, dest, srcMember) => srcMember != null));
-            CreateMap<EditDriverInfoRequestDto, DriveInfo>()
+            CreateMap<EditVehicleRequestDto, Vehicle>()
                 .ReverseMap()
                 .ForAllMembers(opt =>
                     opt.Condition((src, dest, srcMember) => srcMember != null));

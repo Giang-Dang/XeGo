@@ -1,8 +1,8 @@
-﻿namespace XeGo.Services.Driver.API.Models
+﻿namespace XeGo.Services.Rider.API.Models
 {
-    public class GetDriverInfoRequestDto
+    public class GetRiderInfoRequestDto
     {
-        public string? UserId { get; set; }
+        public string? RiderId { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? Email { get; set; }
@@ -17,7 +17,8 @@
         public DateTime? LastModifiedStartDate { get; set; }
         public DateTime? LastModifiedEndDate { get; set; }
         public string? SearchString { get; set; }
-        public int PageNumber { get; set; } = 0;
         public int PageSize { get; set; } = 0;
+        public int PageNumber { get; set; } = 0;
     }
+
 }

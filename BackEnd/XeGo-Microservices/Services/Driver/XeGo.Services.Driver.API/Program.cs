@@ -1,6 +1,7 @@
 using Serilog;
 using System.Reflection;
 using XeGo.Services.Driver.API.Data;
+using XeGo.Services.Driver.API.Mapping;
 using XeGo.Services.Driver.API.Repository;
 using XeGo.Services.Driver.API.Repository.IRepository;
 using XeGo.Shared.Lib.Helpers;
@@ -15,10 +16,17 @@ builder.Services.AddControllers();
 
 builder.Services.ConfigureAuthentication(builder.Configuration);
 
-builder.Services.AddScoped<IBanRepository, BanRepository>();
+builder.Services.AddScoped<IVehicleBanRepository, VehicleBanRepository>();
 builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
 builder.Services.AddScoped<IDriverInfoRepository, DriverInfoRepository>();
 builder.Services.AddScoped<IDriverBanRepository, DriverBanRepository>();
+
+builder.Services.AddAutoMapper(
+    typeof(DriverInfoProfiles),
+    typeof(DriverBanProfile),
+    typeof(VehicleProfile),
+    typeof(VehicleBanProfile)
+);
 
 // Add logging service
 LoggingHelpers loggingHelpers = new();

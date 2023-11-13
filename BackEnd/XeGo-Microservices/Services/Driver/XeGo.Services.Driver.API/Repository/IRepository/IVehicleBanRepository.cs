@@ -3,7 +3,7 @@ using XeGo.Shared.Lib.Repository;
 
 namespace XeGo.Services.Driver.API.Repository.IRepository
 {
-    public interface IBanRepository : IRepository<DriverBan>
+    public interface IVehicleBanRepository : IRepository<VehicleBan>
     {
     }
 }

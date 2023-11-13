@@ -14,5 +14,6 @@ namespace XeGo.Services.Driver.API.Entities
         [Required] public string Reason { get; set; } = string.Empty!;
         [Required] public DateTime StartTime { get; set; }
         [Required] public DateTime EndTime { get; set; }
+        [Required] public bool IsActive { get; set; } = true;
     }
 }

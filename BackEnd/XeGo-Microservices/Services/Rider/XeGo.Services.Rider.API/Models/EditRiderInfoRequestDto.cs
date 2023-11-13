@@ -1,11 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace XeGo.Services.Driver.API.Models
+namespace XeGo.Services.Rider.API.Models
 {
-    public class EditDriverInfoRequestDto
+    public class EditRiderInfoRequestDto
     {
         [Required] public string UserId { get; set; } = string.Empty!;
-
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? Email { get; set; }
@@ -15,4 +14,5 @@ namespace XeGo.Services.Driver.API.Models
         public string? City { get; set; }
         public string? ModifiedBy { get; set; }
     }
+
 }
