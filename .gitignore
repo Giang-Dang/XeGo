@@ -35,3 +35,6 @@
 /BackEnd/XeGo-Microservices/Shared/XeGo.Shared.GrpcConsumer/obj/
 /BackEnd/XeGo-Microservices/Shared/XeGo.Shared.Log.Producer/bin/
 /BackEnd/XeGo-Microservices/Shared/XeGo.Shared.Log.Producer/obj/
+FrontEnd/xego_driver/lib/settings/kSecrets.dart
+FrontEnd/xego_driver/android/app/src/main/AndroidManifest.xml
+FrontEnd/xego_driver/ios/Runner/AppDelegate.swift
