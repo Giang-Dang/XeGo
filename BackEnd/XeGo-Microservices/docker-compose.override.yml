@@ -47,7 +47,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=authdb;Database=XeGoAuthDb;User Id=sa;Password=admin1234@A;TrustServerCertificate=True
       - GrpcSettings__CodeValueGrpcUrl=http://xego.services.codevalue.grpc
-      - ApiSettings__JwtOptions__Secret=adfh@JDFDKSAF1234sdf*%$#feifkdmvcoaerDSJFAOEDFDFJffDSAFjkAjdfA485723AjdfAJfDjfAjdfdjferYGjASDJfEjfvdav
+      - ApiSettings__JwtOptions__Secret=adfh@JDFDKSAF1234sdf*%$$#feifkdmvcoaerDSJFAOEDFDFJffDSAFjkAjdfA485723AjdfAJfDjfAjdfdjferYGjASDJfEjfvdav
       - ApiSettings__JwtOptions__Issuer=xego-auth-api
       - ApiSettings__JwtOptions__Audience=xego-client
       - Serilog__MinimumLevel__Default=Debug
@@ -70,7 +70,7 @@ services:
     environment:
       - ConnectionStrings__DefaultConnection=Server=codevaluedb;Database=XeGoCodeValueDb;User Id=sa;Password=admin1234@A;TrustServerCertificate=True
       - ASPNETCORE_ENVIRONMENT=Development
-      - ApiSettings__JwtOptions__Secret=adfh@JDFDKSAF1234sdf*%$#feifkdmvcoaerDSJFAOEDFDFJffDSAFjkAjdfA485723AjdfAJfDjfAjdfdjferYGjASDJfEjfvdav
+      - ApiSettings__JwtOptions__Secret=adfh@JDFDKSAF1234sdf*%$$#feifkdmvcoaerDSJFAOEDFDFJffDSAFjkAjdfA485723AjdfAJfDjfAjdfdjferYGjASDJfEjfvdav
       - ApiSettings__JwtOptions__Issuer=xego-auth-api
       - ApiSettings__JwtOptions__Audience=xego-client
       - Serilog__MinimumLevel__Default=Debug
@@ -113,7 +113,7 @@ services:
       - Serilog__MinimumLevel__Default=Debug
       - Serilog__MinimumLevel__Override__Microsoft=Debug
       - Serilog__MinimumLevel__Override__System=Warning
-      - ApiSettings__JwtOptions__Secret=adfh@JDFDKSAF1234sdf*%$#feifkdmvcoaerDSJFAOEDFDFJffDSAFjkAjdfA485723AjdfAJfDjfAjdfdjferYGjASDJfEjfvdav
+      - ApiSettings__JwtOptions__Secret=adfh@JDFDKSAF1234sdf*%$$#feifkdmvcoaerDSJFAOEDFDFJffDSAFjkAjdfA485723AjdfAJfDjfAjdfdjferYGjASDJfEjfvdav
       - ApiSettings__JwtOptions__Issuer=xego-auth-api
       - ApiSettings__JwtOptions__Audience=xego-client
       - ElasticConfiguration__Uri=http://elasticsearch 
