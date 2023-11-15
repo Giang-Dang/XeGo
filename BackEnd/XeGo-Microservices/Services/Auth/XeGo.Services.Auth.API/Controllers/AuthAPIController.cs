@@ -20,7 +20,7 @@ namespace XeGo.Services.Auth.API.Controllers
             ResponseDto = new();
         }
 
-        [HttpPost("register")]
+        [HttpPost("user/register")]
         public async Task<ResponseDto> Register([FromBody] RegistrationRequestDto model)
         {
             _logger.LogInformation("{class}>{function}: Received", nameof(AuthApiController), nameof(Register));
@@ -52,7 +52,7 @@ namespace XeGo.Services.Auth.API.Controllers
             return ResponseDto;
         }
 
-        [HttpPost("login")]
+        [HttpPost("user/login")]
         public async Task<ResponseDto> Login([FromBody] LoginRequestDto model)
         {
             _logger.LogInformation("{class}>{function}: Received", nameof(AuthApiController), nameof(Register));
@@ -86,10 +86,10 @@ namespace XeGo.Services.Auth.API.Controllers
 
         }
 
-        [HttpPost("assign-role")]
-        public async Task<ResponseDto> AssignRole([FromBody] RegistrationRequestDto model)
+        [HttpPost("user/assign-role")]
+        public async Task<ResponseDto> AssignUserToRole([FromBody] AssignRoleRequestDto model)
         {
-            var assignRoleSuccessful = await _authService.AssignRole(model.Email, model.Role.ToUpper());
+            var assignRoleSuccessful = await _authService.AssignRoleAsync(model.UserId, model.RoleName.ToUpper());
             if (!assignRoleSuccessful)
             {
                 ResponseDto.IsSuccess = false;
@@ -101,11 +101,38 @@ namespace XeGo.Services.Auth.API.Controllers
 
         }
 
+        [HttpPost("user/remove-role")]
+        public async Task<ResponseDto> RemoveUserFromRole([FromBody] RemoveUserFromRoleRequestDto model)
+        {
+            var removeRoleSuccessful = await _authService.RemoveRoleAsync(model.UserId, model.RoleName.ToUpper());
+            if (!removeRoleSuccessful)
+            {
+                ResponseDto.IsSuccess = false;
+                ResponseDto.Message = "Error encountered";
+                return ResponseDto;
+            }
+            return ResponseDto;
+        }
+
+
         [HttpPost("create-role")]
         public async Task<ResponseDto> CreateRole([FromBody] string roleName)
         {
-            var roleCreatedSuccessfully = _authService.CreateRole(new CreateRoleRequestDto(roleName.ToUpper()));
+            var roleCreatedSuccessfully = _authService.CreateRole(roleName.ToUpper());
             if (!roleCreatedSuccessfully)
+            {
+                ResponseDto.IsSuccess = false;
+                ResponseDto.Message = "Error encountered";
+                return ResponseDto;
+            }
+            return ResponseDto;
+        }
+
+        [HttpPost("remove-role")]
+        public async Task<ResponseDto> RemoveRole([FromBody] string roleName)
+        {
+            var roleRemovedSuccessfully = _authService.RemoveRole(roleName.ToUpper());
+            if (!roleRemovedSuccessfully)
             {
                 ResponseDto.IsSuccess = false;
                 ResponseDto.Message = "Error encountered";

@@ -1,0 +1,63 @@
+{
+  "userName": "admin@gmail.com",
+  "password": "Admin@1234",
+  "fromApp": "ADMINISTRATOR_APP"
+}
+
+{
+  "phoneNumber": "4285749353",
+  "password": "Admin@1234",
+  "fromApp": "DRIVER"
+}
+
+{
+  "email": "admin@gmail.com",
+  "name": "Test Admin",
+  "phoneNumber": "4285749353",
+  "password": "Admin@1234",
+  "role": "Admin"
+}
+
+{
+  "userId": "string",
+  "latitude": 37.421542,
+  "longitude": -122.085589,
+  "isDriver": true
+}
+
+{
+  "email": "driver1@gmail.com",
+  "userName": "Driver1234",
+  "phoneNumber": "0123456789",
+  "password": "Driver1234@",
+  "role": "DRIVER"
+}
+
+{
+  "email": "driver2@gmail.com",
+  "userName": "Driver12342",
+  "phoneNumber": "01234567892",
+  "password": "Driver12342@",
+  "role": "DRIVER"
+}
+
+{
+  "email": "driver3@gmail.com",
+  "userName": "Driver12343",
+  "phoneNumber": "01234567893",
+  "password": "Driver12343@",
+  "role": "DRIVER"
+}
+{
+  "userId": "string",
+  "firstName": "string",
+  "lastName": "string",
+  "email": "string",
+  "phoneNumber": "string",
+  "address": "string",
+  "district": "string",
+  "city": "string",
+  "modifiedBy": "string"
+}
+Add-Migration initalDb
+Update-Database

@@ -22,15 +22,15 @@ namespace XeGo.Services.Auth.API.Service
             _jwtTokenGenerator = jwtTokenGenerator ?? throw new ArgumentNullException(nameof(jwtTokenGenerator));
         }
 
-        public async Task<bool> AssignRole(string email, string roleName)
+        public async Task<bool> AssignRoleAsync(string userId, string roleName)
         {
-            var user = _db.ApplicationUsers.FirstOrDefault(u => u.Email!.ToLower() == email.ToLower());
+            var user = _db.ApplicationUsers.FirstOrDefault(u => u.Id == userId);
 
             if (user != null)
             {
                 if (!_roleManager.RoleExistsAsync(roleName).GetAwaiter().GetResult())
                 {
-                    _roleManager.CreateAsync(new IdentityRole(roleName)).GetAwaiter().GetResult();
+                    return false;
                 }
 
                 await _userManager.AddToRoleAsync(user, roleName);
@@ -40,25 +40,59 @@ namespace XeGo.Services.Auth.API.Service
             return false;
         }
 
-        public bool CreateRole(CreateRoleRequestDto requestDto)
+        public async Task<bool> RemoveRoleAsync(string userId, string roleName)
         {
-            if (string.IsNullOrWhiteSpace(requestDto.RoleName))
+            var user = _db.ApplicationUsers.FirstOrDefault(u => u.Id == userId);
+
+            if (user != null)
+            {
+                if (!_roleManager.RoleExistsAsync(roleName).GetAwaiter().GetResult())
+                {
+                    return false;
+                }
+
+                await _userManager.RemoveFromRoleAsync(user, roleName);
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool CreateRole(string roleName)
+        {
+            if (string.IsNullOrWhiteSpace(roleName))
             {
                 return false;
             }
-            if (_roleManager.RoleExistsAsync(requestDto.RoleName).GetAwaiter().GetResult())
+            if (_roleManager.RoleExistsAsync(roleName).GetAwaiter().GetResult())
             {
                 return false;
 
             }
 
-            _roleManager.CreateAsync(new IdentityRole(requestDto.RoleName)).GetAwaiter().GetResult();
+            _roleManager.CreateAsync(new IdentityRole(roleName)).GetAwaiter().GetResult();
+            return true;
+        }
+
+        public bool RemoveRole(string roleName)
+        {
+            if (string.IsNullOrWhiteSpace(roleName))
+            {
+                return false;
+            }
+            if (_roleManager.RoleExistsAsync(roleName).GetAwaiter().GetResult())
+            {
+                return false;
+
+            }
+
+            _roleManager.DeleteAsync(new IdentityRole(roleName)).GetAwaiter().GetResult();
             return true;
         }
 
         public async Task<LoginResponseDto> Login(LoginRequestDto loginRequestDto)
         {
-            var user = _db.ApplicationUsers.FirstOrDefault(u => u.UserName!.ToLower() == loginRequestDto.UserName.ToLower());
+            var user = _db.ApplicationUsers.FirstOrDefault(u => u.PhoneNumber == loginRequestDto.PhoneNumber);
 
             bool isValid = await _userManager.CheckPasswordAsync(user ?? new(), loginRequestDto.Password);
 
@@ -80,8 +114,12 @@ namespace XeGo.Services.Auth.API.Service
             UserDto? userDto = new()
             {
                 Email = user.Email,
-                Id = user.Id,
-                PhoneNumber = user.PhoneNumber
+                UserId = user.Id,
+                PhoneNumber = user.PhoneNumber,
+                UserName = user.UserName,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Address = user.Address,
             };
 
             LoginResponseDto loginResponseDto = new()
@@ -99,10 +137,13 @@ namespace XeGo.Services.Auth.API.Service
         {
             ApplicationUser user = new()
             {
-                UserName = registrationRequestDto.Email,
+                UserName = registrationRequestDto.UserName,
                 Email = registrationRequestDto.Email,
                 NormalizedEmail = registrationRequestDto.Email.ToUpper(),
                 PhoneNumber = registrationRequestDto.PhoneNumber,
+                FirstName = registrationRequestDto.FirstName,
+                LastName = registrationRequestDto.LastName,
+                Address = registrationRequestDto.Address,
             };
 
             try
@@ -110,14 +151,17 @@ namespace XeGo.Services.Auth.API.Service
                 var result = await _userManager.CreateAsync(user, registrationRequestDto.Password);
                 if (result.Succeeded)
                 {
-                    var userToReturn = _db.ApplicationUsers.First(u => u.UserName == registrationRequestDto.Email);
+                    var userToReturn = _db.ApplicationUsers.First(u => u.PhoneNumber == registrationRequestDto.PhoneNumber);
 
-                    UserDto userDto = new()
-                    {
-                        Email = userToReturn.Email,
-                        Id = userToReturn.Id,
-                        PhoneNumber = userToReturn.PhoneNumber
-                    };
+                    //UserDto userDto = new()
+                    //{
+                    //    UserName = userToReturn.UserName,
+                    //    Email = userToReturn.Email,
+                    //    UserId = userToReturn.Id,
+                    //    PhoneNumber = userToReturn.PhoneNumber
+                    //};
+
+                    await AssignRoleAsync(userToReturn.Id, registrationRequestDto.Role);
 
                     return "";
                 }
