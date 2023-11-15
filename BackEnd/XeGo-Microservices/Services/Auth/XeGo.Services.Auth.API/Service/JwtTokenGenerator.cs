@@ -19,11 +19,13 @@ namespace XeGo.Services.Auth.API.Service
         private readonly JwtOptions _jwtOptions;
         private readonly CodeValueGrpcService _codeValueGrpcService;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ILogger<JwtTokenGenerator> _logger;
 
-        public JwtTokenGenerator(IOptions<JwtOptions> jwtOptions, CodeValueGrpcService codeValueGrpcService, UserManager<ApplicationUser> userManager)
+        public JwtTokenGenerator(IOptions<JwtOptions> jwtOptions, CodeValueGrpcService codeValueGrpcService, UserManager<ApplicationUser> userManager, ILogger<JwtTokenGenerator> logger)
         {
             _codeValueGrpcService = codeValueGrpcService ?? throw new ArgumentNullException(nameof(codeValueGrpcService));
             _userManager = userManager;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _jwtOptions = jwtOptions.Value ?? throw new ArgumentNullException(nameof(jwtOptions));
         }
 
@@ -96,8 +98,8 @@ namespace XeGo.Services.Auth.API.Service
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                _logger.LogError($"{nameof(JwtTokenGenerator)}>{nameof(GetRefreshTokenDaysToExpire)}: {e.Message}");
+                return 1;
             }
         }
 

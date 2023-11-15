@@ -115,7 +115,7 @@ namespace XeGo.Services.Driver.API.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"{nameof(DriverController)}>{nameof(GetAll)}: {e.Message}");
+                _logger.LogError($"{nameof(DriverController)}>{nameof(GetAllDrivers)}: {e.Message}");
                 ResponseDto.IsSuccess = false;
                 ResponseDto.Data = null;
                 ResponseDto.Message = e.Message;
@@ -151,7 +151,7 @@ namespace XeGo.Services.Driver.API.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"{nameof(DriverController)}>{nameof(Create)}: {e.Message}");
+                _logger.LogError($"{nameof(DriverController)}>{nameof(CreateDriver)}: {e.Message}");
                 ResponseDto.IsSuccess = false;
                 ResponseDto.Data = null;
                 ResponseDto.Message = e.Message;
