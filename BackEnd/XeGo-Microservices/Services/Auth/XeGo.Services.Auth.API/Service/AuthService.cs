@@ -176,6 +176,26 @@ namespace XeGo.Services.Auth.API.Service
             }
         }
 
+        public async Task<string?> RefreshToken(string refreshToken, string userId, string loginApp)
+        {
+            var user = _db.ApplicationUsers.FirstOrDefault(u => u.Id == userId);
+            if (user == null)
+            {
+                return null;
+            }
+            var existingRefreshToken =
+                await _userManager.GetAuthenticationTokenAsync(user, loginApp, TokenConstants.RefreshTokenName);
+
+            if (existingRefreshToken == null)
+            {
+                return null;
+            }
+
+            var newAccessToken = await _jwtTokenGenerator.GenerateAccessTokenAsync(user, loginApp);
+            await ReplaceAccessToken(user, newAccessToken, loginApp);
+            return newAccessToken;
+        }
+
         #region Private Methods
 
         private async Task StoreTokensToDb(ApplicationUser user, TokenDto tokens, string loginApp)
@@ -189,19 +209,22 @@ namespace XeGo.Services.Auth.API.Service
             // remove existing tokens
             await _userManager.RemoveAuthenticationTokenAsync(user, loginApp, TokenConstants.AccessTokenName);
             await _userManager.RemoveAuthenticationTokenAsync(user, loginApp, TokenConstants.RefreshTokenName);
-            await _userManager.RemoveAuthenticationTokenAsync(user, loginApp, TokenConstants.RefreshTokenExpirationName);
+        }
+
+        private async Task ReplaceAccessToken(ApplicationUser user, string newAccessToken, string loginApp)
+        {
+            await _userManager.RemoveAuthenticationTokenAsync(user, loginApp, TokenConstants.AccessTokenName);
+            await _userManager.SetAuthenticationTokenAsync(user, loginApp, TokenConstants.AccessTokenName,
+                newAccessToken);
         }
 
         private async Task AddNewTokens(ApplicationUser user, TokenDto tokens, string loginApp)
         {
             // add new tokens
-            var expirationDate = DateTime.UtcNow.AddDays(7);
             await _userManager.SetAuthenticationTokenAsync(user, loginApp, TokenConstants.AccessTokenName,
                 tokens.AccessToken);
             await _userManager.SetAuthenticationTokenAsync(user, loginApp, TokenConstants.RefreshTokenName,
-                tokens.RefreshToken);
-            await _userManager.SetAuthenticationTokenAsync(user, loginApp, TokenConstants.RefreshTokenExpirationName,
-                expirationDate.ToString("O"));
+                tokens.RefreshToken); ;
         }
 
         #endregion

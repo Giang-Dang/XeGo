@@ -6,6 +6,7 @@ namespace XeGo.Services.Auth.API.Service.IService
     {
         Task<string> Register(RegistrationRequestDto registrationRequestDto);
         Task<LoginResponseDto> Login(LoginRequestDto loginRequestDto);
+        Task<string?> RefreshToken(string refreshToken, string userId, string loginApp);
         Task<bool> AssignRoleAsync(string email, string roleName);
         Task<bool> RemoveRoleAsync(string userId, string roleName);
         bool CreateRole(string roleName);

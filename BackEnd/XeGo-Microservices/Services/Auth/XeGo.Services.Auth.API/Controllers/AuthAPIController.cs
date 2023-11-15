@@ -114,6 +114,21 @@ namespace XeGo.Services.Auth.API.Controllers
             return ResponseDto;
         }
 
+        [HttpPost("user/refresh-token")]
+        public async Task<ResponseDto> RefreshToken([FromBody] RefreshTokenRequestDto model)
+        {
+            var accessToken = await _authService.RefreshToken(model.RefreshToken, model.UserId, model.FromApp);
+            if (accessToken == null)
+            {
+                ResponseDto.IsSuccess = false;
+                ResponseDto.Message = "Not Found!";
+                return ResponseDto;
+            }
+            ResponseDto.IsSuccess = true;
+            ResponseDto.Data = accessToken;
+            return ResponseDto;
+        }
+
 
         [HttpPost("create-role")]
         public async Task<ResponseDto> CreateRole([FromBody] string roleName)
