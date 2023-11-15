@@ -10,14 +10,14 @@ class ResponseDto {
   final String message;
 
   factory ResponseDto.fromJson(Map<String, dynamic> json) => ResponseDto(
-        data: json['Data'],
-        isSuccess: json['IsSuccess'],
-        message: json['Message'],
+        data: json['data'],
+        isSuccess: json['isSuccess'],
+        message: json['message'],
       );
 
   Map<String, dynamic> toJson() => {
-        'Data': data,
-        'IsSuccess': isSuccess,
-        'Message': message,
+        'data': data,
+        'isSuccess': isSuccess,
+        'message': message,
       };
 }

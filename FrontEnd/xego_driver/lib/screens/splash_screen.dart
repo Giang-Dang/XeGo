@@ -1,6 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:xego_driver/models/Dto/login_request_dto.dart';
+import 'package:xego_driver/services/api_services.dart';
+import 'package:xego_driver/services/user_services.dart';
 import 'package:xego_driver/settings/kcolors.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -15,6 +18,15 @@ class _SplashScreenState extends State<SplashScreen>
   late AnimationController _textAnimationController;
   late Animation<double> _textAnimation;
   Timer? _loginTimer;
+  final userServices = UserServices();
+
+  _register() async {}
+
+  _login() async {
+    const requestDto =
+        LoginRequestDto(phoneNumber: '0123456789', password: 'Driver1234@');
+    await userServices.login(requestDto);
+  }
 
   @override
   void initState() {
@@ -30,7 +42,8 @@ class _SplashScreenState extends State<SplashScreen>
     //login
     _loginTimer = Timer.periodic(
       const Duration(milliseconds: 100),
-      (timer) {
+      (timer) async {
+        await _login();
         _loginTimer?.cancel();
       },
     );

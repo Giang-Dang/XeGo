@@ -2,33 +2,44 @@ import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:xego_driver/models/Dto/login_request_dto.dart';
-import 'package:xego_driver/models/Dto/response_dto.dart';
+import 'package:xego_driver/models/Dto/login_response_dto.dart';
+import 'package:xego_driver/models/Dto/tokens_dto.dart';
+import 'package:xego_driver/models/Dto/user_dto.dart';
+import 'package:xego_driver/services/api_services.dart';
 import 'package:xego_driver/settings/constants.dart';
 import 'package:xego_driver/settings/kSecrets.dart';
 
-import 'package:http/http.dart' as http;
-
 class UserServices {
   static bool isAuthorized = false;
-  static String accessToken = "";
-  static String userId = "";
+  static UserDto? userDto;
   static double currentLongitude = 0.0;
   static double currentLatitude = 0.0;
+  final apiService = ApiService();
 
-  Future<LoginResponseDto> login(LoginRequestDto requestDto) async {
-    const subApiUrl = 'api/auth/register';
+  Future<bool> login(LoginRequestDto requestDto) async {
+    const subApiUrl = 'api/auth/user/login';
     final url = Uri.http(KSecret.kApiUrl, subApiUrl);
 
-    final jsonData = json.encode(requestDto);
+    final jsonData = requestDto.toJson();
 
-    final response =
-        await http.post(url, headers: Constants.kJsonHeader, body: jsonData);
+    final response = await apiService.post(url.toString(),
+        headers: Constants.kJsonHeader, data: jsonData);
 
-    final responseJson = json.decode(response.body);
+    LoginResponseDto loginResponseDto =
+        LoginResponseDto.fromJson(response.data);
 
-    final responseDto = ResponseDto.fromJson(responseJson);
+    if (!loginResponseDto.isSuccess) {
+      return false;
+    }
 
-    if (!responseDto.isSuccess) {}
+    userDto = loginResponseDto.userDto;
+    ApiService.tokensDto = loginResponseDto.tokensDto;
+
+    await _deleteAllStoredLoginInfo();
+    await _saveTokensDto(loginResponseDto.tokensDto);
+    await _saveUserDto(loginResponseDto.userDto);
+
+    return true;
   }
 
   bool isValidEmail(String? email) {
@@ -68,23 +79,39 @@ class UserServices {
     return nameRegExp.hasMatch(name);
   }
 
-  Future<void> saveLoginInfo(
-      String accessToken, String refreshToken, String userId) async {
+  Future<void> _saveTokensDto(TokensDto tokens) async {
     final storage = _getSecureStorage();
-    await storage.delete(key: Constants.kAccessTokenKeyName);
-    await storage.delete(key: Constants.kRefreshTokenKeyName);
-    await storage.delete(key: Constants.kUserIdKeyName);
-    await storage.write(key: Constants.kAccessTokenKeyName, value: accessToken);
     await storage.write(
-        key: Constants.kRefreshTokenKeyName, value: refreshToken);
-    await storage.write(key: Constants.kUserIdKeyName, value: userId);
+        key: Constants.kAccessTokenKeyName, value: tokens.accessToken);
+    await storage.write(
+        key: Constants.kRefreshTokenKeyName, value: tokens.refreshToken);
   }
 
-  Future<void> deleteStoredLoginInfo() async {
+  Future<void> _saveUserDto(UserDto user) async {
+    final storage = _getSecureStorage();
+    await storage.deleteAll(); // Delete all previous keys
+    await storage.write(key: Constants.kUserIdKeyName, value: user.userId);
+    await storage.write(key: Constants.kUserNameKeyName, value: user.userName);
+    await storage.write(key: Constants.kEmailKeyName, value: user.email);
+    await storage.write(
+        key: Constants.kPhoneNumberKeyName, value: user.phoneNumber);
+    await storage.write(
+        key: Constants.kFirstNameKeyName, value: user.firstName);
+    await storage.write(key: Constants.kLastNameKeyName, value: user.lastName);
+    await storage.write(key: Constants.kAddressKeyName, value: user.address);
+  }
+
+  Future<void> _deleteAllStoredLoginInfo() async {
     final storage = _getSecureStorage();
     await storage.delete(key: Constants.kAccessTokenKeyName);
     await storage.delete(key: Constants.kRefreshTokenKeyName);
     await storage.delete(key: Constants.kUserIdKeyName);
+    await storage.delete(key: Constants.kUserNameKeyName);
+    await storage.delete(key: Constants.kEmailKeyName);
+    await storage.delete(key: Constants.kPhoneNumberKeyName);
+    await storage.delete(key: Constants.kFirstNameKeyName);
+    await storage.delete(key: Constants.kLastNameKeyName);
+    await storage.delete(key: Constants.kAddressKeyName);
   }
 
   Future<String?> getAccessToken() async {

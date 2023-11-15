@@ -34,6 +34,17 @@
 }
 
 {
+  "email": "driver1@gmail.com",
+  "userName": "Driver1234",
+  "phoneNumber": "0123456789",
+  "password": "Driver1234@",
+  "firstName": "Driver1",
+  "lastName": "Last Name",
+  "address": "1 Street 1, District 1, City 1",
+  "role": "DRIVER"
+}
+
+{
   "email": "driver2@gmail.com",
   "userName": "Driver12342",
   "phoneNumber": "01234567892",
