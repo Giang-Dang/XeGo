@@ -1,6 +1,7 @@
 using Azure.Storage.Blobs;
 using Serilog;
 using System.Reflection;
+using XeGo.Services.Media.API.Data;
 using XeGo.Services.Media.API.Services;
 using XeGo.Services.Media.API.Services.IServices;
 using XeGo.Shared.Lib.Helpers;
@@ -11,6 +12,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton(_ =>
     new BlobServiceClient(builder.Configuration.GetValue<string>("BlobConnection"))
 );
+builder.Services.AddAppDbContext<AppDbContext>(builder.Configuration, "DefaultConnection");
+builder.Services.ConfigureAuthentication(builder.Configuration);
+
 builder.Services.AddSingleton<IBlobService, BlobService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 

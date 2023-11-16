@@ -70,5 +70,31 @@
   "city": "string",
   "modifiedBy": "string"
 }
+
+{
+  "refreshToken": "9ouCtrxxEpySCxbbWHAo8KGquc31dsMNwkyPYhhOe2ZqA/yNLI3nCtJ/oyshah8Hgj3Ft6LvANBPMTNFl+cTKzxhTUiiTatbIp4FJsSC1Qr6bpIjecrP5LEHShe+aBYWDrHp40pbwQ9MovFpP01ozuuac399JMKjCSw4E12OPLkq7WTxnAjBrJzBiOjeuHyS0TjHvgMP4EEvhywB3ohYw/JrMhZauZElYQNkTrL4lm9Blr3IwmqgtSXhdIRjleZcAGhUmIrf65o0KieIpnBcG2CQ/cHHCi46lSzhJNbNiLp+EX2IvYti8YLhtoudxAtyprQrCzMFoT1cmOuqzADe8g==",
+  "userId": "8a8681d8-4b82-437c-9c67-08dd7b13eeca",
+  "fromApp": "DRIVER"
+}
+
+{
+  "data": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRyaXZlcjFAZ21haWwuY29tIiwic3ViIjoiOGE4NjgxZDgtNGI4Mi00MzdjLTljNjctMDhkZDdiMTNlZWNhIiwibmFtZSI6IkRyaXZlcjEyMzQiLCJsb2dpbkFwcCI6IkRSSVZFUiIsInJvbGUiOiJEUklWRVIiLCJuYmYiOjE3MDAwNTc1MzMsImV4cCI6MTcwMDY2MjMzMywiaWF0IjoxNzAwMDU3NTMzLCJpc3MiOiJ4ZWdvLWF1dGgtYXBpIiwiYXVkIjoieGVnby1jbGllbnQifQ.W4EpgBp0TV-oaBjvWaWfFPFt2-f51jHvH9qj9zylAFw",
+  "isSuccess": true,
+  "message": ""
+}
+
+{
+  "data": {
+    "id": 1,
+    "userId": "testId",
+    "imageName": "z4860559898019_ad8b9f1f440e852576042b3164495441.jpg",
+    "imageType": "AVATAR",
+    "imageSize": "ORIGIN",
+    "blobName": "avatar/z4860559898019_ad8b9f1f440e852576042b3164495441.jpg"
+  },
+  "isSuccess": true,
+  "message": ""
+}
+
 Add-Migration initalDb
 Update-Database

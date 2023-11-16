@@ -1,0 +1,36 @@
+using Serilog;
+using System.Reflection;
+using XeGo.Services.Vehicle.API.Data;
+using XeGo.Shared.Lib.Helpers;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddAppDbContext<AppDbContext>(builder.Configuration, "DefaultConnection");
+
+builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+// Add logging service
+LoggingHelpers loggingHelpers = new();
+loggingHelpers.ConfigureLogging(Assembly.GetExecutingAssembly().GetName().Name);
+builder.Host.UseSerilog();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseAuthorization();
+
+app.UseAuthentication();
+
+app.MapControllers();
+
+app.Run();

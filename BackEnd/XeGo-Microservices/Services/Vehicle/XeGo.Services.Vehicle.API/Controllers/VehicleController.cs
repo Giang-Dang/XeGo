@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
-using XeGo.Services.Driver.API.Entities;
-using XeGo.Services.Driver.API.Models;
-using XeGo.Services.Driver.API.Repository.IRepository;
+using XeGo.Services.Vehicle.API.Entities;
+using XeGo.Services.Vehicle.API.Models;
+using XeGo.Services.Vehicle.API.Repository.IRepository;
 using XeGo.Shared.Lib.Helpers;
 using XeGo.Shared.Lib.Models;
 
-namespace XeGo.Services.Driver.API.Controllers
+namespace XeGo.Services.Vehicle.API.Controllers
 {
     [Route("api/vehicles")]
     [ApiController]
@@ -66,7 +66,7 @@ namespace XeGo.Services.Driver.API.Controllers
 
             try
             {
-                Expression<Func<Vehicle, bool>> filters = v =>
+                Expression<Func<Entities.Vehicle, bool>> filters = v =>
                     (requestDto.Id == null || v.Id == requestDto.Id) &&
                     (requestDto.PlateNumber == null || v.PlateNumber.Contains(requestDto.PlateNumber)) &&
                     (requestDto.Type == null || v.Type.Contains(requestDto.Type)) &&
@@ -81,7 +81,7 @@ namespace XeGo.Services.Driver.API.Controllers
 
                 if (string.IsNullOrEmpty(requestDto.SearchString))
                 {
-                    Expression<Func<Vehicle, bool>> searchFilter = v =>
+                    Expression<Func<Entities.Vehicle, bool>> searchFilter = v =>
                         (requestDto.SearchString == null ||
                          (v.PlateNumber.ToLower().Contains(requestDto.SearchString.ToLower())) ||
                          (v.Type.ToLower().Contains(requestDto.SearchString.ToLower())) ||
@@ -129,7 +129,7 @@ namespace XeGo.Services.Driver.API.Controllers
                     return ResponseDto;
                 }
 
-                var createDto = _mapper.Map<Vehicle>(requestDto);
+                var createDto = _mapper.Map<Entities.Vehicle>(requestDto);
                 createDto.LastModifiedBy = requestDto.ModifiedBy ?? "N/A";
                 createDto.CreatedBy = requestDto.ModifiedBy ?? "N/A";
 

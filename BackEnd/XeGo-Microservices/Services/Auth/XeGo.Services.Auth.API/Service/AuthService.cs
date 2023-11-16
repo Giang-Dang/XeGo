@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using XeGo.Services.Auth.API.Data;
 using XeGo.Services.Auth.API.Entities;
 using XeGo.Services.Auth.API.Models.Dto;
 using XeGo.Services.Auth.API.Service.IService;
 using XeGo.Shared.Lib.Constants;
+using XeGo.Shared.Lib.Models;
 
 namespace XeGo.Services.Auth.API.Service
 {
@@ -133,46 +135,82 @@ namespace XeGo.Services.Auth.API.Service
             return loginResponseDto;
         }
 
-        public async Task<string> Register(RegistrationRequestDto registrationRequestDto)
+        public async Task<ResponseDto> Register(RegistrationRequestDto requestDto)
         {
-            ApplicationUser user = new()
-            {
-                UserName = registrationRequestDto.UserName,
-                Email = registrationRequestDto.Email,
-                NormalizedEmail = registrationRequestDto.Email.ToUpper(),
-                PhoneNumber = registrationRequestDto.PhoneNumber,
-                FirstName = registrationRequestDto.FirstName,
-                LastName = registrationRequestDto.LastName,
-                Address = registrationRequestDto.Address,
-            };
+            var responseDto = new ResponseDto();
 
             try
             {
-                var result = await _userManager.CreateAsync(user, registrationRequestDto.Password);
-                if (result.Succeeded)
+                ApplicationUser user = new()
                 {
-                    var userToReturn = _db.ApplicationUsers.First(u => u.PhoneNumber == registrationRequestDto.PhoneNumber);
+                    UserName = requestDto.UserName,
+                    Email = requestDto.Email,
+                    NormalizedEmail = requestDto.Email.ToUpper(),
+                    PhoneNumber = requestDto.PhoneNumber,
+                    FirstName = requestDto.FirstName,
+                    LastName = requestDto.LastName,
+                    Address = requestDto.Address,
+                };
 
-                    //UserDto userDto = new()
-                    //{
-                    //    UserName = userToReturn.UserName,
-                    //    Email = userToReturn.Email,
-                    //    UserId = userToReturn.Id,
-                    //    PhoneNumber = userToReturn.PhoneNumber
-                    //};
+                var isUserInfoExisted =
+                    await _db.ApplicationUsers.AnyAsync(u =>
+                        u.NormalizedEmail == requestDto.Email.ToUpper()
+                        || u.NormalizedUserName == requestDto.UserName.ToUpper()
+                        || u.PhoneNumber == requestDto.PhoneNumber);
 
-                    await AssignRoleAsync(userToReturn.Id, registrationRequestDto.Role);
-
-                    return "";
-                }
-                else
+                var emailExists = await _db.ApplicationUsers.AnyAsync(u =>
+                    u.NormalizedEmail == requestDto.Email.ToUpper());
+                if (emailExists)
                 {
-                    return result.Errors.FirstOrDefault()?.Description ?? "Error Encountered";
+                    responseDto.Message = "This email already exists!";
+                    responseDto.IsSuccess = false;
+
+                    return responseDto;
                 }
+
+                var userNameExists = await _db.ApplicationUsers.AnyAsync(u =>
+                    u.NormalizedUserName == requestDto.UserName.ToUpper());
+                if (userNameExists)
+                {
+                    responseDto.Message = "This username already exists!";
+                    responseDto.IsSuccess = false;
+
+                    return responseDto;
+                }
+
+                var phoneNumberExists = await _db.ApplicationUsers.AnyAsync(u =>
+                    u.PhoneNumber == requestDto.PhoneNumber);
+                if (phoneNumberExists)
+                {
+                    responseDto.Message = "This phone number already exists!";
+                    responseDto.IsSuccess = false;
+
+                    return responseDto;
+                }
+
+                var result = await _userManager.CreateAsync(user, requestDto.Password);
+                if (!result.Succeeded)
+                {
+                    responseDto.IsSuccess = false;
+                    responseDto.Message = result.Errors.FirstOrDefault()?.Description ?? "Error Encountered";
+                    return responseDto;
+                }
+
+                var userToReturn = _db.ApplicationUsers.First(u => u.PhoneNumber == requestDto.PhoneNumber);
+
+                await AssignRoleAsync(userToReturn.Id, requestDto.Role);
+
+                responseDto.IsSuccess = true;
+                responseDto.Message = "";
+                responseDto.Data = userToReturn;
+                return responseDto;
+
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                responseDto.Message = ex.Message;
+                responseDto.IsSuccess = false;
+                return responseDto;
             }
         }
 

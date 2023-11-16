@@ -11,11 +11,11 @@ namespace XeGo.Services.Media.API.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-
-        [Required][MaxLength(450)] public string UserId { get; set; } = string.Empty!;
-        [Required] public int ImageTypeCode { get; set; }
-        [Required] public int ImageSizeCode { get; set; }
-        [Required] public string AbsoluteUri { get; set; } = string.Empty!;
+        [Required] public string UserId { get; set; } = string.Empty!;
+        [Required] public string ImageName { get; set; } = string.Empty!;
+        [Required] public string ImageType { get; set; } = string.Empty!;
+        [Required] public string ImageSize { get; set; } = string.Empty!;
+        [Required] public string BlobName { get; set; } = string.Empty!;
 
     }
 }

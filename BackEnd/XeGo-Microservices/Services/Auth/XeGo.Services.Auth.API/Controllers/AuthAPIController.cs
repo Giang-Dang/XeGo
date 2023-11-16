@@ -27,17 +27,17 @@ namespace XeGo.Services.Auth.API.Controllers
 
             try
             {
-                var errorMessage = await _authService.Register(model);
-                if (!string.IsNullOrEmpty(errorMessage))
+                var serviceResponse = await _authService.Register(model);
+                if (!serviceResponse.IsSuccess)
                 {
                     ResponseDto.IsSuccess = false;
-                    ResponseDto.Message = errorMessage;
+                    ResponseDto.Message = serviceResponse.Message;
                     _logger.LogInformation("{class}>{function}: Registration Failed", nameof(AuthApiController), nameof(Register));
                     return ResponseDto;
                 }
 
                 ResponseDto.IsSuccess = true;
-                ResponseDto.Data = null;
+                ResponseDto.Data = serviceResponse.Data;
                 ResponseDto.Message = "Registration succeed";
                 _logger.LogInformation("{class}>{function}: Registration Succeed", nameof(AuthApiController), nameof(Register));
             }
@@ -115,7 +115,7 @@ namespace XeGo.Services.Auth.API.Controllers
         }
 
         [HttpPost("user/refresh-token")]
-        public async Task<ResponseDto> RefreshToken([FromBody] RefreshTokenRequestDto model)
+        public async Task<ResponseDto> RefreshToken([FromBody] RefreshTokensRequestDto model)
         {
             var accessToken = await _authService.RefreshToken(model.RefreshToken, model.UserId, model.FromApp);
             if (accessToken == null)
@@ -131,7 +131,7 @@ namespace XeGo.Services.Auth.API.Controllers
 
 
         [HttpPost("create-role")]
-        public async Task<ResponseDto> CreateRole([FromBody] string roleName)
+        public ResponseDto CreateRole([FromBody] string roleName)
         {
             var roleCreatedSuccessfully = _authService.CreateRole(roleName.ToUpper());
             if (!roleCreatedSuccessfully)
@@ -144,7 +144,7 @@ namespace XeGo.Services.Auth.API.Controllers
         }
 
         [HttpPost("remove-role")]
-        public async Task<ResponseDto> RemoveRole([FromBody] string roleName)
+        public ResponseDto RemoveRole([FromBody] string roleName)
         {
             var roleRemovedSuccessfully = _authService.RemoveRole(roleName.ToUpper());
             if (!roleRemovedSuccessfully)
