@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:xego_driver/models/Dto/login_request_dto.dart';
+import 'package:xego_driver/screens/login_screen.dart';
 import 'package:xego_driver/services/api_services.dart';
 import 'package:xego_driver/services/user_services.dart';
 import 'package:xego_driver/settings/kcolors.dart';
@@ -19,13 +20,41 @@ class _SplashScreenState extends State<SplashScreen>
   late Animation<double> _textAnimation;
   Timer? _loginTimer;
   final userServices = UserServices();
+  final apiServices = ApiService();
 
-  _register() async {}
+  // logintest() async {
+  //   const requestDto =
+  //       LoginRequestDto(phoneNumber: '0123456789', password: 'Driver1234@');
+  //   await userServices.login(requestDto);
+  // }
+
+  _initialize() async {
+    await Future.wait<void>([userServices.getUserLocation(), _login()]);
+  }
 
   _login() async {
-    const requestDto =
-        LoginRequestDto(phoneNumber: '0123456789', password: 'Driver1234@');
-    await userServices.login(requestDto);
+    final updateResults = await Future.wait<bool>([
+      userServices.updateUserDtoFromStorage(),
+      userServices.updateTokensDtoFromStorage()
+    ]);
+
+    var refreshTokenSuccess = false;
+    if (updateResults[0] && updateResults[1]) {
+      refreshTokenSuccess = await apiServices.refreshToken();
+    }
+
+    if (!refreshTokenSuccess) {
+      if (context.mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const LoginScreen(),
+          ),
+        );
+      }
+    }
+
+    return true;
   }
 
   @override
@@ -42,8 +71,8 @@ class _SplashScreenState extends State<SplashScreen>
     //login
     _loginTimer = Timer.periodic(
       const Duration(milliseconds: 100),
-      (timer) async {
-        await _login();
+      (timer) {
+        _initialize();
         _loginTimer?.cancel();
       },
     );

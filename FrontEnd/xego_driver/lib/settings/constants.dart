@@ -10,4 +10,5 @@ class Constants {
   static const kLastNameKeyName = 'lastName';
   static const kAddressKeyName = 'address';
   static const kFromAppValue = 'DRIVER';
+  static const kDefaultRoleValue = 'DRIVER';
 }

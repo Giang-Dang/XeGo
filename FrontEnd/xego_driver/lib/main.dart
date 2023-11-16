@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:xego_driver/screens/login_screen.dart';
+import 'package:xego_driver/screens/pick_location_screen.dart';
 import 'package:xego_driver/screens/splash_screen.dart';
+import 'package:xego_driver/screens/user_registration_screen.dart';
 import 'package:xego_driver/settings/kTheme.dart';
 
 void main() {
@@ -15,8 +18,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'XeGo - Driver',
       theme: KTheme.kTheme,
-      home: const Scaffold(
-        body: SplashScreen(),
+      home: Scaffold(
+        // body: SplashScreen(),
+        body: UserRegistrationScreen(),
       ),
     );
   }
