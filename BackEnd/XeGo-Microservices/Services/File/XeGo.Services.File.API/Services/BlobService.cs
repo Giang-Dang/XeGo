@@ -1,5 +1,7 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using Azure.Storage.Blobs.Specialized;
+using Azure.Storage.Sas;
 using XeGo.Services.Media.API.Models;
 using XeGo.Services.Media.API.Services.IServices;
 
@@ -28,15 +30,32 @@ namespace XeGo.Services.Media.API.Services
             return blobString;
         }
 
-        public string GetBlobAbsoluteUri(string blobName, string containerName)
+        public string GetBlobAbsoluteUriWithSas(string blobName, string containerName)
         {
             BlobContainerClient blobContainerClient = _blobClient.GetBlobContainerClient(containerName);
             var blobClient = blobContainerClient.GetBlobClient(blobName);
 
-            return blobClient.Uri.AbsoluteUri;
+            string Uri = "";
+
+            if (blobClient.CanGenerateSasUri)
+            {
+                BlobSasBuilder sasBuilder = new()
+                {
+                    BlobContainerName = blobClient.GetParentBlobContainerClient().Name,
+                    BlobName = blobClient.Name,
+                    Resource = "b",
+                    ExpiresOn = DateTimeOffset.UtcNow.AddDays(1)
+                };
+
+                sasBuilder.SetPermissions(BlobSasPermissions.Read);
+
+                Uri = blobClient.GenerateSasUri(sasBuilder).AbsoluteUri;
+            }
+
+            return Uri;
         }
 
-        public async Task<bool> UploadBlob(string blobName, IFormFile file, string containerName, Blob blob)
+        public async Task<bool> UploadBlob(string blobName, IFormFile file, string containerName, Blob? blob)
         {
             BlobContainerClient blobContainerClient = _blobClient.GetBlobContainerClient(containerName);
             var blobClient = blobContainerClient.GetBlobClient(blobName);
@@ -46,10 +65,13 @@ namespace XeGo.Services.Media.API.Services
                 ContentType = file.ContentType
             };
 
-            IDictionary<string, string> metaData = new Dictionary<string, string>();
-            metaData.Add("title", blob.Title ?? "");
-            metaData.Add("comment", blob.Comment ?? "");
-
+            IDictionary<string, string>? metaData = null;
+            if (blob != null)
+            {
+                metaData = new Dictionary<string, string>();
+                metaData.Add("title", blob.Title ?? "");
+                metaData.Add("comment", blob.Comment ?? "");
+            }
 
             var result = await blobClient.UploadAsync(file.OpenReadStream(), httpHeaders, metaData);
 

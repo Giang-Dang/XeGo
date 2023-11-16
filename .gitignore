@@ -15,8 +15,8 @@
 /BackEnd/XeGo-Microservices/Services/Location/XeGo.Services.Location.API/obj/
 /BackEnd/XeGo-Microservices/Services/Location/XeGo.Services.Location.Grpc/bin/
 /BackEnd/XeGo-Microservices/Services/Location/XeGo.Services.Location.Grpc/obj/
-/BackEnd/XeGo-Microservices/Services/Media/XeGo.Services.Media.API/bin/
-/BackEnd/XeGo-Microservices/Services/Media/XeGo.Services.Media.API/obj/
+/BackEnd/XeGo-Microservices/Services/File/XeGo.Services.File.API/bin/
+/BackEnd/XeGo-Microservices/Services/File/XeGo.Services.File.API/obj/
 /BackEnd/XeGo-Microservices/Services/Driver/XeGo.Services.Driver.API/bin/
 /BackEnd/XeGo-Microservices/Services/Driver/XeGo.Services.Driver.API/obj/
 /BackEnd/XeGo-Microservices/Services/Coupon/XeGo.Services.Coupon.API/bin/
@@ -27,6 +27,8 @@
 /BackEnd/XeGo-Microservices/Services/Ride/XeGo.Services.Ride.API/obj/
 /BackEnd/XeGo-Microservices/Services/Ride/XeGo.Services.User.API/bin/
 /BackEnd/XeGo-Microservices/Services/Ride/XeGo.Services.User.API/obj/
+/BackEnd/XeGo-Microservices/Services/Vehicle/XeGo.Services.Vehicle.API/bin/
+/BackEnd/XeGo-Microservices/Services/Vehicle/XeGo.Services.Vehicle.API/obj/
 /BackEnd/XeGo-Microservices/Services/Notification/XeGo.Services.Notification.Grpc/bin/
 /BackEnd/XeGo-Microservices/Services/Notification/XeGo.Services.Notification.Grpc/obj/
 /BackEnd/XeGo-Microservices/Shared/XeGo.Shared.Lib/bin/
