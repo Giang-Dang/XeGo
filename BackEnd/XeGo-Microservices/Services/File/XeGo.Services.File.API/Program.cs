@@ -1,4 +1,5 @@
 using Azure.Storage.Blobs;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System.Reflection;
 using XeGo.Services.Media.API.Data;
@@ -17,6 +18,18 @@ builder.Services.ConfigureAuthentication(builder.Configuration);
 
 builder.Services.AddSingleton<IBlobService, BlobService>();
 builder.Services.AddScoped<IImageService, ImageService>();
+
+// Add secret settings
+var isDevelopment = builder.Environment.IsDevelopment();
+
+if (isDevelopment)
+{
+    builder.Configuration.AddUserSecrets<Program>();
+}
+else
+{
+    builder.Configuration.AddDockerSecrets();
+}
 
 // Add logging service
 LoggingHelpers loggingHelpers = new();
@@ -37,10 +50,33 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
 app.UseAuthorization();
 
 app.MapControllers();
 
+ApplyMigration();
+
 app.Run();
+
+
+#region Private Method
+void ApplyMigration()
+{
+    try
+    {
+        using var scope = app.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        if (db.Database.GetPendingMigrations().Any())
+        {
+            db.Database.Migrate();
+        }
+
+        scope.Dispose();
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine(e);
+    }
+}
+#endregion Private Method

@@ -8,7 +8,10 @@
         "xego.services.codevalue.api": "StartDebugging",
         "xego.services.codevalue.grpc": "StartDebugging",
         "xego.services.location.api": "StartDebugging",
-        "xego.services.location.grpc": "StartDebugging"
+        "xego.services.location.grpc": "StartDebugging",
+        "xego.services.vehicle.api": "StartDebugging",
+        "xego.services.file.api": "StartDebugging",
+        "xego.apigateways.ocelot": "StartDebugging"
       }
     }
   }

@@ -1,0 +1,106 @@
+{
+  "Route": [
+    //Auth
+    {
+      "DownstreamPathTemplate": "/api/auth/user/register",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.auth.api",
+          "Port": "80"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/auth/user/register",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/auth/user/login",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.auth.api",
+          "Port": "80"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/auth/user/login",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/auth/user/assign-role",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.auth.api",
+          "Port": "80"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/auth/user/assign-role",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/auth/user/remove-role",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.auth.api",
+          "Port": "80"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/auth/user/remove-role",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/auth/user/refresh-token",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.auth.api",
+          "Port": "80"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/auth/user/refresh-token",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/auth/user/create-role",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.auth.api",
+          "Port": "80"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/auth/user/create-role",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/auth/user/remove-role",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.auth.api",
+          "Port": "80"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/auth/user/remove-role",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+
+    // Vehicle
+    {
+      "DownstreamPathTemplate": "/api/vehicles/user/remove-role",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.vehicle.api",
+          "Port": "80"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/vehicles/user/remove-role",
+      "UpstreamHttpMethod": [ "POST" ]
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:6000"
+  }
+}

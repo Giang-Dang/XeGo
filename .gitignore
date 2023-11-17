@@ -37,6 +37,9 @@
 /BackEnd/XeGo-Microservices/Shared/XeGo.Shared.GrpcConsumer/obj/
 /BackEnd/XeGo-Microservices/Shared/XeGo.Shared.Log.Producer/bin/
 /BackEnd/XeGo-Microservices/Shared/XeGo.Shared.Log.Producer/obj/
+/BackEnd/XeGo-Microservices/ApiGateways/XeGo.ApiGateways.Ocelot/bin/
+/BackEnd/XeGo-Microservices/ApiGateways/XeGo.ApiGateways.Ocelot/obj/
+BackEnd/XeGo-Microservices/blob_connection.txt
 FrontEnd/xego_driver/lib/settings/kSecrets.dart
 FrontEnd/xego_driver/android/app/src/main/AndroidManifest.xml
 FrontEnd/xego_driver/ios/Runner/AppDelegate.swift

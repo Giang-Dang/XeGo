@@ -34,6 +34,28 @@ services:
     volumes:
       - sqlserver-locationdb:/var/opt/mssql
 
+  vehicledb:
+    container_name: vehicledb
+    environment:
+        SA_PASSWORD: "admin1234@A"
+        ACCEPT_EULA: "Y"
+    restart: always
+    ports:
+      - "1436:1433"
+    volumes:
+      - sqlserver-vehicledb:/var/opt/mssql
+  
+  filedb:
+    container_name: filedb
+    environment:
+        SA_PASSWORD: "admin1234@A"
+        ACCEPT_EULA: "Y"
+    restart: always
+    ports:
+      - "1437:1433"
+    volumes:
+      - sqlserver-filedb:/var/opt/mssql
+
   rabbitmq:
     container_name: rabbitmq
     restart: always
@@ -41,8 +63,8 @@ services:
       - "5672:5672"
       - "15672:15672"
 
-  xego.services.auth.authapi:
-    container_name: xego.services.auth.authapi
+  xego.services.auth.api:
+    container_name: xego.services.auth.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=authdb;Database=XeGoAuthDb;User Id=sa;Password=admin1234@A;TrustServerCertificate=True
@@ -148,6 +170,54 @@ services:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
 
+  xego.services.vehicle.api:
+    container_name: xego.services.vehicle.api
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=vehicledb;Database=XeGoVehicle;User Id=sa;Password=admin1234@A;TrustServerCertificate=True
+      - ASPNETCORE_ENVIRONMENT=Development
+      - Serilog__MinimumLevel__Default=Debug
+      - Serilog__MinimumLevel__Override__Microsoft=Debug
+      - Serilog__MinimumLevel__Override__System=Warning
+      - ApiSettings__JwtOptions__Secret=adfh@JDFDKSAF1234sdf*%$$#feifkdmvcoaerDSJFAOEDFDFJffDSAFjkAjdfA485723AjdfAJfDjfAjdfdjferYGjASDJfEjfvdav
+      - ApiSettings__JwtOptions__Issuer=xego-auth-api
+      - ApiSettings__JwtOptions__Audience=xego-client
+      - ElasticConfiguration__Uri=http://elasticsearch 
+      - GrpcSettings__CodeValueGrpcUrl=http://xego.services.codevalue.grpc
+    depends_on:
+      - vehicledb
+      - xego.services.codevalue.grpc
+      - elasticsearch
+    ports:
+      - "6006:80"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+  xego.services.file.api:
+    container_name: xego.services.file.api
+    environment:
+    - ConnectionStrings__DefaultConnection=Server=filedb;Database=XeGoFile;User Id=sa;Password=admin1234@A;TrustServerCertificate=True
+    - ASPNETCORE_ENVIRONMENT=Development
+    - Serilog__MinimumLevel__Default=Debug
+    - Serilog__MinimumLevel__Override__Microsoft=Debug
+    - Serilog__MinimumLevel__Override__System=Warning
+    - ApiSettings__JwtOptions__Secret=adfh@JDFDKSAF1234sdf*%$$#feifkdmvcoaerDSJFAOEDFDFJffDSAFjkAjdfA485723AjdfAJfDjfAjdfdjferYGjASDJfEjfvdav
+    - ApiSettings__JwtOptions__Issuer=xego-auth-api
+    - ApiSettings__JwtOptions__Audience=xego-client
+    - ElasticConfiguration__Uri=http://elasticsearch 
+    - GrpcSettings__CodeValueGrpcUrl=http://xego.services.codevalue.grpc
+    secrets:
+    - blob_connection
+    depends_on:
+    - filedb
+    - xego.services.codevalue.grpc
+    - elasticsearch
+    ports:
+    - "6007:80"
+    volumes:
+    - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+    - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
   portainer:
     container_name: portainer
     restart: always
@@ -180,18 +250,33 @@ services:
       - ELASTICSEARCH_URL=elasticsearch
     networks:
       - elastic
-  
+
+
+  xego.apigateways.ocelot:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "6100:80"
+
 networks:
   elastic:
     driver: bridge
 
 
+secrets:
+  blob_connection:
+    file: blob_connection.txt
 
 volumes:
   sqlserver-authdb:
   sqlserver-codevaluedb:
   sqlserver-locationdb:
+  sqlserver-vehicledb:
+  sqlserver-filedb:
   portainer_data:  
   elasticsearch-data:
+
+
+
 
 
