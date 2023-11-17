@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:xego_driver/models/Dto/refresh_token_request_dto.dart';
 import 'package:xego_driver/models/Dto/tokens_dto.dart';
 import 'package:xego_driver/services/user_services.dart';
@@ -8,6 +9,7 @@ import 'package:xego_driver/settings/kSecrets.dart';
 class ApiService {
   late Dio dio;
   static TokensDto tokensDto = TokensDto(refreshToken: '', accessToken: '');
+
   ApiService() {
     dio = Dio();
     dio.interceptors.add(
@@ -40,7 +42,7 @@ class ApiService {
     if (userId == null) {
       return false;
     }
-    final url = Uri.http(KSecret.kApiUrl, subApiUrl).toString();
+    final url = Uri.http(KSecret.kApiIp, subApiUrl).toString();
     final data = RefreshTokenRequestDto(
             refreshToken: tokensDto.refreshToken,
             userId: userId,
@@ -48,7 +50,16 @@ class ApiService {
         .toJson();
     final response = await post(url, data: data);
 
+    final newAccessToken = response.data['data'];
+
+    tokensDto = TokensDto(
+        refreshToken: tokensDto.refreshToken, accessToken: newAccessToken);
+
     return true;
+  }
+
+  setTokensDto(TokensDto input) {
+    tokensDto = input;
   }
 
   Future<Response> get(String url, {Map<String, dynamic>? headers}) async {

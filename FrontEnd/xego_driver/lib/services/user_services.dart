@@ -1,11 +1,16 @@
-import 'dart:convert';
+import 'dart:developer';
+import 'dart:math' as math;
 
+import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:xego_driver/models/Dto/login_request_dto.dart';
 import 'package:xego_driver/models/Dto/login_response_dto.dart';
+import 'package:xego_driver/models/Dto/registration_request_dto.dart';
 import 'package:xego_driver/models/Dto/tokens_dto.dart';
 import 'package:xego_driver/models/Dto/user_dto.dart';
 import 'package:xego_driver/services/api_services.dart';
+import 'package:xego_driver/services/location_services.dart';
 import 'package:xego_driver/settings/constants.dart';
 import 'package:xego_driver/settings/kSecrets.dart';
 
@@ -18,19 +23,18 @@ class UserServices {
 
   Future<bool> login(LoginRequestDto requestDto) async {
     const subApiUrl = 'api/auth/user/login';
-    final url = Uri.http(KSecret.kApiUrl, subApiUrl);
+    final url = Uri.http(KSecret.kApiIp, subApiUrl);
 
     final jsonData = requestDto.toJson();
 
     final response = await apiService.post(url.toString(),
         headers: Constants.kJsonHeader, data: jsonData);
 
-    LoginResponseDto loginResponseDto =
-        LoginResponseDto.fromJson(response.data);
-
-    if (!loginResponseDto.isSuccess) {
+    if (!response.data['isSuccess']) {
       return false;
     }
+    LoginResponseDto loginResponseDto =
+        LoginResponseDto.fromJson(response.data);
 
     userDto = loginResponseDto.userDto;
     ApiService.tokensDto = loginResponseDto.tokensDto;
@@ -42,6 +46,51 @@ class UserServices {
     return true;
   }
 
+  Future<Response> register(RegistrationRequestDto requestDto) async {
+    const subApiUrl = 'api/auth/user/register';
+    final url = Uri.http(KSecret.kApiIp, subApiUrl);
+
+    final jsonData = requestDto.toJson();
+
+    final response = await apiService.post(url.toString(),
+        headers: Constants.kJsonHeader, data: jsonData);
+
+    if (!response.data['isSuccess']) {
+      return response;
+    }
+
+    userDto = UserDto(
+      userId: response.data['data']['id'],
+      userName: response.data['data']['userName'],
+      email: response.data['data']['email'],
+      phoneNumber: response.data['data']['phoneNumber'],
+      firstName: response.data['data']['firstName'],
+      lastName: response.data['data']['lastName'],
+      address: response.data['data']['address'],
+    );
+
+    return response;
+  }
+
+  Future<void> getUserLocation() async {
+    final locationServices = LocationServices();
+    const maxAttempts = 10;
+    const desiredAccuracy = 100.0;
+
+    Position locationData = await locationServices.determinePosition();
+
+    for (int attempts = 1; attempts < maxAttempts; attempts++) {
+      log(locationData.accuracy.toString());
+      if (locationData.accuracy <= desiredAccuracy) {
+        break;
+      }
+      locationData = await locationServices.determinePosition();
+    }
+
+    currentLatitude = locationData.latitude;
+    currentLongitude = locationData.longitude;
+  }
+
   bool isValidEmail(String? email) {
     RegExp validRegex = RegExp(
         r'^[a-zA-Z0-9.a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z]{2,})+');
@@ -51,10 +100,67 @@ class UserServices {
     return validRegex.hasMatch(email);
   }
 
+  Future<bool> updateUserDtoFromStorage() async {
+    final storage = _getSecureStorage();
+    final userId = await storage.read(key: Constants.kUserIdKeyName);
+    final userName = await storage.read(key: Constants.kUserNameKeyName);
+    final email = await storage.read(key: Constants.kEmailKeyName);
+    final phoneNumber = await storage.read(key: Constants.kPhoneNumberKeyName);
+    final firstName = await storage.read(key: Constants.kFirstNameKeyName);
+    final lastName = await storage.read(key: Constants.kLastNameKeyName);
+    final address = await storage.read(key: Constants.kAddressKeyName);
+
+    if (userId == null || phoneNumber == null) {
+      return false;
+    }
+
+    userDto = UserDto(
+      userId: userId ?? '',
+      userName: userName ?? '',
+      email: email ?? '',
+      phoneNumber: phoneNumber ?? '',
+      firstName: firstName ?? '',
+      lastName: lastName ?? '',
+      address: address ?? '',
+    );
+
+    return true;
+  }
+
+  Future<bool> updateTokensDtoFromStorage() async {
+    final storage = _getSecureStorage();
+    final refreshToken =
+        await storage.read(key: Constants.kRefreshTokenKeyName);
+    final accessToken = await storage.read(key: Constants.kAccessTokenKeyName);
+
+    if (refreshToken == null || accessToken == null) {
+      return false;
+    }
+
+    final apiService = ApiService();
+    final tokensDto = TokensDto(
+      refreshToken: refreshToken,
+      accessToken: accessToken,
+    );
+
+    apiService.setTokensDto(tokensDto);
+
+    return true;
+  }
+
+  bool isValidUsername(String? username) {
+    RegExp validCharacters = RegExp(r'^[a-zA-Z0-9_]+$');
+    if (username == null) {
+      return false;
+    }
+    return username.length >= 4 &&
+        username.length <= 30 &&
+        validCharacters.hasMatch(username);
+  }
+
   bool isValidPhoneNumber(String? phoneNumber) {
     // Regular expression pattern to match valid phone numbers
-    String pattern =
-        r'^(0|\+84)(3[2-9]|5[689]|7[06-9]|8[1-6]|9[0-46-9])[0-9]{7}$|^(0|\+84)(2[0-9]{1}|[3-9]{1})[0-9]{8}$';
+    String pattern = r'^(0|\+84)(3|5|7|8|9)[0-9]{8}$';
     RegExp regExp = RegExp(pattern);
 
     if (phoneNumber == null) {
@@ -79,7 +185,11 @@ class UserServices {
     return nameRegExp.hasMatch(name);
   }
 
-  Future<void> _saveTokensDto(TokensDto tokens) async {
+  _saveLoginInfo() async {}
+
+  Future<void> _saveTokensDto(
+    TokensDto tokens,
+  ) async {
     final storage = _getSecureStorage();
     await storage.write(
         key: Constants.kAccessTokenKeyName, value: tokens.accessToken);
@@ -89,7 +199,6 @@ class UserServices {
 
   Future<void> _saveUserDto(UserDto user) async {
     final storage = _getSecureStorage();
-    await storage.deleteAll(); // Delete all previous keys
     await storage.write(key: Constants.kUserIdKeyName, value: user.userId);
     await storage.write(key: Constants.kUserNameKeyName, value: user.userName);
     await storage.write(key: Constants.kEmailKeyName, value: user.email);
