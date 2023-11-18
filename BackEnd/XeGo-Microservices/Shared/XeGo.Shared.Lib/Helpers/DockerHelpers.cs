@@ -16,7 +16,7 @@ namespace XeGo.Shared.Lib.Helpers
                     {
                         var key = Path.GetFileName(file);
                         var value = lines[0];
-                        builder.AddInMemoryCollection(new Dictionary<string, string> { { key, value } });
+                        builder.AddInMemoryCollection(new Dictionary<string, string?> { { key, value } });
                     }
                 }
             }

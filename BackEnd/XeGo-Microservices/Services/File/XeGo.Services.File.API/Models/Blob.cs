@@ -1,4 +1,4 @@
-﻿namespace XeGo.Services.Media.API.Models
+﻿namespace XeGo.Services.File.API.Models
 {
     public class Blob
     {

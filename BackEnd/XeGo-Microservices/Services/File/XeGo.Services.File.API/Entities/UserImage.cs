@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace XeGo.Services.Media.API.Entities
+namespace XeGo.Services.File.API.Entities
 {
     [Index(nameof(UserId), IsUnique = true)]
 

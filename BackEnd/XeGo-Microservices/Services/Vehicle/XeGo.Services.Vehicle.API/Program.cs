@@ -16,7 +16,7 @@ builder.Services.AddSwaggerGen();
 
 // Add logging service
 LoggingHelpers loggingHelpers = new();
-loggingHelpers.ConfigureLogging(Assembly.GetExecutingAssembly().GetName().Name);
+loggingHelpers.ConfigureLogging(Assembly.GetExecutingAssembly().GetName().Name!);
 builder.Host.UseSerilog();
 
 var app = builder.Build();

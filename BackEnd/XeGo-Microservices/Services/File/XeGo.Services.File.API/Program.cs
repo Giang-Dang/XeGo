@@ -2,9 +2,9 @@ using Azure.Storage.Blobs;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System.Reflection;
-using XeGo.Services.Media.API.Data;
-using XeGo.Services.Media.API.Services;
-using XeGo.Services.Media.API.Services.IServices;
+using XeGo.Services.File.API.Data;
+using XeGo.Services.File.API.Services;
+using XeGo.Services.File.API.Services.IServices;
 using XeGo.Shared.Lib.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,7 +33,7 @@ else
 
 // Add logging service
 LoggingHelpers loggingHelpers = new();
-loggingHelpers.ConfigureLogging(Assembly.GetExecutingAssembly().GetName().Name);
+loggingHelpers.ConfigureLogging(Assembly.GetExecutingAssembly().GetName().Name!);
 builder.Host.UseSerilog();
 
 builder.Services.AddControllers();

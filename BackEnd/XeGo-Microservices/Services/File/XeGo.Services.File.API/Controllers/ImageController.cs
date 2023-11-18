@@ -1,23 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using XeGo.Services.Media.API.Data;
-using XeGo.Services.Media.API.Entities;
-using XeGo.Services.Media.API.Services.IServices;
+using XeGo.Services.File.API.Data;
+using XeGo.Services.File.API.Entities;
+using XeGo.Services.File.API.Services.IServices;
 using XeGo.Shared.Lib.Constants;
 using XeGo.Shared.Lib.Models;
 
-namespace XeGo.Services.Media.API.Controllers
+namespace XeGo.Services.File.API.Controllers
 {
-    [Route("api/v1/media")]
+    [Route("api/v1/images")]
     [ApiController]
-    public class MediaController : ControllerBase
+    public class ImageController : ControllerBase
     {
         private readonly IImageService _imageService;
         private readonly IBlobService _blobService;
         private readonly AppDbContext _db;
-        private readonly ILogger<MediaController> _logger;
+        private readonly ILogger<ImageController> _logger;
         private ResponseDto ResponseDto { get; set; }
 
-        public MediaController(IImageService imageService, IBlobService blobService, AppDbContext db, ILogger<MediaController> logger)
+        public ImageController(IImageService imageService, IBlobService blobService, AppDbContext db, ILogger<ImageController> logger)
         {
             _imageService = imageService ?? throw new ArgumentNullException(nameof(imageService));
             _blobService = blobService ?? throw new ArgumentNullException(nameof(blobService));
@@ -26,10 +26,10 @@ namespace XeGo.Services.Media.API.Controllers
             ResponseDto = new();
         }
 
-        [HttpGet("images/avatar")]
-        public async Task<ResponseDto> GetUserAvatarUri(string userId, string imageType, string imageSize)
+        [HttpGet("avatar")]
+        public ResponseDto GetUserAvatarUri(string userId, string imageType, string imageSize)
         {
-            _logger.LogInformation($"Executing {nameof(MediaController)} > {nameof(GetUserAvatarUri)}...");
+            _logger.LogInformation($"Executing {nameof(ImageController)} > {nameof(GetUserAvatarUri)}...");
             try
             {
                 var userImage = _db.UserImages
@@ -37,7 +37,7 @@ namespace XeGo.Services.Media.API.Controllers
 
                 if (userImage == null)
                 {
-                    _logger.LogInformation($"{nameof(MediaController)} > {nameof(GetUserAvatarUri)} : Not found!");
+                    _logger.LogInformation($"{nameof(ImageController)} > {nameof(GetUserAvatarUri)} : Not found!");
                     ResponseDto.IsSuccess = false;
                     ResponseDto.Message = "Not Found!";
                     return ResponseDto;
@@ -48,17 +48,17 @@ namespace XeGo.Services.Media.API.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"{nameof(MediaController)} > {nameof(GetUserAvatarUri)} : {e.Message}");
+                _logger.LogError($"{nameof(ImageController)} > {nameof(GetUserAvatarUri)} : {e.Message}");
                 ResponseDto.IsSuccess = false;
                 ResponseDto.Message = e.Message;
             }
             return ResponseDto;
         }
 
-        [HttpPost("images/avatar")]
+        [HttpPost("avatar")]
         public async Task<ResponseDto> UploadAvatar(IFormFile imageFile, string userId)
         {
-            _logger.LogInformation($"Executing {nameof(MediaController)} > {nameof(UploadAvatar)}...");
+            _logger.LogInformation($"Executing {nameof(ImageController)} > {nameof(UploadAvatar)}...");
 
             try
             {
@@ -66,7 +66,7 @@ namespace XeGo.Services.Media.API.Controllers
                 var uploadSuccess = await _blobService.UploadBlob(blobName, imageFile, BlobConstants.ImageContainerName, null);
                 if (!uploadSuccess)
                 {
-                    _logger.LogError($"{nameof(MediaController)} > {nameof(UploadAvatar)} : Cannot upload the image.");
+                    _logger.LogError($"{nameof(ImageController)} > {nameof(UploadAvatar)} : Cannot upload the image.");
                     ResponseDto.IsSuccess = false;
                     ResponseDto.Message = "Cannot upload the image";
                     return ResponseDto;
@@ -90,7 +90,7 @@ namespace XeGo.Services.Media.API.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"{nameof(MediaController)} > {nameof(UploadAvatar)} : {e.Message}");
+                _logger.LogError($"{nameof(ImageController)} > {nameof(UploadAvatar)} : {e.Message}");
                 ResponseDto.IsSuccess = false;
                 ResponseDto.Message = e.Message;
             }

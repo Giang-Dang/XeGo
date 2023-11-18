@@ -2,10 +2,10 @@
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Blobs.Specialized;
 using Azure.Storage.Sas;
-using XeGo.Services.Media.API.Models;
-using XeGo.Services.Media.API.Services.IServices;
+using XeGo.Services.File.API.Models;
+using XeGo.Services.File.API.Services.IServices;
 
-namespace XeGo.Services.Media.API.Services
+namespace XeGo.Services.File.API.Services
 {
     public class BlobService : IBlobService
     {

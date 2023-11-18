@@ -1,6 +1,6 @@
-﻿using XeGo.Services.Media.API.Models;
+﻿using XeGo.Services.File.API.Models;
 
-namespace XeGo.Services.Media.API.Services.IServices
+namespace XeGo.Services.File.API.Services.IServices
 {
     public interface IBlobService
     {

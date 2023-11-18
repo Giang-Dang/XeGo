@@ -255,8 +255,22 @@ services:
   xego.apigateways.ocelot:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - Serilog__MinimumLevel__Default=Debug
+      - Serilog__MinimumLevel__Override__Microsoft=Debug
+      - Serilog__MinimumLevel__Override__System=Warning
+      - ApiSettings__JwtOptions__Secret=adfh@JDFDKSAF1234sdf*%$$#feifkdmvcoaerDSJFAOEDFDFJffDSAFjkAjdfA485723AjdfAJfDjfAjdfdjferYGjASDJfEjfvdav
+      - ApiSettings__JwtOptions__Issuer=xego-auth-api
+      - ApiSettings__JwtOptions__Audience=xego-client
+      - ElasticConfiguration__Uri=http://elasticsearch 
     ports:
       - "6100:80"
+    depends_on:
+      - elasticsearch
+      - xego.services.auth.api
+      - xego.services.codevalue.api
+      - xego.services.location.api
+      - xego.services.vehicle.api
+      - xego.services.file.api
 
 networks:
   elastic:

@@ -1,13 +1,23 @@
 using Ocelot.Cache.CacheManager;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
+using Serilog;
+using System.Reflection;
+using XeGo.Shared.Lib.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
-{
-    config.AddJsonFile($"ocelot.{hostingContext.HostingEnvironment.EnvironmentName}.json", true, true);
-});
+builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
+
+// Add logging service
+LoggingHelpers loggingHelpers = new();
+loggingHelpers.ConfigureLogging(Assembly.GetExecutingAssembly().GetName().Name!);
+builder.Host.UseSerilog();
+
+var env = builder.Environment;
+builder.Configuration.AddJsonFile($"ocelot.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
 
 builder.Services.AddOcelot()
     .AddCacheManager(settings => settings.WithDictionaryHandle());
@@ -21,14 +31,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseRouting();
 
-app.UseEndpoints(endpoints =>
+app.MapGet("/", async context =>
 {
-    endpoints.MapGet("/", async context =>
-    {
-        await context.Response.WriteAsync("Ocelot is ready!");
-    });
+    await context.Response.WriteAsync("Ocelot is ready!");
 });
 
-await app.UseOcelot();
+app.UseOcelot().Wait();
 
 app.Run();

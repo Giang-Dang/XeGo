@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using XeGo.Services.Media.API.Entities;
+using XeGo.Services.File.API.Entities;
 
-namespace XeGo.Services.Media.API.Data
+namespace XeGo.Services.File.API.Data
 {
     public class AppDbContext : DbContext
     {

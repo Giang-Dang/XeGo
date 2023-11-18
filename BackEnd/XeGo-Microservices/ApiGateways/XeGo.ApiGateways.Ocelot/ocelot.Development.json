@@ -1,5 +1,5 @@
 {
-  "Route": [
+  "Routes": [
     //Auth
     {
       "DownstreamPathTemplate": "/api/auth/user/register",
@@ -88,7 +88,7 @@
 
     // Vehicle
     {
-      "DownstreamPathTemplate": "/api/vehicles/user/remove-role",
+      "DownstreamPathTemplate": "/api/vehicles",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -96,8 +96,82 @@
           "Port": "80"
         }
       ],
-      "UpstreamPathTemplate": "/api/vehicles/user/remove-role",
+      "UpstreamPathTemplate": "/api/vehicles",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/vehicles/{vehicleId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.vehicle.api",
+          "Port": "80"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/vehicles/{vehicleId}",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/vehicles/bans",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.vehicle.api",
+          "Port": "80"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/vehicles/bans",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/vehicles/{vehicleId}/ban",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.vehicle.api",
+          "Port": "80"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/vehicles/{vehicleId}/ban",
       "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/vehicles/bans/{banId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.vehicle.api",
+          "Port": "80"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/vehicles/bans/{banId}",
+      "UpstreamHttpMethod": [ "PUT" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/vehicles/bans/{banId}/unban",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.vehicle.api",
+          "Port": "80"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/vehicles/bans/{banId}/unban",
+      "UpstreamHttpMethod": [ "PUT" ]
+    },
+
+    // File
+    {
+      "DownstreamPathTemplate": "/api/v1/images/avatar",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.vehicle.api",
+          "Port": "80"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/v1/images/avatar",
+      "UpstreamHttpMethod": [ "GET", "POST" ]
     }
   ],
   "GlobalConfiguration": {

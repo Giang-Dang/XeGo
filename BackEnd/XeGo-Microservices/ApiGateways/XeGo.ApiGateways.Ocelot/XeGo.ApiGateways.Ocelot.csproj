@@ -13,6 +13,16 @@
 	  <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.4" />
 	  <PackageReference Include="Ocelot" Version="20.0.0" />
     <PackageReference Include="Ocelot.Cache.CacheManager" Version="20.0.0" />
+	  <PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
+	  <PackageReference Include="Serilog.Enrichers.Environment" Version="2.3.0" />
+	  <PackageReference Include="Serilog.Exceptions" Version="8.4.0" />
+	  <PackageReference Include="Serilog.Sinks.Console" Version="5.0.0" />
+	  <PackageReference Include="Serilog.Sinks.Debug" Version="2.0.0" />
+	  <PackageReference Include="Serilog.Sinks.Elasticsearch" Version="9.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\XeGo.Shared.Lib\XeGo.Shared.Lib.csproj" />
   </ItemGroup>
 
 </Project>
