@@ -3,9 +3,11 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System.Web.Http;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
 using XeGo.Services.Notifications.Functions.Constants;
+using XeGo.Services.Notifications.Functions.Models;
 
 namespace XeGo.Services.Notifications.Functions.BatchJobs
 {
@@ -15,7 +17,7 @@ namespace XeGo.Services.Notifications.Functions.BatchJobs
 
         public SendSms(ILoggerFactory loggerFactory)
         {
-            _logger = loggerFactory.CreateLogger<Function1>();
+            _logger = loggerFactory.CreateLogger<SendSms>();
         }
 
         [Function(FuncNameConst.SendSms)]
@@ -26,7 +28,7 @@ namespace XeGo.Services.Notifications.Functions.BatchJobs
             try
             {
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                var data = JsonConvert.DeserializeObject<TwilioRequest>(requestBody);
+                var data = JsonConvert.DeserializeObject<TwilioSmsRequest>(requestBody);
 
                 if (data?.PhoneNumber == null || data?.Message == null)
                 {
@@ -51,16 +53,10 @@ namespace XeGo.Services.Notifications.Functions.BatchJobs
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                _logger.LogError($"{FuncNameConst.SendSms}: {e.Message}");
+                return new InternalServerErrorResult();
             }
 
-        }
-
-        public class TwilioRequest
-        {
-            public string? PhoneNumber { get; set; }
-            public string? Message { get; set; }
         }
 
     }
