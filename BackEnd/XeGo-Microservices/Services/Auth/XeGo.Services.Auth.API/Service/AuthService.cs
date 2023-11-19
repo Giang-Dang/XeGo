@@ -69,7 +69,6 @@ namespace XeGo.Services.Auth.API.Service
             if (_roleManager.RoleExistsAsync(roleName).GetAwaiter().GetResult())
             {
                 return false;
-
             }
 
             _roleManager.CreateAsync(new IdentityRole(roleName)).GetAwaiter().GetResult();

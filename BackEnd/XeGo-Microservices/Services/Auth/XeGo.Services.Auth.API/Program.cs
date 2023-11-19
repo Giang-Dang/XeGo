@@ -7,8 +7,6 @@ using XeGo.Services.Auth.API.Entities;
 using XeGo.Services.Auth.API.Models;
 using XeGo.Services.Auth.API.Service;
 using XeGo.Services.Auth.API.Service.IService;
-using XeGo.Services.CodeValue.Grpc.Protos;
-using XeGo.Shared.GrpcConsumer.Services;
 using XeGo.Shared.Lib.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,12 +22,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFramework
 builder.Services.AddControllers();
 
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
-
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddGrpcClient<CodeValueProtoService.CodeValueProtoServiceClient>(o =>
-    o.Address = new Uri(builder.Configuration["GrpcSettings:CodeValueGrpcUrl"])
-    );
-builder.Services.AddScoped<CodeValueGrpcService>();
 
 // Add logging service
 LoggingHelpers loggingHelpers = new();

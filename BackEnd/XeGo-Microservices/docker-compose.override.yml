@@ -12,16 +12,16 @@ services:
     volumes:
       - sqlserver-authdb:/var/opt/mssql
 
-  codevaluedb:
-    container_name: codevaluedb
-    environment:
-        SA_PASSWORD: "admin1234@A"
-        ACCEPT_EULA: "Y"
-    restart: always
-    ports:
-      - "1434:1433"
-    volumes:
-      - sqlserver-codevaluedb:/var/opt/mssql
+  # codevaluedb:
+  #   container_name: codevaluedb
+  #   environment:
+  #       SA_PASSWORD: "admin1234@A"
+  #       ACCEPT_EULA: "Y"
+  #   restart: always
+  #   ports:
+  #     - "1434:1433"
+  #   volumes:
+  #     - sqlserver-codevaluedb:/var/opt/mssql
 
   locationdb:
     container_name: locationdb
@@ -68,7 +68,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=authdb;Database=XeGoAuthDb;User Id=sa;Password=admin1234@A;TrustServerCertificate=True
-      - GrpcSettings__CodeValueGrpcUrl=http://xego.services.codevalue.grpc
+      # - GrpcSettings__CodeValueGrpcUrl=http://xego.services.codevalue.grpc
       - ApiSettings__JwtOptions__Secret=adfh@JDFDKSAF1234sdf*%$$#feifkdmvcoaerDSJFAOEDFDFJffDSAFjkAjdfA485723AjdfAJfDjfAjdfdjferYGjASDJfEjfvdav
       - ApiSettings__JwtOptions__Issuer=xego-auth-api
       - ApiSettings__JwtOptions__Audience=xego-client
@@ -87,45 +87,45 @@ services:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
 
 
-  xego.services.codevalue.api:
-    container_name: xego.services.codevalue.api
-    environment:
-      - ConnectionStrings__DefaultConnection=Server=codevaluedb;Database=XeGoCodeValueDb;User Id=sa;Password=admin1234@A;TrustServerCertificate=True
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ApiSettings__JwtOptions__Secret=adfh@JDFDKSAF1234sdf*%$$#feifkdmvcoaerDSJFAOEDFDFJffDSAFjkAjdfA485723AjdfAJfDjfAjdfdjferYGjASDJfEjfvdav
-      - ApiSettings__JwtOptions__Issuer=xego-auth-api
-      - ApiSettings__JwtOptions__Audience=xego-client
-      - Serilog__MinimumLevel__Default=Debug
-      - Serilog__MinimumLevel__Override__Microsoft=Debug
-      - Serilog__MinimumLevel__Override__System=Warning
-      - ElasticConfiguration__Uri=http://elasticsearch
-    depends_on:
-      - codevaluedb
-      - elasticsearch
-    ports:
-      - "6002:80"
-      - "7002:443"
-    volumes:
-      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
-      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+  # xego.services.codevalue.api:
+  #   container_name: xego.services.codevalue.api
+  #   environment:
+  #     - ConnectionStrings__DefaultConnection=Server=codevaluedb;Database=XeGoCodeValueDb;User Id=sa;Password=admin1234@A;TrustServerCertificate=True
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ApiSettings__JwtOptions__Secret=adfh@JDFDKSAF1234sdf*%$$#feifkdmvcoaerDSJFAOEDFDFJffDSAFjkAjdfA485723AjdfAJfDjfAjdfdjferYGjASDJfEjfvdav
+  #     - ApiSettings__JwtOptions__Issuer=xego-auth-api
+  #     - ApiSettings__JwtOptions__Audience=xego-client
+  #     - Serilog__MinimumLevel__Default=Debug
+  #     - Serilog__MinimumLevel__Override__Microsoft=Debug
+  #     - Serilog__MinimumLevel__Override__System=Warning
+  #     - ElasticConfiguration__Uri=http://elasticsearch
+  #   depends_on:
+  #     - codevaluedb
+  #     - elasticsearch
+  #   ports:
+  #     - "6002:80"
+  #     - "7002:443"
+  #   volumes:
+  #     - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+  #     - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
 
-  xego.services.codevalue.grpc:
-    container_name: xego.services.codevalue.grpc
-    environment:
-      - ConnectionStrings__DefaultConnection=Server=codevaluedb;Database=XeGoCodeValueDb;User Id=sa;Password=admin1234@A;TrustServerCertificate=True
-      - ASPNETCORE_ENVIRONMENT=Development
-      - Serilog__MinimumLevel__Default=Debug
-      - Serilog__MinimumLevel__Override__Microsoft=Debug
-      - Serilog__MinimumLevel__Override__System=Warning
-      - ElasticConfiguration__Uri=http://elasticsearch
-    depends_on:
-      - codevaluedb
-      - elasticsearch
-    ports:
-      - "6003:80"
-    volumes:
-      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
-      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+  # xego.services.codevalue.grpc:
+  #   container_name: xego.services.codevalue.grpc
+  #   environment:
+  #     - ConnectionStrings__DefaultConnection=Server=codevaluedb;Database=XeGoCodeValueDb;User Id=sa;Password=admin1234@A;TrustServerCertificate=True
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - Serilog__MinimumLevel__Default=Debug
+  #     - Serilog__MinimumLevel__Override__Microsoft=Debug
+  #     - Serilog__MinimumLevel__Override__System=Warning
+  #     - ElasticConfiguration__Uri=http://elasticsearch
+  #   depends_on:
+  #     - codevaluedb
+  #     - elasticsearch
+  #   ports:
+  #     - "6003:80"
+  #   volumes:
+  #     - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+  #     - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
 
   xego.services.location.api:
     container_name: xego.services.location.api
@@ -139,10 +139,10 @@ services:
       - ApiSettings__JwtOptions__Issuer=xego-auth-api
       - ApiSettings__JwtOptions__Audience=xego-client
       - ElasticConfiguration__Uri=http://elasticsearch 
-      - GrpcSettings__CodeValueGrpcUrl=http://xego.services.codevalue.grpc
+      # - GrpcSettings__CodeValueGrpcUrl=http://xego.services.codevalue.grpc
     depends_on:
       - locationdb
-      - xego.services.codevalue.grpc
+      # - xego.services.codevalue.grpc
       - elasticsearch
     ports:
       - "6004:80"
@@ -159,10 +159,10 @@ services:
       - Serilog__MinimumLevel__Override__Microsoft=Debug
       - Serilog__MinimumLevel__Override__System=Warning
       - ElasticConfiguration__Uri=http://elasticsearch 
-      - GrpcSettings__CodeValueGrpcUrl=http://xego.services.codevalue.grpc
+      # - GrpcSettings__CodeValueGrpcUrl=http://xego.services.codevalue.grpc
     depends_on:
       - locationdb
-      - xego.services.codevalue.grpc
+      # - xego.services.codevalue.grpc
       - elasticsearch
     ports:
       - "6005:80"
@@ -182,10 +182,10 @@ services:
       - ApiSettings__JwtOptions__Issuer=xego-auth-api
       - ApiSettings__JwtOptions__Audience=xego-client
       - ElasticConfiguration__Uri=http://elasticsearch 
-      - GrpcSettings__CodeValueGrpcUrl=http://xego.services.codevalue.grpc
+      # - GrpcSettings__CodeValueGrpcUrl=http://xego.services.codevalue.grpc
     depends_on:
       - vehicledb
-      - xego.services.codevalue.grpc
+      # - xego.services.codevalue.grpc
       - elasticsearch
     ports:
       - "6006:80"
@@ -205,12 +205,12 @@ services:
     - ApiSettings__JwtOptions__Issuer=xego-auth-api
     - ApiSettings__JwtOptions__Audience=xego-client
     - ElasticConfiguration__Uri=http://elasticsearch 
-    - GrpcSettings__CodeValueGrpcUrl=http://xego.services.codevalue.grpc
+    # - GrpcSettings__CodeValueGrpcUrl=http://xego.services.codevalue.grpc
     secrets:
     - blob_connection
     depends_on:
     - filedb
-    - xego.services.codevalue.grpc
+    # - xego.services.codevalue.grpc
     - elasticsearch
     ports:
     - "6007:80"
@@ -253,6 +253,7 @@ services:
 
 
   xego.apigateways.ocelot:
+    container_name: xego.apigateways.ocelot
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - Serilog__MinimumLevel__Default=Debug
@@ -261,13 +262,13 @@ services:
       - ApiSettings__JwtOptions__Secret=adfh@JDFDKSAF1234sdf*%$$#feifkdmvcoaerDSJFAOEDFDFJffDSAFjkAjdfA485723AjdfAJfDjfAjdfdjferYGjASDJfEjfvdav
       - ApiSettings__JwtOptions__Issuer=xego-auth-api
       - ApiSettings__JwtOptions__Audience=xego-client
-      - ElasticConfiguration__Uri=http://elasticsearch 
+      - ElasticConfiguration__Uri=http://elasticsearch
     ports:
       - "6100:80"
     depends_on:
       - elasticsearch
       - xego.services.auth.api
-      - xego.services.codevalue.api
+      # - xego.services.codevalue.api
       - xego.services.location.api
       - xego.services.vehicle.api
       - xego.services.file.api
@@ -283,7 +284,7 @@ secrets:
 
 volumes:
   sqlserver-authdb:
-  sqlserver-codevaluedb:
+  # sqlserver-codevaluedb:
   sqlserver-locationdb:
   sqlserver-vehicledb:
   sqlserver-filedb:

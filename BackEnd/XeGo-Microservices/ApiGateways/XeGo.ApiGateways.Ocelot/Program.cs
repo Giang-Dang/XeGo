@@ -7,10 +7,6 @@ using XeGo.Shared.Lib.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
-builder.Logging.AddConsole();
-builder.Logging.AddDebug();
-
 // Add logging service
 LoggingHelpers loggingHelpers = new();
 loggingHelpers.ConfigureLogging(Assembly.GetExecutingAssembly().GetName().Name!);
@@ -31,11 +27,16 @@ if (app.Environment.IsDevelopment())
 
 app.UseRouting();
 
-app.MapGet("/", async context =>
+#pragma warning disable ASP0014 // Suggest using top level route registrations
+app.UseEndpoints(endpoints =>
 {
-    await context.Response.WriteAsync("Ocelot is ready!");
+    endpoints.MapGet("/", async context =>
+    {
+        await context.Response.WriteAsync("Ready!");
+    });
 });
+#pragma warning restore ASP0014 // Suggest using top level route registrations
 
-app.UseOcelot().Wait();
+await app.UseOcelot();
 
 app.Run();

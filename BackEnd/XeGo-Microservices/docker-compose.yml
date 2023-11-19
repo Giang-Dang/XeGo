@@ -4,8 +4,8 @@ services:
   authdb:
     image: mcr.microsoft.com/mssql/server:2022-latest
 
-  codevaluedb:
-    image: mcr.microsoft.com/mssql/server:2022-latest
+  # codevaluedb:
+  #   image: mcr.microsoft.com/mssql/server:2022-latest
 
   locationdb:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -22,17 +22,17 @@ services:
       context: .
       dockerfile: Services/Auth/XeGo.Services.Auth.API/Dockerfile
 
-  xego.services.codevalue.api:
-    image: ${DOCKER_REGISTRY-}xegoservicescodevalueapi
-    build:
-      context: .
-      dockerfile: Services/CodeValue/XeGo.Services.CodeValue.API/Dockerfile
+  # xego.services.codevalue.api:
+  #   image: ${DOCKER_REGISTRY-}xegoservicescodevalueapi
+  #   build:
+  #     context: .
+  #     dockerfile: Services/CodeValue/XeGo.Services.CodeValue.API/Dockerfile
 
-  xego.services.codevalue.grpc:
-    image: ${DOCKER_REGISTRY-}xegoservicescodevaluegrpc
-    build:
-      context: .
-      dockerfile: Services/CodeValue/XeGo.Services.CodeValue.Grpc/Dockerfile
+  # xego.services.codevalue.grpc:
+  #   image: ${DOCKER_REGISTRY-}xegoservicescodevaluegrpc
+  #   build:
+  #     context: .
+  #     dockerfile: Services/CodeValue/XeGo.Services.CodeValue.Grpc/Dockerfile
 
   xego.services.location.api:
     image: ${DOCKER_REGISTRY-}xegoserviceslocationapi
