@@ -76,9 +76,16 @@ services:
       context: .
       dockerfile: ApiGateways/XeGo.ApiGateways.Ocelot/Dockerfile
 
+  xego.services.notifications.functions:
+    image: ${DOCKER_REGISTRY-}xegoservicesnotificationsfunctions
+    build:
+      context: .
+      dockerfile: Services/Notifications/XeGo.Services.Notifications.Functions/Dockerfile
+
 volumes:
   portainer_data:
   elasticsearch-data:
+
 
 
 

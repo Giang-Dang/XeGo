@@ -16,16 +16,14 @@ namespace XeGo.Services.Notifications.Functions.BatchJobs
         [Function(FuncNameConst.StartScheduleSendSms)]
         public static async Task<HttpResponseData> HttpStart(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequestData req,
-            [Microsoft.Azure.Functions.Worker.DurableClient] DurableTaskClient client,
+            [DurableClient] DurableTaskClient client,
             FunctionContext executionContext)
         {
-            Microsoft.Extensions.Logging.ILogger logger = executionContext.GetLogger("Function_HttpStart");
+            ILogger logger = executionContext.GetLogger("Function_HttpStart");
 
-            // Function input comes from the request content.
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             var data = JsonConvert.DeserializeObject<SchedualTwilioSmsRequest>(requestBody);
 
-            // Function input comes from the request content.
             string instanceId = await client.ScheduleNewOrchestrationInstanceAsync(FuncNameConst.ScheduleSendSms, data);
 
             logger.LogInformation($"Started orchestration with ID = '{instanceId}'.");
@@ -37,9 +35,9 @@ namespace XeGo.Services.Notifications.Functions.BatchJobs
 
         [Function(FuncNameConst.ScheduleSendSms)]
         public static async Task RunOrchestrator(
-            [Microsoft.Azure.Functions.Worker.OrchestrationTrigger] TaskOrchestrationContext context)
+            [OrchestrationTrigger] TaskOrchestrationContext context)
         {
-            Microsoft.Extensions.Logging.ILogger logger = context.CreateReplaySafeLogger(nameof(ScheduleSendSms));
+            ILogger logger = context.CreateReplaySafeLogger(nameof(ScheduleSendSms));
 
             try
             {
@@ -75,9 +73,9 @@ namespace XeGo.Services.Notifications.Functions.BatchJobs
 
 
         [Function(FuncNameConst.SendSmsFunction)]
-        public static async Task SendSmsFunction([Microsoft.Azure.Functions.Worker.ActivityTrigger] string dataJson, FunctionContext executionContext)
+        public static async Task SendSmsFunction([ActivityTrigger] string dataJson, FunctionContext executionContext)
         {
-            Microsoft.Extensions.Logging.ILogger logger = executionContext.GetLogger(FuncNameConst.SendSmsFunction);
+            ILogger logger = executionContext.GetLogger(FuncNameConst.SendSmsFunction);
 
             try
             {

@@ -81,7 +81,6 @@ services:
       - elasticsearch
     ports:
       - "6001:80"
-      - "7001:443"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
@@ -273,6 +272,9 @@ services:
       - xego.services.vehicle.api
       - xego.services.file.api
 
+  xego.services.notifications.functions:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
 networks:
   elastic:
     driver: bridge
@@ -290,6 +292,7 @@ volumes:
   sqlserver-filedb:
   portainer_data:  
   elasticsearch-data:
+
 
 
 

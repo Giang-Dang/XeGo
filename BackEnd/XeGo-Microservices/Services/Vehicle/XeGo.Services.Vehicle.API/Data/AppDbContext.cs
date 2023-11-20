@@ -11,6 +11,7 @@ namespace XeGo.Services.Vehicle.API.Data
 
         public DbSet<Entities.Vehicle> Vehicles { get; set; }
         public DbSet<VehicleBan> VehicleBans { get; set; }
+        public DbSet<VehicleDriver> VehicleDrivers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

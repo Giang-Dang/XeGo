@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace XeGo.Services.File.API.Entities
 {
-    [Index(nameof(UserId), IsUnique = true)]
+    [Index(nameof(UserId), IsUnique = false)]
 
     public class UserImage
     {
