@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:math' as math;
 
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -19,7 +18,7 @@ class UserServices {
   static UserDto? userDto;
   static double currentLongitude = 0.0;
   static double currentLatitude = 0.0;
-  final apiService = ApiService();
+  final apiServices = ApiServices();
 
   Future<bool> login(LoginRequestDto requestDto) async {
     const subApiUrl = 'api/auth/user/login';
@@ -27,7 +26,7 @@ class UserServices {
 
     final jsonData = requestDto.toJson();
 
-    final response = await apiService.post(url.toString(),
+    final response = await apiServices.post(url.toString(),
         headers: Constants.kJsonHeader, data: jsonData);
 
     if (!response.data['isSuccess']) {
@@ -37,7 +36,7 @@ class UserServices {
         LoginResponseDto.fromJson(response.data);
 
     userDto = loginResponseDto.userDto;
-    ApiService.tokensDto = loginResponseDto.tokensDto;
+    ApiServices.tokensDto = loginResponseDto.tokensDto;
 
     await _deleteAllStoredLoginInfo();
     await _saveTokensDto(loginResponseDto.tokensDto);
@@ -52,7 +51,7 @@ class UserServices {
 
     final jsonData = requestDto.toJson();
 
-    final response = await apiService.post(url.toString(),
+    final response = await apiServices.post(url.toString(),
         headers: Constants.kJsonHeader, data: jsonData);
 
     if (!response.data['isSuccess']) {
@@ -137,7 +136,7 @@ class UserServices {
       return false;
     }
 
-    final apiService = ApiService();
+    final apiService = ApiServices();
     final tokensDto = TokensDto(
       refreshToken: refreshToken,
       accessToken: accessToken,

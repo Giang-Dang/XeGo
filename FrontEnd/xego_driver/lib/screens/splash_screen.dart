@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:xego_driver/models/Dto/login_request_dto.dart';
 import 'package:xego_driver/screens/login_screen.dart';
 import 'package:xego_driver/services/api_services.dart';
 import 'package:xego_driver/services/user_services.dart';
@@ -20,7 +19,7 @@ class _SplashScreenState extends State<SplashScreen>
   late Animation<double> _textAnimation;
   Timer? _loginTimer;
   final userServices = UserServices();
-  final apiServices = ApiService();
+  final apiServices = ApiServices();
 
   // logintest() async {
   //   const requestDto =
@@ -96,7 +95,7 @@ class _SplashScreenState extends State<SplashScreen>
             Text(
               'Welcome',
               style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                    color: KColors.kPrimaryColor,
+                    color: KColors.kColor4,
                     fontSize: 35,
                   ),
             ),
@@ -104,7 +103,7 @@ class _SplashScreenState extends State<SplashScreen>
             Text(
               'We are getting your location. Please wait.',
               style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                    color: KColors.kPrimaryColor,
+                    color: KColors.kColor4,
                     fontSize: 18,
                   ),
             ),

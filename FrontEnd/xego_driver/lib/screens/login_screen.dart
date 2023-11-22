@@ -2,8 +2,11 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:xego_driver/models/Dto/login_request_dto.dart';
+import 'package:xego_driver/screens/do_not_have_vehicle_screen.dart';
+import 'package:xego_driver/screens/main_tabs_screen.dart';
 import 'package:xego_driver/screens/user_registration_screen.dart';
 import 'package:xego_driver/services/user_services.dart';
+import 'package:xego_driver/services/vehicle_services.dart';
 import 'package:xego_driver/settings/constants.dart';
 import 'package:xego_driver/settings/kColors.dart';
 import 'package:xego_driver/widgets/navigation_rich_text.dart';
@@ -21,50 +24,61 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
 
   final UserServices _userServices = UserServices();
+  final VehicleServices _vehicleServices = VehicleServices();
 
   late bool _isPasswordObscured;
   late bool _isLogining;
   bool _isLoginFailed = false;
 
-  _login(BuildContext context) async {
-    LoginRequestDto loginRequestDto =
-        const LoginRequestDto(phoneNumber: '', password: '');
+  Future<void> _login(BuildContext context) async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    if (mounted) {
-      setState(() {
-        _isLogining = true;
-      });
-    }
+    _setLogining(true);
 
-    loginRequestDto = LoginRequestDto(
-        phoneNumber: _phoneNumberController.text,
-        password: _passwordController.text);
+    final loginRequestDto = LoginRequestDto(
+      phoneNumber: _phoneNumberController.text,
+      password: _passwordController.text,
+    );
 
     final isLoginSuccess = await _userServices.login(loginRequestDto);
+    final isDriverAssigned =
+        await _vehicleServices.isDriverAssigned(UserServices.userDto!.userId);
 
-    //TODO: CHECK IF THERE DRIVER IS NOW IN A RIDE.
-    // NAVIGATE TO THAT SCREEN.
-
-    //ELSE
-
-    if (mounted) {
-      setState(() {
-        _isLogining = false;
-      });
-    }
+    _setLogining(false);
 
     if (isLoginSuccess) {
-      setState(() {
-        _isLoginFailed = false;
-      });
+      _setLoginFailed(false);
+      _navigateToNextScreen(context, isDriverAssigned);
     } else {
-      //login failed
+      _setLoginFailed(true);
+    }
+  }
+
+  void _setLogining(bool isLogining) {
+    if (mounted) {
       setState(() {
-        _isLoginFailed = true;
+        _isLogining = isLogining;
       });
+    }
+  }
+
+  void _setLoginFailed(bool isLoginFailed) {
+    setState(() {
+      _isLoginFailed = isLoginFailed;
+    });
+  }
+
+  void _navigateToNextScreen(BuildContext context, bool isDriverAssigned) {
+    if (context.mounted) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => isDriverAssigned
+              ? const MainTabsScreen()
+              : const DoNotHaveVehicleScreen(),
+        ),
+      );
     }
   }
 
@@ -174,7 +188,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Text(
                   'Login Failed. Please check your phone number and password.',
                   style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                        color: Colors.red,
+                        color: KColors.kDanger,
                       ),
                   textAlign: TextAlign.center,
                 ),
@@ -189,8 +203,8 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 15),
               const NavigationRichText(
-                navigationText: ' to login.',
-                destinationScreen: LoginScreen(),
+                navigationText: ' to register.',
+                destinationScreen: UserRegistrationScreen(),
               ),
               const Gap(80),
               Transform.scale(

@@ -6,11 +6,11 @@ import 'package:xego_driver/services/user_services.dart';
 import 'package:xego_driver/settings/constants.dart';
 import 'package:xego_driver/settings/kSecrets.dart';
 
-class ApiService {
+class ApiServices {
   late Dio dio;
   static TokensDto tokensDto = TokensDto(refreshToken: '', accessToken: '');
 
-  ApiService() {
+  ApiServices() {
     dio = Dio();
     dio.interceptors.add(
       InterceptorsWrapper(

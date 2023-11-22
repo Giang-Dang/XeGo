@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:xego_driver/models/Dto/registration_request_dto.dart';
 import 'package:xego_driver/screens/login_screen.dart';
-import 'package:xego_driver/screens/vehicle_registration_screen.dart';
 import 'package:xego_driver/services/user_services.dart';
 import 'package:xego_driver/settings/constants.dart';
 import 'package:xego_driver/settings/kColors.dart';
@@ -85,7 +84,7 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
       if (context.mounted) {
         Navigator.pop(context);
         Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => VehicleRegistrationScreen(),
+          builder: (context) => const LoginScreen(),
         ));
       }
     });
@@ -153,20 +152,20 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
               const Gap(20),
               InfoSectionContainer(
                 title: 'Avatar',
-                titleColor: KColors.kPrimaryColor.withOpacity(0.8),
+                titleColor: KColors.kTertiaryColor,
                 padding: const EdgeInsets.all(14.0),
                 innerPadding: const EdgeInsets.all(14.0),
                 children: [
                   ImageInput(
-                    onPickImage: (image) {
-                      _selectedImage = image;
-                    },
-                  )
+                      onPickImage: (image) {
+                        _selectedImage = image;
+                      },
+                      backgroundColor: KColors.kSecondaryColor)
                 ],
               ),
               InfoSectionContainer(
                 title: 'Required Info',
-                titleColor: KColors.kPrimaryColor.withOpacity(0.8),
+                titleColor: KColors.kTertiaryColor,
                 padding: const EdgeInsets.all(14.0),
                 innerPadding: const EdgeInsets.all(14.0),
                 children: [

@@ -72,6 +72,7 @@ flutter:
   assets:
     - assets/images/car_loading.gif
     - assets/images/getting_location.gif
+    - assets/images/task_completed.gif
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

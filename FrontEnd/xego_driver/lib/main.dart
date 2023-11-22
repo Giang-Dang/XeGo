@@ -3,6 +3,7 @@ import 'package:xego_driver/screens/login_screen.dart';
 import 'package:xego_driver/screens/pick_location_screen.dart';
 import 'package:xego_driver/screens/splash_screen.dart';
 import 'package:xego_driver/screens/user_registration_screen.dart';
+import 'package:xego_driver/screens/do_not_have_vehicle_screen.dart';
 import 'package:xego_driver/settings/kTheme.dart';
 
 void main() {
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
       theme: KTheme.kTheme,
       home: Scaffold(
         // body: SplashScreen(),
-        body: UserRegistrationScreen(),
+        body: const LoginScreen(),
       ),
     );
   }
