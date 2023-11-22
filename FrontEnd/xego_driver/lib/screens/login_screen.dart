@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:xego_driver/models/Dto/login_request_dto.dart';
 import 'package:xego_driver/screens/user_registration_screen.dart';
 import 'package:xego_driver/services/user_services.dart';
+import 'package:xego_driver/settings/constants.dart';
 import 'package:xego_driver/settings/kColors.dart';
 import 'package:xego_driver/widgets/navigation_rich_text.dart';
 
@@ -55,14 +56,14 @@ class _LoginScreenState extends State<LoginScreen> {
       });
     }
 
-    if (!isLoginSuccess) {
+    if (isLoginSuccess) {
+      setState(() {
+        _isLoginFailed = false;
+      });
+    } else {
       //login failed
       setState(() {
         _isLoginFailed = true;
-      });
-    } else {
-      setState(() {
-        _isLoginFailed = false;
       });
     }
   }
@@ -85,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('XeGo - Drivers'),
+        title: const Text(Constants.kTopScreenAppTitle),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(35, 25, 40, 0),

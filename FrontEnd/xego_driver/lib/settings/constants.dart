@@ -11,4 +11,5 @@ class Constants {
   static const kAddressKeyName = 'address';
   static const kFromAppValue = 'DRIVER';
   static const kDefaultRoleValue = 'DRIVER';
+  static const kTopScreenAppTitle = 'XeGo - Driver';
 }
