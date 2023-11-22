@@ -24,6 +24,7 @@ namespace XeGo.Services.Auth.API.Data
         public DbSet<ApplicationUserToken> ApplicationTokens { get; set; }
         public DbSet<RoleFunction> RoleFunction { get; set; }
         public DbSet<Function> Functions { get; set; }
+        public DbSet<CodeValue> CodeValues { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -38,6 +39,26 @@ namespace XeGo.Services.Auth.API.Data
                 .HasOne(rf => rf.Function)
                 .WithMany()
                 .HasForeignKey(rf => rf.FunctionId);
+
+            modelBuilder.Entity<CodeValue>().HasData(
+                new CodeValue
+                {
+                    Id = 9,
+                    Name = "TOKEN_PROPERTY",
+                    SortOrder = 1,
+                    EffectiveStartDate = DateTime.Parse("2023-11-04T00:00:00.0000000"),
+                    EffectiveEndDate = DateTime.Parse("9999-12-31T00:00:00.0000000"),
+                    Value1 = "ACCESS_TOKEN_DAYS_TO_EXPIRE",
+                    Value1Type = "STRING",
+                    Value2 = "7",
+                    Value2Type = "INT",
+                    IsActive = true,
+                    CreatedBy = "ADMIN",
+                    CreatedDate = DateTime.Parse("2023-11-04T00:00:00.0000000"),
+                    LastModifiedBy = "ADMIN",
+                    LastModifiedDate = DateTime.Parse("2023-11-04T00:00:00.0000000")
+                }
+            );
         }
     }
 }

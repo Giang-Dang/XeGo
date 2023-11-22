@@ -29,8 +29,8 @@
 /BackEnd/XeGo-Microservices/Services/Ride/XeGo.Services.User.API/obj/
 /BackEnd/XeGo-Microservices/Services/Vehicle/XeGo.Services.Vehicle.API/bin/
 /BackEnd/XeGo-Microservices/Services/Vehicle/XeGo.Services.Vehicle.API/obj/
-/BackEnd/XeGo-Microservices/Services/Notification/XeGo.Services.Notification.Grpc/bin/
-/BackEnd/XeGo-Microservices/Services/Notification/XeGo.Services.Notification.Grpc/obj/
+/BackEnd/XeGo-Microservices/Services/Notifications/XeGo.Services.Notifications.Functions/bin/
+/BackEnd/XeGo-Microservices/Services/Notifications/XeGo.Services.Notifications.Functions/obj/
 /BackEnd/XeGo-Microservices/Shared/XeGo.Shared.Lib/bin/
 /BackEnd/XeGo-Microservices/Shared/XeGo.Shared.Lib/obj/
 /BackEnd/XeGo-Microservices/Shared/XeGo.Shared.GrpcConsumer/bin/
@@ -39,6 +39,7 @@
 /BackEnd/XeGo-Microservices/Shared/XeGo.Shared.Log.Producer/obj/
 /BackEnd/XeGo-Microservices/ApiGateways/XeGo.ApiGateways.Ocelot/bin/
 /BackEnd/XeGo-Microservices/ApiGateways/XeGo.ApiGateways.Ocelot/obj/
+/BackEnd/XeGo-Microservices/secrets/
 BackEnd/XeGo-Microservices/blob_connection.txt
 FrontEnd/xego_driver/lib/settings/kSecrets.dart
 FrontEnd/xego_driver/android/app/src/main/AndroidManifest.xml

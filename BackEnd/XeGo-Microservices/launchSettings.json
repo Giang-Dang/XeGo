@@ -11,7 +11,8 @@
         "xego.services.location.grpc": "StartDebugging",
         "xego.services.vehicle.api": "StartDebugging",
         "xego.services.file.api": "StartDebugging",
-        "xego.apigateways.ocelot": "StartDebugging"
+        "xego.apigateways.ocelot": "StartDebugging",
+        "xego.services.notifications.functions": "StartDebugging"
       }
     }
   }

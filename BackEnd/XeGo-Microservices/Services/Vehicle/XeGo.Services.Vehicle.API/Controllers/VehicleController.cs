@@ -70,7 +70,7 @@ namespace XeGo.Services.Vehicle.API.Controllers
                     (requestDto.Id == null || v.Id == requestDto.Id) &&
                     (requestDto.PlateNumber == null || v.PlateNumber.Contains(requestDto.PlateNumber)) &&
                     (requestDto.Type == null || v.Type.Contains(requestDto.Type)) &&
-                    (requestDto.DriverId == null || v.DriverId == requestDto.DriverId) &&
+                    (requestDto.DriverId == null || v.CurrentDriverId == requestDto.DriverId) &&
                     (requestDto.IsActive == null || v.IsActive == requestDto.IsActive) &&
                     (requestDto.CreatedBy == null || v.CreatedBy == requestDto.CreatedBy) &&
                     (requestDto.CreatedStartDate == null || v.CreatedDate >= requestDto.CreatedStartDate) &&
@@ -119,8 +119,7 @@ namespace XeGo.Services.Vehicle.API.Controllers
             {
                 var vehicleExists = await _vehicleRepo.AnyAsync(v =>
                     v != null
-                    && (v.PlateNumber.ToUpper() == requestDto.PlateNumber.ToUpper()
-                        || v.DriverId == requestDto.DriverId));
+                    && v.PlateNumber.ToUpper() == requestDto.PlateNumber.ToUpper());
                 if (vehicleExists)
                 {
                     _logger.LogInformation($"Creating Vehicle Failed. Vehicle with the same plate number and/or driver id has already existed!");
@@ -155,8 +154,7 @@ namespace XeGo.Services.Vehicle.API.Controllers
             {
                 var vehicleExists = await _vehicleRepo.AnyAsync(v =>
                     v != null
-                    && (v.PlateNumber.ToUpper() == requestDto.PlateNumber.ToUpper()
-                        || v.DriverId == requestDto.DriverId));
+                    && v.PlateNumber.ToUpper() == requestDto.PlateNumber.ToUpper());
                 if (!vehicleExists)
                 {
                     _logger.LogInformation($"Editing Vehicle Failed. Vehicle does not exist!");

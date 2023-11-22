@@ -66,11 +66,21 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiGateways", "ApiGateways", "{89DC8EA3-C4FC-4BA7-9118-9B790670597B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1F1CAEEA-981F-4538-B05B-3C7E37F804D3}"
-	ProjectSection(SolutionItems) = preProject
-		blob_connection.txt = blob_connection.txt
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XeGo.ApiGateways.Ocelot", "ApiGateways\XeGo.ApiGateways.Ocelot\XeGo.ApiGateways.Ocelot.csproj", "{AE56C796-2FCE-4F80-8BA5-1FD60EEAD531}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notifications", "Notifications", "{0EE8A9D9-2AFF-41BE-8795-DB966D8F1CB3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XeGo.Services.Notifications.Functions", "Services\Notifications\XeGo.Services.Notifications.Functions\XeGo.Services.Notifications.Functions.csproj", "{E40C37F8-738A-4FCF-BB03-A21DD848FD93}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "secrets", "secrets", "{0C897DFD-1BFB-4C22-AAC8-1B4A5E77190A}"
+	ProjectSection(SolutionItems) = preProject
+		secrets\azure_web_jobs_storage.txt = secrets\azure_web_jobs_storage.txt
+		secrets\blob_connection.txt = secrets\blob_connection.txt
+		secrets\twilio_account_sid.txt = secrets\twilio_account_sid.txt
+		secrets\twilio_auth_token.txt = secrets\twilio_auth_token.txt
+		secrets\twilio_phone_number.txt = secrets\twilio_phone_number.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -138,6 +148,10 @@ Global
 		{AE56C796-2FCE-4F80-8BA5-1FD60EEAD531}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE56C796-2FCE-4F80-8BA5-1FD60EEAD531}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE56C796-2FCE-4F80-8BA5-1FD60EEAD531}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E40C37F8-738A-4FCF-BB03-A21DD848FD93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E40C37F8-738A-4FCF-BB03-A21DD848FD93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E40C37F8-738A-4FCF-BB03-A21DD848FD93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E40C37F8-738A-4FCF-BB03-A21DD848FD93}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -171,6 +185,9 @@ Global
 		{7EA9FFF8-D682-48B4-89D2-FD84B284B970} = {4A53D027-5429-401B-896A-5DBA6F2D4402}
 		{2DBE042D-EE70-4F79-B874-466B905F7FB7} = {954D90AE-520E-4123-B94E-D185C35A1CD0}
 		{AE56C796-2FCE-4F80-8BA5-1FD60EEAD531} = {89DC8EA3-C4FC-4BA7-9118-9B790670597B}
+		{0EE8A9D9-2AFF-41BE-8795-DB966D8F1CB3} = {0222190D-254D-4891-AC10-4023DC400561}
+		{E40C37F8-738A-4FCF-BB03-A21DD848FD93} = {0EE8A9D9-2AFF-41BE-8795-DB966D8F1CB3}
+		{0C897DFD-1BFB-4C22-AAC8-1B4A5E77190A} = {1F1CAEEA-981F-4538-B05B-3C7E37F804D3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {837CBB2D-FE62-4B52-A8A4-D37FE9935AA9}

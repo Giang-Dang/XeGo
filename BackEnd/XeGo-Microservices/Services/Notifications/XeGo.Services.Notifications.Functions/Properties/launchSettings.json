@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "XeGo.Services.Notifications.Functions": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7020"
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "httpPort": 31860,
+      "useSSL": false
+    }
+  }
+}

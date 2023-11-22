@@ -5,6 +5,17 @@
 }
 
 {
+  "email": "admin@gmail.com",
+  "userName": "Admin",
+  "phoneNumber": "0365627243",
+  "password": "Admin@1234",
+  "firstName": "System",
+  "lastName": "Admin",
+  "address": "address",
+  "role": "Admin"
+}
+
+{
   "phoneNumber": "4285749353",
   "password": "Admin@1234",
   "fromApp": "DRIVER"

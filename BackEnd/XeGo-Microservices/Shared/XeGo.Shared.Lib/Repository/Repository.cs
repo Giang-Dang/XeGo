@@ -34,7 +34,6 @@ namespace XeGo.Shared.Lib.Repository
             if (!tracked)
             {
                 query.AsNoTracking();
-                query = query;
             }
             if (filter != null)
             {

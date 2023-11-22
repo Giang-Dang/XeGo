@@ -62,7 +62,7 @@
       "UpstreamHttpMethod": [ "POST" ]
     },
     {
-      "DownstreamPathTemplate": "/api/auth/user/create-role",
+      "DownstreamPathTemplate": "/api/auth/create-role",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -70,11 +70,11 @@
           "Port": "80"
         }
       ],
-      "UpstreamPathTemplate": "/api/auth/user/create-role",
+      "UpstreamPathTemplate": "/api/auth/create-role",
       "UpstreamHttpMethod": [ "POST" ]
     },
     {
-      "DownstreamPathTemplate": "/api/auth/user/remove-role",
+      "DownstreamPathTemplate": "/api/auth/remove-role",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -82,7 +82,7 @@
           "Port": "80"
         }
       ],
-      "UpstreamPathTemplate": "/api/auth/user/remove-role",
+      "UpstreamPathTemplate": "/api/auth/remove-role",
       "UpstreamHttpMethod": [ "POST" ]
     },
 
