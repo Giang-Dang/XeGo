@@ -37,7 +37,7 @@ namespace XeGo.Services.Vehicle.API.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("CurrentDriverId")
+                    b.Property<string>("DriverId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
@@ -54,11 +54,12 @@ namespace XeGo.Services.Vehicle.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("TypeId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("TypeId");
 
                     b.ToTable("Vehicles");
                 });
@@ -108,7 +109,7 @@ namespace XeGo.Services.Vehicle.API.Migrations
                     b.ToTable("VehicleBans");
                 });
 
-            modelBuilder.Entity("XeGo.Services.Vehicle.API.Entities.VehicleDriver", b =>
+            modelBuilder.Entity("XeGo.Services.Vehicle.API.Entities.VehicleType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -123,12 +124,8 @@ namespace XeGo.Services.Vehicle.API.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("DriverId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2");
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<string>("LastModifiedBy")
                         .IsRequired()
@@ -137,15 +134,46 @@ namespace XeGo.Services.Vehicle.API.Migrations
                     b.Property<DateTime>("LastModifiedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("VehicleId")
-                        .HasColumnType("int");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("VehicleDrivers");
+                    b.ToTable("VehicleTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedBy = "ADMIN",
+                            CreatedDate = new DateTime(2023, 11, 22, 9, 29, 55, 617, DateTimeKind.Utc).AddTicks(158),
+                            IsActive = true,
+                            LastModifiedBy = "ADMIN",
+                            LastModifiedDate = new DateTime(2023, 11, 22, 9, 29, 55, 617, DateTimeKind.Utc).AddTicks(158),
+                            Name = "4-seater Car"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedBy = "ADMIN",
+                            CreatedDate = new DateTime(2023, 11, 22, 9, 29, 55, 617, DateTimeKind.Utc).AddTicks(161),
+                            IsActive = true,
+                            LastModifiedBy = "ADMIN",
+                            LastModifiedDate = new DateTime(2023, 11, 22, 9, 29, 55, 617, DateTimeKind.Utc).AddTicks(162),
+                            Name = "7-seater Car"
+                        });
+                });
+
+            modelBuilder.Entity("XeGo.Services.Vehicle.API.Entities.Vehicle", b =>
+                {
+                    b.HasOne("XeGo.Services.Vehicle.API.Entities.VehicleType", "VehicleType")
+                        .WithMany()
+                        .HasForeignKey("TypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("VehicleType");
                 });
 
             modelBuilder.Entity("XeGo.Services.Vehicle.API.Entities.VehicleBan", b =>

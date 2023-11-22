@@ -11,22 +11,17 @@ namespace XeGo.Services.Vehicle.API.Controllers
 {
     [Route("api/vehicles")]
     [ApiController]
-    public class VehicleController : ControllerBase
+    public class VehicleController(
+            IVehicleRepository vehicleRepo,
+            IVehicleBanRepository vehicleBanRepo,
+            ILogger<VehicleController> logger,
+            IMapper mapper)
+        : ControllerBase
     {
-        private readonly IVehicleRepository _vehicleRepo;
-        private readonly IVehicleBanRepository _vehicleBanRepo;
-        private readonly IMapper _mapper;
-        private readonly ILogger<VehicleController> _logger;
-        private ResponseDto ResponseDto { get; set; }
-        public VehicleController(IVehicleRepository vehicleRepository, IVehicleBanRepository vehicleBanRepo,
-            IMapper mapper, ILogger<VehicleController> logger)
-        {
-            _vehicleRepo = vehicleRepository ?? throw new ArgumentNullException(nameof(vehicleRepository));
-            _vehicleBanRepo = vehicleBanRepo ?? throw new ArgumentNullException(nameof(vehicleBanRepo));
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            ResponseDto = new();
-        }
+        private readonly IVehicleRepository _vehicleRepo = vehicleRepo ?? throw new ArgumentNullException(nameof(vehicleRepo));
+        private readonly IVehicleBanRepository _vehicleBanRepo = vehicleBanRepo ?? throw new ArgumentNullException(nameof(vehicleBanRepo));
+        private readonly ILogger<VehicleController> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        private ResponseDto ResponseDto { get; set; } = new();
 
         [HttpGet("{vehicleId}")]
         public async Task<ResponseDto> GetById(int vehicleId)
@@ -60,41 +55,54 @@ namespace XeGo.Services.Vehicle.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ResponseDto> GetAllVehicles(GetVehicleRequestDto requestDto)
+        public async Task<ResponseDto> GetAllVehicles(
+            int? id,
+            string? plateNumber,
+            string? type,
+            string? driverId,
+            bool? isActive,
+            string? createdBy,
+            DateTime? createdStartDate,
+            DateTime? createdEndDate,
+            string? lastModifiedBy,
+            DateTime? lastModifiedStartDate,
+            DateTime? lastModifiedEndDate,
+            string? searchString,
+            int pageNumber = 0,
+            int pageSize = 0)
         {
             _logger.LogInformation($"Executing {nameof(VehicleController)}>{nameof(GetAllVehicles)}...");
 
             try
             {
                 Expression<Func<Entities.Vehicle, bool>> filters = v =>
-                    (requestDto.Id == null || v.Id == requestDto.Id) &&
-                    (requestDto.PlateNumber == null || v.PlateNumber.Contains(requestDto.PlateNumber)) &&
-                    (requestDto.Type == null || v.Type.Contains(requestDto.Type)) &&
-                    (requestDto.DriverId == null || v.CurrentDriverId == requestDto.DriverId) &&
-                    (requestDto.IsActive == null || v.IsActive == requestDto.IsActive) &&
-                    (requestDto.CreatedBy == null || v.CreatedBy == requestDto.CreatedBy) &&
-                    (requestDto.CreatedStartDate == null || v.CreatedDate >= requestDto.CreatedStartDate) &&
-                    (requestDto.CreatedEndDate == null || v.CreatedDate <= requestDto.CreatedEndDate) &&
-                    (requestDto.LastModifiedBy == null || v.LastModifiedBy == requestDto.LastModifiedBy) &&
-                    (requestDto.LastModifiedStartDate == null || v.LastModifiedDate >= requestDto.LastModifiedStartDate) &&
-                    (requestDto.LastModifiedEndDate == null || v.LastModifiedDate <= requestDto.LastModifiedEndDate);
+                    (id == null || v.Id == id) &&
+                    (plateNumber == null || v.PlateNumber.Contains(plateNumber)) &&
+                    (type == null || v.VehicleType.Name.Contains(type)) &&
+                    (driverId == null || v.DriverId == driverId) &&
+                    (isActive == null || v.IsActive == isActive) &&
+                    (createdBy == null || v.CreatedBy == createdBy) &&
+                    (createdStartDate == null || v.CreatedDate >= createdStartDate) &&
+                    (createdEndDate == null || v.CreatedDate <= createdEndDate) &&
+                    (lastModifiedBy == null || v.LastModifiedBy == lastModifiedBy) &&
+                    (lastModifiedStartDate == null || v.LastModifiedDate >= lastModifiedStartDate) &&
+                    (lastModifiedEndDate == null || v.LastModifiedDate <= lastModifiedEndDate);
 
-                if (string.IsNullOrEmpty(requestDto.SearchString))
+                if (!string.IsNullOrEmpty(searchString))
                 {
                     Expression<Func<Entities.Vehicle, bool>> searchFilter = v =>
-                        (requestDto.SearchString == null ||
-                         (v.PlateNumber.ToLower().Contains(requestDto.SearchString.ToLower())) ||
-                         (v.Type.ToLower().Contains(requestDto.SearchString.ToLower())) ||
-                         (v.CreatedBy.ToLower().Contains(requestDto.SearchString.ToLower())) ||
-                         (v.LastModifiedBy.ToLower().Contains(requestDto.SearchString.ToLower())));
+                        ((v.PlateNumber.ToLower().Contains(searchString.ToLower())) ||
+                         (v.VehicleType.Name.ToLower().Contains(searchString.ToLower())) ||
+                         (v.CreatedBy.ToLower().Contains(searchString.ToLower())) ||
+                         (v.LastModifiedBy.ToLower().Contains(searchString.ToLower())));
 
                     filters = filters.AndAlso(searchFilter);
                 }
 
                 var vehicles = await _vehicleRepo.GetAllAsync(
                     filter: filters,
-                    pageSize: requestDto.PageSize,
-                    pageNumber: requestDto.PageNumber);
+                    pageSize: pageSize,
+                    pageNumber: pageNumber);
 
                 _logger.LogInformation($"Get vehicles : {vehicles.Count()} Found!");
                 ResponseDto.IsSuccess = true;
@@ -110,6 +118,7 @@ namespace XeGo.Services.Vehicle.API.Controllers
 
             return ResponseDto;
         }
+
 
         [HttpPost]
         public async Task<ResponseDto> CreateVehicle(CreateVehicleRequestDto requestDto)
@@ -128,7 +137,7 @@ namespace XeGo.Services.Vehicle.API.Controllers
                     return ResponseDto;
                 }
 
-                var createDto = _mapper.Map<Entities.Vehicle>(requestDto);
+                var createDto = mapper.Map<Entities.Vehicle>(requestDto);
                 createDto.LastModifiedBy = requestDto.ModifiedBy ?? "N/A";
                 createDto.CreatedBy = requestDto.ModifiedBy ?? "N/A";
 
@@ -172,7 +181,7 @@ namespace XeGo.Services.Vehicle.API.Controllers
                     return ResponseDto;
                 }
 
-                _mapper.Map(requestDto, vehicle);
+                mapper.Map(requestDto, vehicle);
                 vehicle.LastModifiedDate = DateTime.UtcNow;
                 vehicle.LastModifiedBy = requestDto.ModifiedBy;
 
@@ -350,5 +359,56 @@ namespace XeGo.Services.Vehicle.API.Controllers
 
             return ResponseDto;
         }
+
+        [HttpPost("assign")]
+        public async Task<ResponseDto> AssignVehicle([FromBody] AssignVehicleRequestDto requestDto)
+        {
+            try
+            {
+                var utcNow = DateTime.UtcNow;
+                var cVehicle = await vehicleRepo
+                    .GetAsync(v => v.Id == requestDto.VehicleId);
+
+                if (cVehicle == null)
+                {
+                    ResponseDto.Message = "This vehicle is not found!";
+                    ResponseDto.IsSuccess = false;
+                    return ResponseDto;
+                }
+
+                if (cVehicle.DriverId != null)
+                {
+                    ResponseDto.Message = "This vehicle has been already assigned.";
+                    ResponseDto.IsSuccess = false;
+                    return ResponseDto;
+                }
+
+                var cDriver = await vehicleRepo
+                    .GetAsync(v =>
+                        v.DriverId == requestDto.DriverId);
+                if (cDriver != null)
+                {
+                    ResponseDto.Message = "This driver has been already assigned.";
+                    ResponseDto.IsSuccess = false;
+                    return ResponseDto;
+                }
+
+                cVehicle.DriverId = requestDto.DriverId;
+                ResponseDto.Data = await vehicleRepo.UpdateAsync(cVehicle);
+                ResponseDto.IsSuccess = true;
+
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"{nameof(VehicleController)}>{nameof(AssignVehicle)}: {e.Message}");
+                ResponseDto.IsSuccess = false;
+                ResponseDto.Data = null;
+                ResponseDto.Message = e.Message;
+            }
+
+            return ResponseDto;
+
+        }
+
     }
 }

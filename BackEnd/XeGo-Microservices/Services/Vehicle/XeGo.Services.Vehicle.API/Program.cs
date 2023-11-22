@@ -2,12 +2,23 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System.Reflection;
 using XeGo.Services.Vehicle.API.Data;
+using XeGo.Services.Vehicle.API.Mapping;
+using XeGo.Services.Vehicle.API.Repository;
+using XeGo.Services.Vehicle.API.Repository.IRepository;
 using XeGo.Shared.Lib.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddAppDbContext<AppDbContext>(builder.Configuration, "DefaultConnection");
+
+builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
+builder.Services.AddScoped<IVehicleBanRepository, VehicleBanRepository>();
+builder.Services.AddScoped<IVehicleTypeRepository, VehicleTypeRepository>();
+
+builder.Services.AddAutoMapper(
+    typeof(VehicleProfile)
+);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

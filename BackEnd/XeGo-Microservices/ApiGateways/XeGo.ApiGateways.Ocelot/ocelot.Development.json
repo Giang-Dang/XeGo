@@ -7,7 +7,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "xego.services.auth.api",
-          "Port": "80"
+          "Port": "8080"
         }
       ],
       "UpstreamPathTemplate": "/api/auth/user/register",
@@ -19,7 +19,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "xego.services.auth.api",
-          "Port": "80"
+          "Port": "8080"
         }
       ],
       "UpstreamPathTemplate": "/api/auth/user/login",
@@ -31,7 +31,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "xego.services.auth.api",
-          "Port": "80"
+          "Port": "8080"
         }
       ],
       "UpstreamPathTemplate": "/api/auth/user/assign-role",
@@ -43,7 +43,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "xego.services.auth.api",
-          "Port": "80"
+          "Port": "8080"
         }
       ],
       "UpstreamPathTemplate": "/api/auth/user/remove-role",
@@ -55,7 +55,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "xego.services.auth.api",
-          "Port": "80"
+          "Port": "8080"
         }
       ],
       "UpstreamPathTemplate": "/api/auth/user/refresh-token",
@@ -67,7 +67,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "xego.services.auth.api",
-          "Port": "80"
+          "Port": "8080"
         }
       ],
       "UpstreamPathTemplate": "/api/auth/create-role",
@@ -79,7 +79,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "xego.services.auth.api",
-          "Port": "80"
+          "Port": "8080"
         }
       ],
       "UpstreamPathTemplate": "/api/auth/remove-role",
@@ -93,7 +93,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "xego.services.vehicle.api",
-          "Port": "80"
+          "Port": "8080"
         }
       ],
       "UpstreamPathTemplate": "/api/vehicles",
@@ -105,7 +105,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "xego.services.vehicle.api",
-          "Port": "80"
+          "Port": "8080"
         }
       ],
       "UpstreamPathTemplate": "/api/vehicles/{vehicleId}",
@@ -117,7 +117,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "xego.services.vehicle.api",
-          "Port": "80"
+          "Port": "8080"
         }
       ],
       "UpstreamPathTemplate": "/api/vehicles/bans",
@@ -129,7 +129,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "xego.services.vehicle.api",
-          "Port": "80"
+          "Port": "8080"
         }
       ],
       "UpstreamPathTemplate": "/api/vehicles/{vehicleId}/ban",
@@ -141,7 +141,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "xego.services.vehicle.api",
-          "Port": "80"
+          "Port": "8080"
         }
       ],
       "UpstreamPathTemplate": "/api/vehicles/bans/{banId}",
@@ -153,11 +153,23 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "xego.services.vehicle.api",
-          "Port": "80"
+          "Port": "8080"
         }
       ],
       "UpstreamPathTemplate": "/api/vehicles/bans/{banId}/unban",
       "UpstreamHttpMethod": [ "PUT" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/vehicles/assign",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.vehicle.api",
+          "Port": "8080"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/vehicles/assign",
+      "UpstreamHttpMethod": [ "POST" ]
     },
 
     // File
@@ -167,11 +179,28 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "xego.services.vehicle.api",
-          "Port": "80"
+          "Port": "8080"
         }
       ],
       "UpstreamPathTemplate": "/api/v1/images/avatar",
       "UpstreamHttpMethod": [ "GET", "POST" ]
+    }
+  ],
+  // for hubs
+  "ReRoutes": [
+    // Ride
+    // ridehub
+    {
+      "DownstreamPathTemplate": "/hubs/ride-hub/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.ride.api",
+          "Port": "8080"
+        }
+      ],
+      "UpstreamPathTemplate": "/hubs/ride-hub/{everything}",
+      "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE", "OPTIONS" ]
     }
   ],
   "GlobalConfiguration": {

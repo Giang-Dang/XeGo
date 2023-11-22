@@ -1,6 +1,6 @@
 ﻿using XeGo.Services.Location.API.Services.IServices;
 
-namespace XeGo.Services.Location.API.Services
+namespace XeGo.Services.Location.Grpc.Services
 {
     public class GeoHashService : IGeoHashService
     {
@@ -74,10 +74,10 @@ namespace XeGo.Services.Location.API.Services
             return true;
         }
 
-        public List<string> GetNeighbors(double latitude, double longitude, double geoSquareSideMeters, double radiusInMeters)
+        public List<string> GetNeighbors(double latitude, double longitude, double geoHashSquareSideInMeters, double radiusInMeters)
         {
-            double stepSize = geoSquareSideMeters / 111000.0;
-            int radiusInSquare = (int)Math.Ceiling(radiusInMeters / geoSquareSideMeters);
+            double stepSize = geoHashSquareSideInMeters / 111000.0;
+            int radiusInSquare = (int)Math.Ceiling(radiusInMeters / geoHashSquareSideInMeters);
             List<string> neighbors = new List<string>();
 
             for (int i = -radiusInSquare; i <= radiusInSquare; i++)
@@ -88,7 +88,7 @@ namespace XeGo.Services.Location.API.Services
                     if (i == 0 && j == 0)
                         continue;
 
-                    neighbors.Add(Geohash(latitude + i * stepSize, longitude + j * stepSize, geoSquareSideMeters));
+                    neighbors.Add(Geohash(latitude + i * stepSize, longitude + j * stepSize, geoHashSquareSideInMeters));
                 }
             }
 

@@ -4,12 +4,10 @@ using XeGo.Shared.Lib.Entities;
 
 namespace XeGo.Services.Vehicle.API.Entities
 {
-    public class VehicleDriver : BaseEntity
+    public class VehicleType : BaseEntity
     {
         [Key][DatabaseGenerated(DatabaseGeneratedOption.Identity)] public int Id { get; set; }
-        [Required] public string DriverId { get; set; } = string.Empty!;
-        [Required] public int VehicleId { get; set; }
-        [Required] public DateTime StartDate { get; set; }
-        [Required] public DateTime EndDate { get; set; }
+        [Required] public string Name { get; set; } = string.Empty!;
+        [Required] public bool IsActive { get; set; }
     }
 }

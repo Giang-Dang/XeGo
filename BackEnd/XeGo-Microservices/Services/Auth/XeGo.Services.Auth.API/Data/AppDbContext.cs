@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using XeGo.Services.Auth.API.Entities;
+using XeGo.Shared.Lib.Constants;
 
 namespace XeGo.Services.Auth.API.Data
 {
@@ -46,17 +47,17 @@ namespace XeGo.Services.Auth.API.Data
                     Id = 9,
                     Name = "TOKEN_PROPERTY",
                     SortOrder = 1,
-                    EffectiveStartDate = DateTime.Parse("2023-11-04T00:00:00.0000000"),
-                    EffectiveEndDate = DateTime.Parse("9999-12-31T00:00:00.0000000"),
+                    EffectiveStartDate = DateTime.UtcNow,
+                    EffectiveEndDate = DateTime.MaxValue,
                     Value1 = "ACCESS_TOKEN_DAYS_TO_EXPIRE",
-                    Value1Type = "STRING",
+                    Value1Type = CodeValueTypeConstants.String,
                     Value2 = "7",
-                    Value2Type = "INT",
+                    Value2Type = CodeValueTypeConstants.Int,
                     IsActive = true,
-                    CreatedBy = "ADMIN",
-                    CreatedDate = DateTime.Parse("2023-11-04T00:00:00.0000000"),
-                    LastModifiedBy = "ADMIN",
-                    LastModifiedDate = DateTime.Parse("2023-11-04T00:00:00.0000000")
+                    CreatedBy = RoleConstants.Admin,
+                    CreatedDate = DateTime.UtcNow,
+                    LastModifiedBy = RoleConstants.Admin,
+                    LastModifiedDate = DateTime.UtcNow
                 }
             );
         }

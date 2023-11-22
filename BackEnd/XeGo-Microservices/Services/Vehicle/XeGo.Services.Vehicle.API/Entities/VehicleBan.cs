@@ -10,7 +10,7 @@ namespace XeGo.Services.Vehicle.API.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [Required] public int VehicleId { get; set; }
-        [Required] public Vehicle Vehicle { get; set; } = null!;
+        [ForeignKey($"{nameof(VehicleId)}")] public virtual Vehicle Vehicle { get; set; } = null!;
         [Required] public string Reason { get; set; } = string.Empty!;
         [Required] public DateTime StartTime { get; set; }
         [Required] public DateTime EndTime { get; set; }

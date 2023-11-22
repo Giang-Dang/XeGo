@@ -64,12 +64,14 @@ void ApplyMigration()
         if (db.Database.GetPendingMigrations().Any())
         {
             db.Database.Migrate();
+            Console.WriteLine("DB migration completed!");
         }
 
         scope.Dispose();
     }
     catch (Exception e)
     {
+        Console.WriteLine("DB migration failed!");
         Console.WriteLine(e);
     }
 }

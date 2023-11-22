@@ -17,10 +17,171 @@ namespace XeGo.Services.Location.API.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.13")
+                .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("XeGo.Services.Location.API.Entities.CodeValue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("EffectiveEndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("EffectiveStartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastModifiedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("SortOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Value1")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Value10")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Value10Type")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Value1Type")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Value2")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Value2Type")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Value3")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Value3Type")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Value4")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Value4Type")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Value5")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Value5Type")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Value6")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Value6Type")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Value7")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Value7Type")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Value8")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Value8Type")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Value9")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Value9Type")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CodeValues");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 11,
+                            CreatedBy = "ADMIN",
+                            CreatedDate = new DateTime(2023, 11, 21, 9, 26, 6, 269, DateTimeKind.Utc).AddTicks(7608),
+                            EffectiveEndDate = new DateTime(9999, 12, 31, 23, 59, 59, 999, DateTimeKind.Unspecified).AddTicks(9999),
+                            EffectiveStartDate = new DateTime(2023, 11, 21, 9, 26, 6, 269, DateTimeKind.Utc).AddTicks(7604),
+                            IsActive = true,
+                            LastModifiedBy = "ADMIN",
+                            LastModifiedDate = new DateTime(2023, 11, 21, 9, 26, 6, 269, DateTimeKind.Utc).AddTicks(7608),
+                            Name = "GEOHASH",
+                            SortOrder = 1,
+                            Value1 = "GEOHASH_SQUARE_SIDE_LENGTH_IN_METERS",
+                            Value1Type = "STRING",
+                            Value2 = "500",
+                            Value2Type = "DOUBLE"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            CreatedBy = "ADMIN",
+                            CreatedDate = new DateTime(2023, 11, 21, 9, 26, 6, 269, DateTimeKind.Utc).AddTicks(7613),
+                            EffectiveEndDate = new DateTime(9999, 12, 31, 23, 59, 59, 999, DateTimeKind.Unspecified).AddTicks(9999),
+                            EffectiveStartDate = new DateTime(2023, 11, 21, 9, 26, 6, 269, DateTimeKind.Utc).AddTicks(7611),
+                            IsActive = true,
+                            LastModifiedBy = "ADMIN",
+                            LastModifiedDate = new DateTime(2023, 11, 21, 9, 26, 6, 269, DateTimeKind.Utc).AddTicks(7613),
+                            Name = "GEOHASH",
+                            SortOrder = 1,
+                            Value1 = "RADIUS_IN_METERS",
+                            Value1Type = "STRING",
+                            Value2 = "1000",
+                            Value2Type = "DOUBLE"
+                        });
+                });
 
             modelBuilder.Entity("XeGo.Services.Location.API.Entities.DriverLocation", b =>
                 {

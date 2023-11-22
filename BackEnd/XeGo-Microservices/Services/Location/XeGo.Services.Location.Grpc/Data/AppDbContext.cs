@@ -12,7 +12,7 @@ namespace XeGo.Services.Location.Grpc.Data
 
         public DbSet<DriverLocation> DriverLocations { get; set; }
         public DbSet<RiderLocation> RiderLocations { get; set; }
-
+        public DbSet<Entities.CodeValue> CodeValues { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
