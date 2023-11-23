@@ -44,3 +44,5 @@ BackEnd/XeGo-Microservices/blob_connection.txt
 FrontEnd/xego_driver/lib/settings/kSecrets.dart
 FrontEnd/xego_driver/android/app/src/main/AndroidManifest.xml
 FrontEnd/xego_driver/ios/Runner/AppDelegate.swift
+FrontEnd/xego_rider/android/app/src/main/AndroidManifest.xml
+FrontEnd/xego_rider/lib/settings/kSecrets.dart
