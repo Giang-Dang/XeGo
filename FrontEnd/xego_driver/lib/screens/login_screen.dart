@@ -1,10 +1,9 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:xego_driver/models/Dto/login_request_dto.dart';
 import 'package:xego_driver/screens/do_not_have_vehicle_screen.dart';
 import 'package:xego_driver/screens/main_tabs_screen.dart';
-import 'package:xego_driver/screens/user_registration_screen.dart';
+import 'package:xego_driver/screens/driver_registration_screen.dart';
 import 'package:xego_driver/services/user_services.dart';
 import 'package:xego_driver/services/vehicle_services.dart';
 import 'package:xego_driver/settings/constants.dart';
@@ -204,7 +203,7 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 15),
               const NavigationRichText(
                 navigationText: ' to register.',
-                destinationScreen: UserRegistrationScreen(),
+                destinationScreen: DriverRegistrationScreen(),
               ),
               const Gap(80),
               Transform.scale(

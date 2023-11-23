@@ -15,6 +15,7 @@ class KColors {
   static const kBlue = Color(0xff0275d8);
   static const kAppleGreen = Color(0xff68c151);
   static const kGrey = Color(0xff9EADBA);
+  static const kWhite = Color(0xffffffff);
   static const kDanger = Color(0xffff5252);
   static const kSuperLightTextColor = Color(0xffbdbdbd);
 }

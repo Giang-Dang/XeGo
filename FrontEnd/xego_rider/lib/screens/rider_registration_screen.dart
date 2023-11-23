@@ -2,31 +2,32 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:xego_driver/models/Dto/registration_request_dto.dart';
-import 'package:xego_driver/screens/login_screen.dart';
-import 'package:xego_driver/services/user_services.dart';
-import 'package:xego_driver/settings/constants.dart';
-import 'package:xego_driver/settings/kColors.dart';
-import 'package:xego_driver/widgets/address_input_form_field.dart';
-import 'package:xego_driver/widgets/email_input_field.dart';
-import 'package:xego_driver/widgets/first_name_input_field.dart';
-import 'package:xego_driver/widgets/image_input.dart';
-import 'package:xego_driver/widgets/info_section_container.dart';
-import 'package:xego_driver/widgets/last_name_input_field.dart';
-import 'package:xego_driver/widgets/navigation_rich_text.dart';
-import 'package:xego_driver/widgets/password_input_field.dart';
-import 'package:xego_driver/widgets/phone_input_field.dart';
-import 'package:xego_driver/widgets/reenter_password_input_field.dart';
-import 'package:xego_driver/widgets/username_input_field.dart';
+import 'package:xego_rider/models/Dto/registration_request_dto.dart';
+import 'package:xego_rider/screens/login_screen.dart';
+import 'package:xego_rider/services/user_services.dart';
+import 'package:xego_rider/settings/constants.dart';
+import 'package:xego_rider/settings/kColors.dart';
+import 'package:xego_rider/widgets/address_input_form_field.dart';
+import 'package:xego_rider/widgets/email_input_field.dart';
+import 'package:xego_rider/widgets/first_name_input_field.dart';
+import 'package:xego_rider/widgets/image_input.dart';
+import 'package:xego_rider/widgets/info_section_container.dart';
+import 'package:xego_rider/widgets/last_name_input_field.dart';
+import 'package:xego_rider/widgets/navigation_rich_text.dart';
+import 'package:xego_rider/widgets/password_input_field.dart';
+import 'package:xego_rider/widgets/phone_input_field.dart';
+import 'package:xego_rider/widgets/reenter_password_input_field.dart';
+import 'package:xego_rider/widgets/username_input_field.dart';
 
-class UserRegistrationScreen extends StatefulWidget {
-  const UserRegistrationScreen({super.key});
+class RiderRegistrationScreen extends StatefulWidget {
+  const RiderRegistrationScreen({super.key});
 
   @override
-  State<UserRegistrationScreen> createState() => _UserRegistrationScreenState();
+  State<RiderRegistrationScreen> createState() =>
+      _RiderRegistrationScreenState();
 }
 
-class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
+class _RiderRegistrationScreenState extends State<RiderRegistrationScreen> {
   final _formUserRegisterKey = GlobalKey<FormState>();
 
   final _usernameController = TextEditingController();
@@ -44,7 +45,7 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
 
   bool _isRegistering = false;
 
-  _onNextPressed() async {
+  _onRegisterPressed() async {
     if (!_formUserRegisterKey.currentState!.validate()) {
       return;
     }
@@ -212,11 +213,11 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    _onNextPressed();
+                    _onRegisterPressed();
                   },
                   child: _isRegistering
                       ? const CircularProgressIndicator()
-                      : const Text('Next'),
+                      : const Text('Register'),
                 ),
               ),
               const Gap(15),
