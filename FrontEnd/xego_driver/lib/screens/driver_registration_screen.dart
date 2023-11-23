@@ -19,14 +19,15 @@ import 'package:xego_driver/widgets/phone_input_field.dart';
 import 'package:xego_driver/widgets/reenter_password_input_field.dart';
 import 'package:xego_driver/widgets/username_input_field.dart';
 
-class UserRegistrationScreen extends StatefulWidget {
-  const UserRegistrationScreen({super.key});
+class DriverRegistrationScreen extends StatefulWidget {
+  const DriverRegistrationScreen({super.key});
 
   @override
-  State<UserRegistrationScreen> createState() => _UserRegistrationScreenState();
+  State<DriverRegistrationScreen> createState() =>
+      _DriverRegistrationScreenState();
 }
 
-class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
+class _DriverRegistrationScreenState extends State<DriverRegistrationScreen> {
   final _formUserRegisterKey = GlobalKey<FormState>();
 
   final _usernameController = TextEditingController();
