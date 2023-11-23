@@ -45,7 +45,7 @@ class _DriverRegistrationScreenState extends State<DriverRegistrationScreen> {
 
   bool _isRegistering = false;
 
-  _onNextPressed() async {
+  _onRegisterPressed() async {
     if (!_formUserRegisterKey.currentState!.validate()) {
       return;
     }
@@ -213,11 +213,11 @@ class _DriverRegistrationScreenState extends State<DriverRegistrationScreen> {
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    _onNextPressed();
+                    _onRegisterPressed();
                   },
                   child: _isRegistering
                       ? const CircularProgressIndicator()
-                      : const Text('Next'),
+                      : const Text('Register'),
                 ),
               ),
               const Gap(15),

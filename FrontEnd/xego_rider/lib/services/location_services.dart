@@ -1,13 +1,20 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:xego_rider/models/Dto/direction_google_api_response_dto.dart';
+import 'package:xego_rider/services/api_services.dart';
 import 'dart:math' as math;
 
 import 'package:xego_rider/settings/kSecrets.dart';
 
 class LocationServices {
+  static final ApiServices _apiServices = ApiServices();
+  static LatLng? currentLocation;
+
   Future<Position> determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -31,6 +38,11 @@ class LocationServices {
     }
     return await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.best);
+  }
+
+  Future<void> updateCurrentLocation() async {
+    determinePosition().then(
+        (value) => currentLocation = LatLng(value.latitude, value.longitude));
   }
 
   String getlocationImageUrl(double lat, double lng, int zoom) {
@@ -63,6 +75,56 @@ class LocationServices {
     final lat = data['results'][0]['geometry']['location']['lat'];
     final lng = data['results'][0]['geometry']['location']['lng'];
     return LatLng(lat, lng);
+  }
+
+  Future<DirectionGoogleApiResponseDto?> getPlaceDirectionDetails(
+      LatLng startPosition, LatLng destinationPosition) async {
+    String directionUrl =
+        'https://maps.googleapis.com/maps/api/directions/json?destination=${destinationPosition.latitude},${destinationPosition.longitude}&origin=${startPosition.latitude},${startPosition.longitude}&key=${KSecret.kMapsAPIKey}';
+
+    var res = await _apiServices.get(directionUrl);
+
+    if (res.data['status'].toString().toUpperCase() != 'OK') {
+      return null;
+    }
+
+    DirectionGoogleApiResponseDto directionResponse =
+        DirectionGoogleApiResponseDto();
+
+    directionResponse.encodedPoints =
+        res.data['routes'][0]['overview_polyline']['points'];
+    directionResponse.distanceText =
+        res.data['routes'][0]['legs'][0]['distance']['text'];
+    directionResponse.distanceValue =
+        res.data['routes'][0]['legs'][0]['distance']['value'];
+    directionResponse.durationText =
+        res.data['routes'][0]['legs'][0]['duration']['text'];
+    directionResponse.durationValue =
+        res.data['routes'][0]['legs'][0]['duration']['value'];
+
+    return directionResponse;
+  }
+
+  Future<Set<Polyline>> getDirectionPolylines(
+      LatLng startLocation, LatLng destinationLocation,
+      {Color directionColor = Colors.blue}) async {
+    Set<Polyline> polylines = {};
+    DirectionGoogleApiResponseDto? directionResponse =
+        await getPlaceDirectionDetails(startLocation, destinationLocation);
+    if (directionResponse != null) {
+      PolylinePoints polylinePoints = PolylinePoints();
+      List<PointLatLng> decodedPolylinePoints =
+          polylinePoints.decodePolyline(directionResponse.encodedPoints!);
+      polylines.add(Polyline(
+        polylineId: PolylineId('direction'),
+        points: decodedPolylinePoints
+            .map((point) => LatLng(point.latitude, point.longitude))
+            .toList(),
+        color: directionColor,
+        width: 3,
+      ));
+    }
+    return polylines;
   }
 
   double calculateDistance(double lat1, double lng1, double lat2, double lng2) {

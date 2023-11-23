@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:xego_rider/screens/login_screen.dart';
+import 'package:xego_rider/screens/main_tabs_screen.dart';
 import 'package:xego_rider/services/api_services.dart';
+import 'package:xego_rider/services/location_services.dart';
 import 'package:xego_rider/services/user_services.dart';
 import 'package:xego_rider/settings/kColors.dart';
 
@@ -20,6 +22,7 @@ class _SplashScreenState extends State<SplashScreen>
   Timer? _loginTimer;
   final userServices = UserServices();
   final apiServices = ApiServices();
+  final locationServices = LocationServices();
 
   // logintest() async {
   //   const requestDto =
@@ -28,7 +31,11 @@ class _SplashScreenState extends State<SplashScreen>
   // }
 
   _initialize() async {
-    await Future.wait<void>([userServices.getUserLocation(), _login()]);
+    await Future.wait<void>([
+      userServices.getUserLocation(),
+      _login(),
+      locationServices.updateCurrentLocation(),
+    ]);
   }
 
   _login() async {
@@ -53,7 +60,14 @@ class _SplashScreenState extends State<SplashScreen>
       }
     }
 
-    return true;
+    if (context.mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const MainTabsScreen(),
+        ),
+      );
+    }
   }
 
   @override

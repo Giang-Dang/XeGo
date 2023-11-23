@@ -42,6 +42,8 @@ dependencies:
   google_maps_flutter: ^2.5.0
   geolocator: ^10.1.0
   image_picker: ^1.0.4
+  flutter_polyline_points: ^2.0.0
+  geocoding: ^2.1.1
 
 dev_dependencies:
   flutter_test:
@@ -70,6 +72,9 @@ flutter:
     - assets/images/car_loading.gif
     - assets/images/getting_location.gif
     - assets/images/task_completed.gif
+    - assets/images/pick_up_location_icon.png
+    - assets/images/destination_location_icon.png
+    - assets/images/car_location_icon.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

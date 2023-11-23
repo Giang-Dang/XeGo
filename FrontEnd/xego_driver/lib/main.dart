@@ -5,6 +5,7 @@ import 'package:xego_driver/screens/pick_location_screen.dart';
 import 'package:xego_driver/screens/splash_screen.dart';
 import 'package:xego_driver/screens/driver_registration_screen.dart';
 import 'package:xego_driver/screens/do_not_have_vehicle_screen.dart';
+import 'package:xego_driver/settings/constants.dart';
 import 'package:xego_driver/settings/kTheme.dart';
 
 void main() {
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'XeGo - Driver',
+      title: Constants.kTopScreenAppTitle,
       theme: KTheme.kTheme,
       home: Scaffold(
         // body: SplashScreen(),

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:xego_driver/screens/login_screen.dart';
+import 'package:xego_driver/screens/main_tabs_screen.dart';
 import 'package:xego_driver/services/api_services.dart';
 import 'package:xego_driver/services/user_services.dart';
 import 'package:xego_driver/settings/kcolors.dart';
@@ -53,7 +54,14 @@ class _SplashScreenState extends State<SplashScreen>
       }
     }
 
-    return true;
+    if (context.mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const MainTabsScreen(),
+        ),
+      );
+    }
   }
 
   @override
