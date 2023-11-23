@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using XeGo.Services.Auth.API.Data;
 
@@ -11,9 +12,11 @@ using XeGo.Services.Auth.API.Data;
 namespace XeGo.Services.Auth.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231123095916_addRiderTypesTable2")]
+    partial class addRiderTypesTable2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -364,12 +367,12 @@ namespace XeGo.Services.Auth.API.Migrations
                         {
                             Id = 9,
                             CreatedBy = "ADMIN",
-                            CreatedDate = new DateTime(2023, 11, 23, 10, 2, 2, 156, DateTimeKind.Utc).AddTicks(9520),
+                            CreatedDate = new DateTime(2023, 11, 23, 9, 59, 16, 492, DateTimeKind.Utc).AddTicks(8909),
                             EffectiveEndDate = new DateTime(9999, 12, 31, 23, 59, 59, 999, DateTimeKind.Unspecified).AddTicks(9999),
-                            EffectiveStartDate = new DateTime(2023, 11, 23, 10, 2, 2, 156, DateTimeKind.Utc).AddTicks(9516),
+                            EffectiveStartDate = new DateTime(2023, 11, 23, 9, 59, 16, 492, DateTimeKind.Utc).AddTicks(8905),
                             IsActive = true,
                             LastModifiedBy = "ADMIN",
-                            LastModifiedDate = new DateTime(2023, 11, 23, 10, 2, 2, 156, DateTimeKind.Utc).AddTicks(9521),
+                            LastModifiedDate = new DateTime(2023, 11, 23, 9, 59, 16, 492, DateTimeKind.Utc).AddTicks(8910),
                             Name = "TOKEN_PROPERTY",
                             SortOrder = 1,
                             Value1 = "ACCESS_TOKEN_DAYS_TO_EXPIRE",
@@ -410,7 +413,7 @@ namespace XeGo.Services.Auth.API.Migrations
                     b.ToTable("Functions");
                 });
 
-            modelBuilder.Entity("XeGo.Services.Auth.API.Entities.Rider", b =>
+            modelBuilder.Entity("XeGo.Services.Auth.API.Entities.RiderType", b =>
                 {
                     b.Property<string>("RiderId")
                         .HasColumnType("nvarchar(450)");
@@ -435,7 +438,7 @@ namespace XeGo.Services.Auth.API.Migrations
 
                     b.HasKey("RiderId");
 
-                    b.ToTable("Riders");
+                    b.ToTable("RiderTypes");
                 });
 
             modelBuilder.Entity("XeGo.Services.Auth.API.Entities.RoleFunction", b =>
@@ -527,7 +530,7 @@ namespace XeGo.Services.Auth.API.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("XeGo.Services.Auth.API.Entities.Rider", b =>
+            modelBuilder.Entity("XeGo.Services.Auth.API.Entities.RiderType", b =>
                 {
                     b.HasOne("XeGo.Services.Auth.API.Entities.ApplicationUser", "User")
                         .WithMany()

@@ -1,13 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using XeGo.Shared.Lib.Constants;
 using XeGo.Shared.Lib.Entities;
 
-namespace XeGo.Services.Ride.API.Entities
+namespace XeGo.Services.Ride.API.Models.Dto
 {
-    public class Ride : BaseEntity
+    public class EditRideRequestDto : BaseEntity
     {
-        [Key][DatabaseGenerated(DatabaseGeneratedOption.Identity)] public int Id { get; set; }
+        [Required] public int Id { get; set; }
         [Required] public string RiderId { get; set; } = string.Empty!;
         public string? DriverId { get; set; }
         public int? CouponId { get; set; }
@@ -21,5 +20,6 @@ namespace XeGo.Services.Ride.API.Entities
         [Required] public string DestinationAddress { get; set; } = String.Empty!;
         public string? CancelledBy { get; set; }
         public string? CancellationReason { get; set; }
+        [Required] public string ModifiedBy { get; set; } = String.Empty!;
     }
 }

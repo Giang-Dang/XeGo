@@ -18,15 +18,19 @@ namespace XeGo.Services.Vehicle.API.Controllers
         [HttpGet]
         public async Task<ResponseDto> GetAllVehicleTypes()
         {
+            logger.LogInformation($"Executing {nameof(VehicleTypeController)}>{nameof(GetAllVehicleTypes)} ...");
+
             try
             {
                 ResponseDto.IsSuccess = true;
                 ResponseDto.Data = await vehicleTypeRepo.GetAllAsync();
+                logger.LogInformation($"Executing {nameof(VehicleTypeController)}>{nameof(GetAllVehicleTypes)} completed!");
             }
             catch (Exception e)
             {
                 ResponseDto.IsSuccess = false;
                 ResponseDto.Data = $"{e.Message}";
+                logger.LogError($"{nameof(VehicleTypeController)}>{nameof(GetAllVehicleTypes)}: {e.Message}");
             }
 
             return ResponseDto;
@@ -35,6 +39,8 @@ namespace XeGo.Services.Vehicle.API.Controllers
         [HttpPost]
         public async Task<ResponseDto> CreateVehicleType(CreateVehicleTypeRequestDto requestDto)
         {
+            logger.LogInformation($"Executing {nameof(VehicleTypeController)}>{nameof(CreateVehicleType)} ...");
+
             try
             {
                 var typeExists = await vehicleTypeRepo.AnyAsync(t => t.Name == requestDto.Name);
@@ -57,11 +63,14 @@ namespace XeGo.Services.Vehicle.API.Controllers
 
                 ResponseDto.Data = await vehicleTypeRepo.CreateAsync(createEntity);
                 ResponseDto.IsSuccess = true;
+                logger.LogInformation($"Executing {nameof(VehicleTypeController)}>{nameof(CreateVehicleType)} completed!");
+
             }
             catch (Exception e)
             {
                 ResponseDto.IsSuccess = false;
                 ResponseDto.Data = $"{e.Message}";
+                logger.LogError($"{nameof(VehicleTypeController)}>{nameof(CreateVehicleType)}: {e.Message}");
             }
 
             return ResponseDto;
@@ -70,6 +79,8 @@ namespace XeGo.Services.Vehicle.API.Controllers
         [HttpPut]
         public async Task<ResponseDto> EditVehicleType(EditVehicleTypeRequestDto requestDto)
         {
+            logger.LogInformation($"Executing {nameof(VehicleTypeController)}>{nameof(EditVehicleType)} ...");
+
             try
             {
                 var cVehicleTypes = await vehicleTypeRepo.GetAsync(t => t.Id == requestDto.Id);
@@ -87,11 +98,13 @@ namespace XeGo.Services.Vehicle.API.Controllers
 
                 ResponseDto.Data = await vehicleTypeRepo.UpdateAsync(cVehicleTypes);
                 ResponseDto.IsSuccess = true;
+                logger.LogInformation($"Executing {nameof(VehicleTypeController)}>{nameof(EditVehicleType)} completed!");
             }
             catch (Exception e)
             {
                 ResponseDto.IsSuccess = false;
                 ResponseDto.Data = $"{e.Message}";
+                logger.LogError($"{nameof(VehicleTypeController)}>{nameof(EditVehicleType)}: {e.Message}");
             }
 
             return ResponseDto;

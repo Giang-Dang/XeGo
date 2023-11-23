@@ -5,6 +5,8 @@ using XeGo.Services.Location.Grpc.Protos;
 using XeGo.Services.Ride.API.Data;
 using XeGo.Services.Ride.API.Hubs;
 using XeGo.Services.Ride.API.Providers;
+using XeGo.Services.Ride.API.Repository;
+using XeGo.Services.Ride.API.Repository.IRepository;
 using XeGo.Shared.GrpcConsumer.Services;
 using XeGo.Shared.Lib.Helpers;
 
@@ -18,6 +20,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<IUserIdProvider, SubClaimUserIdProvider>();
+
+builder.Services.AddScoped<IRideRepository, RideRepository>();
+builder.Services.AddScoped<ICodeValueRepository, CodeValueRepository>();
 
 builder.Services.AddSignalR();
 

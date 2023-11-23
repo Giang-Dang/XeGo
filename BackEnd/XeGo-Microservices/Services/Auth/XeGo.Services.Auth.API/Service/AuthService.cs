@@ -188,6 +188,7 @@ namespace XeGo.Services.Auth.API.Service
                 }
 
                 var result = await _userManager.CreateAsync(user, requestDto.Password);
+
                 if (!result.Succeeded)
                 {
                     responseDto.IsSuccess = false;
@@ -198,6 +199,19 @@ namespace XeGo.Services.Auth.API.Service
                 var userToReturn = _db.ApplicationUsers.First(u => u.PhoneNumber == requestDto.PhoneNumber);
 
                 await AssignRoleAsync(userToReturn.Id, requestDto.Role);
+
+                if (requestDto.Role == RoleConstants.Rider)
+                {
+                    var riderType = new Rider()
+                    {
+                        RiderId = userToReturn.Id,
+                        CreatedBy = userToReturn.Id,
+                        LastModifiedBy = userToReturn.Id,
+                        CreatedDate = DateTime.UtcNow,
+                        LastModifiedDate = DateTime.UtcNow
+                    };
+                    await _db.Riders.AddAsync(riderType);
+                }
 
                 responseDto.IsSuccess = true;
                 responseDto.Message = "";

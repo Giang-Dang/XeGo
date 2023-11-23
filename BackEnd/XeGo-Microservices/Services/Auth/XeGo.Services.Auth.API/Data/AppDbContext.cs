@@ -26,6 +26,7 @@ namespace XeGo.Services.Auth.API.Data
         public DbSet<RoleFunction> RoleFunction { get; set; }
         public DbSet<Function> Functions { get; set; }
         public DbSet<CodeValue> CodeValues { get; set; }
+        public DbSet<Rider> Riders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
