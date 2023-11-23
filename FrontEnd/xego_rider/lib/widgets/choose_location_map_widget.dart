@@ -44,25 +44,8 @@ class _ChooseLocationMapWidgetState extends State<ChooseLocationMapWidget> {
           2,
     );
 
-    String address = '';
-    try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-          centerLatLng.latitude, centerLatLng.longitude);
-      Placemark place = placemarks[0];
-
-      List<String?> addressParts = [
-        place.street,
-        place.subLocality,
-        place.locality,
-        place.administrativeArea,
-        place.country,
-      ];
-      address = addressParts
-          .where((part) => part != null && part.trim() != '')
-          .join(', ');
-    } catch (e) {
-      address = 'Could not load the address!';
-    }
+    String address =
+        await _locationServices.getAddressFromCoordinates(centerLatLng);
 
     setState(() {
       _currentCenter = centerLatLng;

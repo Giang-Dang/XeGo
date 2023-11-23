@@ -21,13 +21,14 @@ class MyApp extends StatelessWidget {
       theme: KTheme.kTheme,
       home: Scaffold(
         // body: SplashScreen(),
-        // body: MapWidget(
-        //   pickUpLocation: LatLng(10.762622, 106.964172),
-        //   destinationLocation: LatLng(10.768511, 106.664817),
-        // ),
-        body: ChooseLocationMapWidget(
-          onLocationSelected: (location) {},
+        body: MapWidget(
+          pickUpLocation: LatLng(10.762622, 106.964172),
+          destinationLocation: LatLng(10.763511, 106.944817),
+          driverLocationsList: [LatLng(10.760622, 106.968172)],
         ),
+        // body: ChooseLocationMapWidget(
+        //   onLocationSelected: (location) {},
+        // ),
       ),
     );
   }

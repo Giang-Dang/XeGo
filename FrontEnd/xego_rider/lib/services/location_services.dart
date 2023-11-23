@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -43,6 +44,29 @@ class LocationServices {
   Future<void> updateCurrentLocation() async {
     determinePosition().then(
         (value) => currentLocation = LatLng(value.latitude, value.longitude));
+  }
+
+  Future<String> getAddressFromCoordinates(LatLng coordinates) async {
+    String address = '';
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+          coordinates.latitude, coordinates.longitude);
+      Placemark place = placemarks[0];
+
+      List<String?> addressParts = [
+        place.street,
+        place.subLocality,
+        place.locality,
+        place.administrativeArea,
+        place.country,
+      ];
+      address = addressParts
+          .where((part) => part != null && part.trim() != '')
+          .join(', ');
+    } catch (e) {
+      address = 'Could not load the address!';
+    }
+    return address;
   }
 
   String getlocationImageUrl(double lat, double lng, int zoom) {
