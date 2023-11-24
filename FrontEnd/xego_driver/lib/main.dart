@@ -22,8 +22,8 @@ class MyApp extends StatelessWidget {
       title: Constants.kTopScreenAppTitle,
       theme: KTheme.kTheme,
       home: Scaffold(
-        // body: SplashScreen(),
-        body: const MainTabsScreen(),
+        body: SplashScreen(),
+        // body: const MainTabsScreen(),
       ),
     );
   }
