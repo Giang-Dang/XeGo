@@ -21,7 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ride", "Ride", "{FFE40D9A-1
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Payment", "Payment", "{2F998343-CBA3-4F0E-A01A-4B47732E602E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pricing", "Pricing", "{7D442CC5-3178-4FA4-B026-5EC682128A26}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Price", "Price", "{7D442CC5-3178-4FA4-B026-5EC682128A26}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Coupon", "Coupon", "{FC492F49-A6B0-4642-B218-7178AC577806}"
 EndProject
@@ -75,6 +75,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "secrets", "secrets", "{0C89
 		secrets\twilio_auth_token.txt = secrets\twilio_auth_token.txt
 		secrets\twilio_phone_number.txt = secrets\twilio_phone_number.txt
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XeGo.Services.Price.API", "Services\Price\XeGo.Services.Price.API\XeGo.Services.Price.API.csproj", "{6E84086D-7371-4D5F-87B9-9A3EB5A48F0B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -138,6 +140,10 @@ Global
 		{E40C37F8-738A-4FCF-BB03-A21DD848FD93}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E40C37F8-738A-4FCF-BB03-A21DD848FD93}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E40C37F8-738A-4FCF-BB03-A21DD848FD93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E84086D-7371-4D5F-87B9-9A3EB5A48F0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E84086D-7371-4D5F-87B9-9A3EB5A48F0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E84086D-7371-4D5F-87B9-9A3EB5A48F0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E84086D-7371-4D5F-87B9-9A3EB5A48F0B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -171,6 +177,7 @@ Global
 		{0EE8A9D9-2AFF-41BE-8795-DB966D8F1CB3} = {0222190D-254D-4891-AC10-4023DC400561}
 		{E40C37F8-738A-4FCF-BB03-A21DD848FD93} = {0EE8A9D9-2AFF-41BE-8795-DB966D8F1CB3}
 		{0C897DFD-1BFB-4C22-AAC8-1B4A5E77190A} = {1F1CAEEA-981F-4538-B05B-3C7E37F804D3}
+		{6E84086D-7371-4D5F-87B9-9A3EB5A48F0B} = {7D442CC5-3178-4FA4-B026-5EC682128A26}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {837CBB2D-FE62-4B52-A8A4-D37FE9935AA9}
