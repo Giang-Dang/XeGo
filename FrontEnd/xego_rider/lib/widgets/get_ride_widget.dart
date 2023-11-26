@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:xego_rider/settings/kColors.dart';
 import 'package:xego_rider/widgets/info_section_container.dart';
+import 'package:xego_rider/widgets/where_to_box_widget.dart';
 
 class GetRideWidget extends StatefulWidget {
   const GetRideWidget({super.key});
@@ -11,34 +12,38 @@ class GetRideWidget extends StatefulWidget {
 }
 
 class _GetRideWidgetState extends State<GetRideWidget> {
-  final _formGetRideKey = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(10, 15, 15, 30),
-      child: Form(
-        key: _formGetRideKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Where to?',
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                    color: KColors.kTertiaryColor,
-                    fontSize: 36,
-                  ),
-            ),
-            const Gap(20),
-            InfoSectionContainer(
-              title: '',
-              titleColor: KColors.kTertiaryColor,
-              padding: const EdgeInsets.all(14.0),
-              innerPadding: const EdgeInsets.all(14.0),
-              children: [],
-            ),
-          ],
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const InfoSectionContainer(
+            title: 'Where to?',
+            titleFontSize: 26,
+            titleFontWeight: FontWeight.w700,
+            titleColor: KColors.kTertiaryColor,
+            padding: EdgeInsets.all(1.0),
+            innerPadding: EdgeInsets.all(1.0),
+            children: [
+              WhereToBoxWidget(),
+            ],
+            haveBoxBorder: false,
+          ),
+          InfoSectionContainer(
+            title: 'Discount',
+            titleFontSize: 26,
+            titleFontWeight: FontWeight.w500,
+            titleColor: KColors.kColor4,
+            padding: EdgeInsets.all(1.0),
+            innerPadding: EdgeInsets.all(1.0),
+            children: [
+              WhereToBoxWidget(),
+            ],
+            haveBoxBorder: false,
+          ),
+        ],
       ),
     );
   }

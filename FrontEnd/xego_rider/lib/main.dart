@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:google_api_availability/google_api_availability.dart';
@@ -23,11 +25,13 @@ void main() async {
 
   if (result != GooglePlayServicesAvailability.success) {
     await gaa.makeGooglePlayServicesAvailable();
+  } else {
+    log('GooglePlayServicesAvailability.success');
   }
 
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   String? token = await messaging.getToken();
-  print(token);
+  log(token ?? "");
 
   NotificationSettings settings = await messaging.requestPermission(
     alert: true,

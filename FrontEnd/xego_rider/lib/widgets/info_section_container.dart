@@ -5,21 +5,27 @@ class InfoSectionContainer extends StatelessWidget {
   final String title;
   final List<Widget> children;
   final double? titleFontSize;
+  final FontWeight? titleFontWeight;
   final Color? titleColor;
   final String? titleFontFamily;
   final EdgeInsets? padding;
   final EdgeInsets? innerPadding;
+  final BoxBorder? boxBorder;
+  final bool haveBoxBorder;
 
-  const InfoSectionContainer({
-    Key? key,
-    required this.title,
-    required this.children,
-    this.titleFontSize,
-    this.titleColor,
-    this.titleFontFamily,
-    this.padding,
-    this.innerPadding,
-  }) : super(key: key);
+  const InfoSectionContainer(
+      {Key? key,
+      required this.title,
+      required this.children,
+      this.titleFontSize,
+      this.titleFontWeight,
+      this.titleColor,
+      this.titleFontFamily,
+      this.padding,
+      this.innerPadding,
+      this.boxBorder,
+      this.haveBoxBorder = true})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +38,11 @@ class InfoSectionContainer extends StatelessWidget {
             title,
             textAlign: TextAlign.start,
             style: TextStyle(
-              fontSize: titleFontSize ??
-                  Theme.of(context).textTheme.titleLarge!.fontSize,
-              color: titleColor ?? KColors.kLightTextColor,
-              fontFamily: titleFontFamily,
-            ),
+                fontSize: titleFontSize ??
+                    Theme.of(context).textTheme.titleLarge!.fontSize,
+                color: titleColor ?? KColors.kLightTextColor,
+                fontFamily: titleFontFamily,
+                fontWeight: titleFontWeight),
           ),
           const SizedBox(
             height: 10,
@@ -45,10 +51,13 @@ class InfoSectionContainer extends StatelessWidget {
             decoration: BoxDecoration(
               color: KColors.kOnBackgroundColor,
               borderRadius: BorderRadius.circular(10.0),
-              border: Border.all(
-                color: KColors.kPrimaryColor.withOpacity(0.3),
-                width: 1.0,
-              ),
+              border: haveBoxBorder
+                  ? (boxBorder ??
+                      Border.all(
+                        color: KColors.kPrimaryColor.withOpacity(0.3),
+                        width: 1.0,
+                      ))
+                  : null,
             ),
             padding: innerPadding ?? const EdgeInsets.fromLTRB(0, 0, 0, 0),
             child: Column(

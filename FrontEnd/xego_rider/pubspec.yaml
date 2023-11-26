@@ -47,6 +47,7 @@ dependencies:
   firebase_core: ^2.23.0
   firebase_messaging: ^14.7.5
   google_api_availability: ^5.0.0
+  carousel_slider: ^4.2.1
 
 dev_dependencies:
   flutter_test:

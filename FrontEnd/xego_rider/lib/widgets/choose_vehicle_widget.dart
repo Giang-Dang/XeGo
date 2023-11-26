@@ -26,7 +26,7 @@ class _ChooseVehicleWidgetState extends State<ChooseVehicleWidget> {
         return Container(
           decoration: BoxDecoration(
             color: Colors.blue[100],
-            borderRadius: BorderRadius.only(
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(24.0),
               topRight: Radius.circular(24.0),
             ),
