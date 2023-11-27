@@ -59,9 +59,9 @@ app.MapHub<RideHub>("/hubs/ride-hub");
 
 app.MapControllers();
 
-app.Run();
-
 ApplyMigration();
+
+app.Run();
 
 #region Private Method
 void ApplyMigration()

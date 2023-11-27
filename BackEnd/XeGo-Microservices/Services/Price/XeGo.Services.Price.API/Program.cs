@@ -41,9 +41,10 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+ApplyMigration();
+
 app.Run();
 
-ApplyMigration();
 
 #region Private Method
 void ApplyMigration()

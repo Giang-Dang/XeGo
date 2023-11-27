@@ -188,7 +188,7 @@
 
     //Ride
     {
-      "DownstreamPathTemplate": "api/rides",
+      "DownstreamPathTemplate": "/api/rides",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -196,13 +196,13 @@
           "Port": "8080"
         }
       ],
-      "UpstreamPathTemplate": "api/rides",
+      "UpstreamPathTemplate": "/api/rides",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT" ]
     },
 
     //Price
     {
-      "DownstreamPathTemplate": "api/vehicle-type-price",
+      "DownstreamPathTemplate": "/api/vehicle-type-price",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -210,11 +210,11 @@
           "Port": "8080"
         }
       ],
-      "UpstreamPathTemplate": "api/vehicle-type-price",
+      "UpstreamPathTemplate": "/api/vehicle-type-price",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT" ]
     },
     {
-      "DownstreamPathTemplate": "api/discount",
+      "DownstreamPathTemplate": "/api/discount",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -222,11 +222,11 @@
           "Port": "8080"
         }
       ],
-      "UpstreamPathTemplate": "api/discount",
+      "UpstreamPathTemplate": "/api/discount",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT" ]
     },
     {
-      "DownstreamPathTemplate": "api/price",
+      "DownstreamPathTemplate": "/api/price",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -234,7 +234,7 @@
           "Port": "8080"
         }
       ],
-      "UpstreamPathTemplate": "api/price",
+      "UpstreamPathTemplate": "/api/price",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT" ]
     }
   ],
@@ -244,7 +244,7 @@
     // ridehub
     {
       "DownstreamPathTemplate": "/hubs/ride-hub/{everything}",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "ws",
       "DownstreamHostAndPorts": [
         {
           "Host": "xego.services.ride.api",

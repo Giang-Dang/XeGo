@@ -19,6 +19,9 @@ services:
   ridedb:
     image: mcr.microsoft.com/mssql/server:2022-latest
 
+  notificationdb:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+
   xego.services.auth.api:
     image: ${DOCKER_REGISTRY-}xegoservicesauthapi
     build:

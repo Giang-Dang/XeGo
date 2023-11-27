@@ -18,6 +18,8 @@ builder.Configuration.AddJsonFile($"ocelot.{env.EnvironmentName}.json", optional
 builder.Services.AddOcelot()
     .AddCacheManager(settings => settings.WithDictionaryHandle());
 
+builder.Services.AddSignalR();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

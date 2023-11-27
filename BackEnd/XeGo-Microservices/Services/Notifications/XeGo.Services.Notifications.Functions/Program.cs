@@ -25,11 +25,22 @@ host.Run();
 
 void ApplyMigrations()
 {
-    using var scope = host.Services.CreateScope();
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-    if (db.Database.GetPendingMigrations().Any())
+    try
     {
-        db.Database.Migrate();
+        using var scope = host.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        if (db.Database.GetPendingMigrations().Any())
+        {
+            db.Database.Migrate();
+            Console.WriteLine("DB migration completed!");
+        }
+
+        scope.Dispose();
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine("DB migration failed!");
+        Console.WriteLine(e);
     }
 }
