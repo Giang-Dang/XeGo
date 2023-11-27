@@ -14,7 +14,6 @@ namespace XeGo.Services.Price.API.Entities
         [ForeignKey($"{nameof(VehicleTypeId)}")]
         public virtual VehicleTypePrice VehicleTypePrice { get; set; } = null!;
         public double DistanceInMeters { get; set; }
-        public double PricePerKm { get; set; }
 
         public double TotalPrice { get; set; }
 
@@ -27,7 +26,7 @@ namespace XeGo.Services.Price.API.Entities
             }
             else
             {
-                TotalPrice = (DistanceInMeters * PricePerKm) * (1 - discount);
+                TotalPrice = (DistanceInMeters * VehicleTypePrice.PricePerKm) * (1 - discount);
             }
         }
     }

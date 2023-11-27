@@ -11,7 +11,7 @@ namespace XeGo.Services.Price.API.Data
         }
 
         public DbSet<Entities.Price> Prices { get; set; }
-        public DbSet<Entities.Discount> Discounts { get; set; }
+        public DbSet<Discount> Discounts { get; set; }
         public DbSet<VehicleTypePrice> VehicleTypePrices { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

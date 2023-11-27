@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using XeGo.Services.Ride.API.Data;
 
@@ -11,9 +12,11 @@ using XeGo.Services.Ride.API.Data;
 namespace XeGo.Services.Ride.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231127110529_271123")]
+    partial class _271123
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -151,12 +154,12 @@ namespace XeGo.Services.Ride.API.Migrations
                         {
                             Id = 11,
                             CreatedBy = "ADMIN",
-                            CreatedDate = new DateTime(2023, 11, 27, 14, 37, 21, 143, DateTimeKind.Utc).AddTicks(6216),
+                            CreatedDate = new DateTime(2023, 11, 27, 11, 5, 28, 785, DateTimeKind.Utc).AddTicks(6091),
                             EffectiveEndDate = new DateTime(9999, 12, 31, 23, 59, 59, 999, DateTimeKind.Unspecified).AddTicks(9999),
-                            EffectiveStartDate = new DateTime(2023, 11, 27, 14, 37, 21, 143, DateTimeKind.Utc).AddTicks(6213),
+                            EffectiveStartDate = new DateTime(2023, 11, 27, 11, 5, 28, 785, DateTimeKind.Utc).AddTicks(6088),
                             IsActive = true,
                             LastModifiedBy = "ADMIN",
-                            LastModifiedDate = new DateTime(2023, 11, 27, 14, 37, 21, 143, DateTimeKind.Utc).AddTicks(6216),
+                            LastModifiedDate = new DateTime(2023, 11, 27, 11, 5, 28, 785, DateTimeKind.Utc).AddTicks(6092),
                             Name = "GEOHASH",
                             SortOrder = 1,
                             Value1 = "GEO_HASH_SQUARE_SIDE_IN_METERS",
@@ -168,12 +171,12 @@ namespace XeGo.Services.Ride.API.Migrations
                         {
                             Id = 12,
                             CreatedBy = "ADMIN",
-                            CreatedDate = new DateTime(2023, 11, 27, 14, 37, 21, 143, DateTimeKind.Utc).AddTicks(6220),
+                            CreatedDate = new DateTime(2023, 11, 27, 11, 5, 28, 785, DateTimeKind.Utc).AddTicks(6096),
                             EffectiveEndDate = new DateTime(9999, 12, 31, 23, 59, 59, 999, DateTimeKind.Unspecified).AddTicks(9999),
-                            EffectiveStartDate = new DateTime(2023, 11, 27, 14, 37, 21, 143, DateTimeKind.Utc).AddTicks(6219),
+                            EffectiveStartDate = new DateTime(2023, 11, 27, 11, 5, 28, 785, DateTimeKind.Utc).AddTicks(6094),
                             IsActive = true,
                             LastModifiedBy = "ADMIN",
-                            LastModifiedDate = new DateTime(2023, 11, 27, 14, 37, 21, 143, DateTimeKind.Utc).AddTicks(6221),
+                            LastModifiedDate = new DateTime(2023, 11, 27, 11, 5, 28, 785, DateTimeKind.Utc).AddTicks(6097),
                             Name = "GEOHASH",
                             SortOrder = 1,
                             Value1 = "MAX_RADIUS_IN_METERS",
@@ -220,17 +223,11 @@ namespace XeGo.Services.Ride.API.Migrations
                     b.Property<string>("DriverId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsScheduleRide")
-                        .HasColumnType("bit");
-
                     b.Property<string>("LastModifiedBy")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("LastModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("PickupTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("RiderId")

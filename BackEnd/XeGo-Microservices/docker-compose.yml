@@ -16,6 +16,9 @@ services:
   filedb:
     image: mcr.microsoft.com/mssql/server:2022-latest
 
+  ridedb:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+
   xego.services.auth.api:
     image: ${DOCKER_REGISTRY-}xegoservicesauthapi
     build:
@@ -58,8 +61,8 @@ services:
       context: .
       dockerfile: Services/File/XeGo.Services.File.API/Dockerfile
 
-  rabbitmq:
-    image: rabbitmq:3.12-management-alpine
+  # rabbitmq:
+  #   image: rabbitmq:3.12-management-alpine
 
   portainer:
     image: portainer/portainer-ce 
@@ -82,9 +85,16 @@ services:
       context: .
       dockerfile: Services/Notifications/XeGo.Services.Notifications.Functions/Dockerfile
 
+  xego.services.ride.api:
+    image: ${DOCKER_REGISTRY-}xegoservicesrideapi
+    build:
+      context: .
+      dockerfile: Services/Ride/XeGo.Services.Ride.API/Dockerfile
+
 volumes:
   portainer_data:
   elasticsearch-data:
+
 
 
 

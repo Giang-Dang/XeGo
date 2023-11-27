@@ -7,7 +7,7 @@ using XeGo.Shared.Lib.Models;
 
 namespace XeGo.Services.File.API.Controllers
 {
-    [Route("api/v1/images")]
+    [Route("api/images")]
     [ApiController]
     public class ImageController : ControllerBase
     {

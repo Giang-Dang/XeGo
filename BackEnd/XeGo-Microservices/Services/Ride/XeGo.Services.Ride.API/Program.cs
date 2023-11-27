@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System.Reflection;
 using XeGo.Services.Location.Grpc.Protos;
@@ -54,8 +55,32 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthorization();
 
-app.MapHub<RideHub>("/hubs/ride-hub/");
+app.MapHub<RideHub>("/hubs/ride-hub");
 
 app.MapControllers();
 
 app.Run();
+
+ApplyMigration();
+
+#region Private Method
+void ApplyMigration()
+{
+    try
+    {
+        using var scope = app.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        if (db.Database.GetPendingMigrations().Any())
+        {
+            db.Database.Migrate();
+        }
+
+        scope.Dispose();
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine(e);
+    }
+}
+#endregion Private Method

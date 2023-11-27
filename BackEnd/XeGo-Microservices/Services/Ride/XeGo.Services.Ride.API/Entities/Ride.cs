@@ -19,6 +19,8 @@ namespace XeGo.Services.Ride.API.Entities
         [Required] public double DestinationLatitude { get; set; }
         [Required] public double DestinationLongitude { get; set; }
         [Required] public string DestinationAddress { get; set; } = String.Empty!;
+        [Required] public DateTime PickupTime { get; set; } = DateTime.UtcNow;
+        [Required] public bool IsScheduleRide { get; set; } = false;
         public string? CancelledBy { get; set; }
         public string? CancellationReason { get; set; }
     }

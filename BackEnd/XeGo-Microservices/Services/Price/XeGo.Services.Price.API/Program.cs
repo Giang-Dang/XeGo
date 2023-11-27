@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System.Reflection;
 using XeGo.Services.Price.API.Data;
@@ -11,8 +12,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAppDbContext<AppDbContext>(builder.Configuration, "DefaultConnection");
 
+builder.Services.ConfigureAuthentication(builder.Configuration);
+
 builder.Services.AddScoped<IPriceRepository, PriceRepository>();
 builder.Services.AddScoped<IDiscountRepository, DiscountRepository>();
+builder.Services.AddScoped<IVehicleTypePriceRepository, VehicleTypePriceRepository>();
 
 // Add logging service
 LoggingHelpers loggingHelpers = new();
@@ -38,3 +42,27 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+ApplyMigration();
+
+#region Private Method
+void ApplyMigration()
+{
+    try
+    {
+        using var scope = app.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        if (db.Database.GetPendingMigrations().Any())
+        {
+            db.Database.Migrate();
+        }
+
+        scope.Dispose();
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine(e);
+    }
+}
+#endregion Private Method

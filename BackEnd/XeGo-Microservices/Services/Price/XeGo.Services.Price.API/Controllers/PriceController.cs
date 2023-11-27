@@ -1,15 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
+using XeGo.Services.Price.API.Models;
 using XeGo.Services.Price.API.Repository.IRepository;
 using XeGo.Shared.Lib.Models;
 
 namespace XeGo.Services.Price.API.Controllers
 {
-    [Route("price")]
+    [Route("api/price")]
     [ApiController]
     public class PriceController(IPriceRepository priceRepo, ILogger<PriceController> logger) : ControllerBase
     {
-        private ResponseDto ResponseDto = new();
+        private ResponseDto ResponseDto { get; set; } = new();
 
         [HttpGet]
         public async Task<ResponseDto> GetAllPrice(
@@ -18,8 +19,6 @@ namespace XeGo.Services.Price.API.Controllers
             int? vehicleTypeId,
             double? distanceInMetersStart,
             double? distanceInMetersEnd,
-            double? pricePerKmStart,
-            double? pricePerKmEnd,
             double? totalPriceStart,
             double? totalPriceEnd,
             int pageNumber = 0,
@@ -35,8 +34,6 @@ namespace XeGo.Services.Price.API.Controllers
                     (vehicleTypeId == null || p.VehicleTypeId == vehicleTypeId) &&
                     (distanceInMetersStart == null || p.DistanceInMeters >= distanceInMetersStart) &&
                     (distanceInMetersEnd == null || p.DistanceInMeters <= distanceInMetersEnd) &&
-                    (pricePerKmStart == null || p.PricePerKm >= pricePerKmStart) &&
-                    (pricePerKmEnd == null || p.PricePerKm <= pricePerKmEnd) &&
                     (totalPriceStart == null || p.TotalPrice >= totalPriceStart) &&
                     (totalPriceEnd == null || p.TotalPrice <= totalPriceEnd);
 
@@ -73,7 +70,6 @@ namespace XeGo.Services.Price.API.Controllers
                     DiscountId = requestDto.DiscountId,
                     VehicleTypeId = requestDto.VehicleTypeId,
                     DistanceInMeters = requestDto.DistanceInMeters,
-                    PricePerKm = requestDto.PricePerKm,
                     CreatedBy = requestDto.ModifiedBy,
                     LastModifiedBy = requestDto.ModifiedBy,
                     CreatedDate = DateTime.UtcNow,
@@ -88,6 +84,45 @@ namespace XeGo.Services.Price.API.Controllers
             catch (Exception e)
             {
                 logger.LogError($"{nameof(PriceController)}>{nameof(CreatePrice)}: {e.Message}");
+                ResponseDto.IsSuccess = false;
+                ResponseDto.Data = null;
+                ResponseDto.Message = e.Message;
+            }
+
+            return ResponseDto;
+        }
+
+        [HttpPut]
+        public async Task<ResponseDto> EditPrice(EditPriceRequestDto requestDto)
+        {
+            logger.LogInformation($"Executing {nameof(PriceController)}>{nameof(EditPrice)} from userId:{requestDto.ModifiedBy}...");
+
+            try
+            {
+                var cEntity = await priceRepo.GetAsync(p => p.RideId == requestDto.RideId);
+
+                if (cEntity == null)
+                {
+                    ResponseDto.IsSuccess = false;
+                    ResponseDto.Message = "Not found!";
+                    return ResponseDto;
+                }
+
+                cEntity.DiscountId = requestDto.DiscountId ?? cEntity.DiscountId;
+                cEntity.VehicleTypeId = requestDto.VehicleTypeId ?? cEntity.VehicleTypeId;
+                cEntity.DistanceInMeters = requestDto.DistanceInMeters ?? cEntity.DistanceInMeters;
+                cEntity.LastModifiedBy = requestDto.ModifiedBy;
+                cEntity.LastModifiedDate = DateTime.UtcNow;
+
+                cEntity.CalculateTotalPrice();
+
+                await priceRepo.UpdateAsync(cEntity);
+                ResponseDto.IsSuccess = true;
+                ResponseDto.Data = cEntity;
+            }
+            catch (Exception e)
+            {
+                logger.LogError($"{nameof(PriceController)}>{nameof(EditPrice)}: {e.Message}");
                 ResponseDto.IsSuccess = false;
                 ResponseDto.Data = null;
                 ResponseDto.Message = e.Message;

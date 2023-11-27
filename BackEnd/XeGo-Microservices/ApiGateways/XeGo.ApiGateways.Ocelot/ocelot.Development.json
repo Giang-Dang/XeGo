@@ -174,16 +174,68 @@
 
     // File
     {
-      "DownstreamPathTemplate": "/api/v1/images/avatar",
+      "DownstreamPathTemplate": "/api/images/avatar",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "xego.services.vehicle.api",
+          "Host": "xego.services.file.api",
           "Port": "8080"
         }
       ],
-      "UpstreamPathTemplate": "/api/v1/images/avatar",
+      "UpstreamPathTemplate": "/api/images/avatar",
       "UpstreamHttpMethod": [ "GET", "POST" ]
+    },
+
+    //Ride
+    {
+      "DownstreamPathTemplate": "api/rides",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.ride.api",
+          "Port": "8080"
+        }
+      ],
+      "UpstreamPathTemplate": "api/rides",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT" ]
+    },
+
+    //Price
+    {
+      "DownstreamPathTemplate": "api/vehicle-type-price",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.price.api",
+          "Port": "8080"
+        }
+      ],
+      "UpstreamPathTemplate": "api/vehicle-type-price",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT" ]
+    },
+    {
+      "DownstreamPathTemplate": "api/discount",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.price.api",
+          "Port": "8080"
+        }
+      ],
+      "UpstreamPathTemplate": "api/discount",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT" ]
+    },
+    {
+      "DownstreamPathTemplate": "api/price",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.price.api",
+          "Port": "8080"
+        }
+      ],
+      "UpstreamPathTemplate": "api/price",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT" ]
     }
   ],
   // for hubs

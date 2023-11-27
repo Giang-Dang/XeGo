@@ -2,7 +2,6 @@
 using System.Linq.Expressions;
 using XeGo.Services.Ride.API.Models.Dto;
 using XeGo.Services.Ride.API.Repository.IRepository;
-using XeGo.Shared.Lib.Constants;
 using XeGo.Shared.Lib.Helpers;
 using XeGo.Shared.Lib.Models;
 
@@ -23,6 +22,9 @@ namespace XeGo.Services.Ride.API.Controllers
             string? status,
             string? startAddress,
             string? destinationAddress,
+            DateTime? pickupTimeStart,
+            DateTime? pickupTimeEnd,
+            bool? isScheduleRide,
             string? cancelledBy,
             string? cancellationReason,
             string? createdBy,
@@ -47,6 +49,9 @@ namespace XeGo.Services.Ride.API.Controllers
                     (status == null || r.Status == status) &&
                     (startAddress == null || r.StartAddress == startAddress) &&
                     (destinationAddress == null || r.DestinationAddress == destinationAddress) &&
+                    (pickupTimeStart == null || r.PickupTime >= pickupTimeStart) &&
+                    (pickupTimeEnd == null || r.PickupTime <= pickupTimeEnd) &&
+                    (isScheduleRide == null || r.IsScheduleRide == isScheduleRide.Value) &&
                     (cancelledBy == null || r.CancelledBy == cancelledBy) &&
                     (cancellationReason == null || r.CancellationReason == cancellationReason) &&
                     (createdBy == null || r.CreatedBy == createdBy) &&
@@ -106,7 +111,7 @@ namespace XeGo.Services.Ride.API.Controllers
                     RiderId = requestDto.RiderId,
                     DriverId = requestDto.DriverId,
                     CouponId = requestDto.CouponId,
-                    Status = requestDto.Status ?? RideStatusConstants.FindingDriver,
+                    Status = requestDto.Status,
                     VehicleId = requestDto.VehicleId,
                     StartLatitude = requestDto.StartLatitude,
                     StartLongitude = requestDto.StartLongitude,
@@ -114,6 +119,8 @@ namespace XeGo.Services.Ride.API.Controllers
                     DestinationLatitude = requestDto.DestinationLatitude,
                     DestinationLongitude = requestDto.DestinationLongitude,
                     DestinationAddress = requestDto.DestinationAddress,
+                    PickupTime = requestDto.PickupTime,
+                    IsScheduleRide = requestDto.IsScheduleRide,
                     CreatedBy = requestDto.ModifiedBy,
                     LastModifiedBy = requestDto.ModifiedBy,
                     CreatedDate = DateTime.UtcNow,
@@ -150,19 +157,19 @@ namespace XeGo.Services.Ride.API.Controllers
                     return ResponseDto;
                 }
 
-                cRide.RiderId = requestDto.RiderId;
-                cRide.DriverId = requestDto.DriverId;
-                cRide.CouponId = requestDto.CouponId;
-                cRide.Status = requestDto.Status;
-                cRide.VehicleId = requestDto.VehicleId;
-                cRide.StartLatitude = requestDto.StartLatitude;
-                cRide.StartLongitude = requestDto.StartLongitude;
-                cRide.StartAddress = requestDto.StartAddress;
-                cRide.DestinationLatitude = requestDto.DestinationLatitude;
-                cRide.DestinationLongitude = requestDto.DestinationLongitude;
-                cRide.DestinationAddress = requestDto.DestinationAddress;
-                cRide.CancellationReason = requestDto.CancellationReason;
-                cRide.CancelledBy = requestDto.CancelledBy;
+                cRide.RiderId = requestDto.RiderId ?? cRide.RiderId;
+                cRide.DriverId = requestDto.DriverId ?? cRide.DriverId;
+                cRide.CouponId = requestDto.CouponId ?? cRide.CouponId;
+                cRide.Status = requestDto.Status ?? cRide.Status;
+                cRide.VehicleId = requestDto.VehicleId ?? cRide.VehicleId;
+                cRide.StartLatitude = requestDto.StartLatitude ?? cRide.StartLatitude;
+                cRide.StartLongitude = requestDto.StartLongitude ?? cRide.StartLongitude;
+                cRide.StartAddress = requestDto.StartAddress ?? cRide.StartAddress;
+                cRide.DestinationLatitude = requestDto.DestinationLatitude ?? cRide.DestinationLatitude;
+                cRide.DestinationLongitude = requestDto.DestinationLongitude ?? cRide.DestinationLongitude;
+                cRide.DestinationAddress = requestDto.DestinationAddress ?? cRide.DestinationAddress;
+                cRide.CancellationReason = requestDto.CancellationReason ?? cRide.CancellationReason;
+                cRide.CancelledBy = requestDto.CancelledBy ?? cRide.CancelledBy;
                 cRide.LastModifiedBy = requestDto.ModifiedBy;
                 cRide.LastModifiedDate = DateTime.UtcNow;
 
