@@ -34,7 +34,7 @@ app.UseEndpoints(endpoints =>
 {
     endpoints.MapGet("/", async context =>
     {
-        await context.Response.WriteAsync("Ready!");
+        await context.Response.WriteAsync("Ocelot Gateway is ready!");
     });
 });
 #pragma warning restore ASP0014 // Suggest using top level route registrations
