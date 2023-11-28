@@ -48,6 +48,7 @@ dependencies:
   firebase_messaging: ^14.7.5
   google_api_availability: ^5.0.0
   carousel_slider: ^4.2.1
+  omni_datetime_picker: ^1.0.9
 
 dev_dependencies:
   flutter_test:

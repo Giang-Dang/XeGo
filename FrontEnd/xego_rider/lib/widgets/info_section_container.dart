@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:xego_rider/settings/kColors.dart';
 
 class InfoSectionContainer extends StatelessWidget {
-  final String title;
+  final String? title;
   final List<Widget> children;
   final double? titleFontSize;
   final FontWeight? titleFontWeight;
@@ -15,8 +15,8 @@ class InfoSectionContainer extends StatelessWidget {
 
   const InfoSectionContainer(
       {Key? key,
-      required this.title,
       required this.children,
+      this.title,
       this.titleFontSize,
       this.titleFontWeight,
       this.titleColor,
@@ -34,16 +34,17 @@ class InfoSectionContainer extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            textAlign: TextAlign.start,
-            style: TextStyle(
-                fontSize: titleFontSize ??
-                    Theme.of(context).textTheme.titleLarge!.fontSize,
-                color: titleColor ?? KColors.kLightTextColor,
-                fontFamily: titleFontFamily,
-                fontWeight: titleFontWeight),
-          ),
+          if (title != null)
+            Text(
+              title!,
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                  fontSize: titleFontSize ??
+                      Theme.of(context).textTheme.titleLarge!.fontSize,
+                  color: titleColor ?? KColors.kLightTextColor,
+                  fontFamily: titleFontFamily,
+                  fontWeight: titleFontWeight),
+            ),
           const SizedBox(
             height: 10,
           ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xego_rider/settings/kColors.dart';
-import 'package:xego_rider/widgets/choose_end_point_locations_widget.dart';
+import 'package:xego_rider/screens/choose_end_point_locations_screen.dart';
 
 class WhereToBoxWidget extends StatefulWidget {
   const WhereToBoxWidget({Key? key}) : super(key: key);
@@ -18,7 +18,7 @@ class _WhereToBoxWidgetState extends State<WhereToBoxWidget> {
         onTap: () {
           if (context.mounted) {
             Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const ChooseEndPointLocations(),
+              builder: (context) => const ChooseEndPointLocationsScreen(),
             ));
           }
         },
@@ -26,21 +26,26 @@ class _WhereToBoxWidgetState extends State<WhereToBoxWidget> {
           padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 15),
           decoration: BoxDecoration(
             border: Border.all(
-              color: KColors.kTertiaryColor,
+              color: KColors.kPrimaryColor,
             ),
+            color: KColors.kSecondaryColor,
             borderRadius: BorderRadius.circular(20.0),
           ),
           child: const Row(
             children: [
               Expanded(
                 child: Text(
-                  'Search',
+                  'Get A Ride',
                   style: TextStyle(
-                    color: Colors.grey,
+                    color: KColors.kTertiaryColor,
+                    fontSize: 20,
                   ),
                 ),
               ),
-              Icon(Icons.route),
+              Icon(
+                Icons.hail,
+                color: KColors.kTertiaryColor,
+              )
             ],
           ),
         ),

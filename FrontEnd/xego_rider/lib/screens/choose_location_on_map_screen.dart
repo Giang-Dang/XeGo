@@ -8,21 +8,22 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:xego_rider/services/location_services.dart';
 import 'package:xego_rider/settings/kColors.dart';
 
-class ChooseLocationMapWidget extends StatefulWidget {
-  const ChooseLocationMapWidget({
+class ChooseLocationOnMapScreen extends StatefulWidget {
+  const ChooseLocationOnMapScreen({
     super.key,
-    required this.onLocationSelected,
-    this.initialPosition,
+    required this.onLocationConfirmed,
+    this.initialLatLng,
   });
 
-  final Function(LatLng, String) onLocationSelected;
-  final LatLng? initialPosition;
+  final Function(LatLng, String) onLocationConfirmed;
+  final LatLng? initialLatLng;
+
   @override
-  _ChooseLocationMapWidgetState createState() =>
-      _ChooseLocationMapWidgetState();
+  State<ChooseLocationOnMapScreen> createState() =>
+      _ChooseLocationOnMapScreenState();
 }
 
-class _ChooseLocationMapWidgetState extends State<ChooseLocationMapWidget> {
+class _ChooseLocationOnMapScreenState extends State<ChooseLocationOnMapScreen> {
   GoogleMapController? _mapController;
   Completer<GoogleMapController> _controller = Completer();
   bool _isCameraMoving = false;
@@ -47,8 +48,6 @@ class _ChooseLocationMapWidgetState extends State<ChooseLocationMapWidget> {
 
     String address =
         await _locationServices.getAddressFromCoordinates(centerLatLng);
-
-    widget.onLocationSelected(centerLatLng, address);
 
     setState(() {
       _currentCenter = centerLatLng;
@@ -111,6 +110,9 @@ class _ChooseLocationMapWidgetState extends State<ChooseLocationMapWidget> {
   }
 
   void _confirmDestination() {
+    if (_currentCenter != null && _address != '') {
+      widget.onLocationConfirmed(_currentCenter!, _address);
+    }
     if (context.mounted) {
       Navigator.of(context).pop();
     }
@@ -123,7 +125,7 @@ class _ChooseLocationMapWidgetState extends State<ChooseLocationMapWidget> {
         children: <Widget>[
           GoogleMap(
             initialCameraPosition: CameraPosition(
-              target: widget.initialPosition ??
+              target: widget.initialLatLng ??
                   LocationServices.currentLocation ??
                   const LatLng(10.762622, 106.964172),
               zoom: 17,
