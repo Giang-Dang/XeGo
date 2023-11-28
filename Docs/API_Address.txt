@@ -9,3 +9,5 @@ Xego.Services.Location.Grpc					6005:8080		locationdb		1435
 xego.services.vehicle.api					6006:8080		vehicledb		1436
 xego.services.file.api						6007:8080		filedb			1437
 xego.services.ride.api						6008:8080		ridedb			1438
+xego.services.notifications.functions				6009:8080		notificationdb		1439
+xego.services.price.api						6010:8080		pricedb			1440

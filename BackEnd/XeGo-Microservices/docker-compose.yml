@@ -22,6 +22,9 @@ services:
   notificationdb:
     image: mcr.microsoft.com/mssql/server:2022-latest
 
+  pricedb:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+
   xego.services.auth.api:
     image: ${DOCKER_REGISTRY-}xegoservicesauthapi
     build:
@@ -94,9 +97,16 @@ services:
       context: .
       dockerfile: Services/Ride/XeGo.Services.Ride.API/Dockerfile
 
+  xego.services.price.api:
+    image: ${DOCKER_REGISTRY-}xegoservicespriceapi
+    build:
+      context: .
+      dockerfile: Services/Price/XeGo.Services.Price.API/Dockerfile
+
 volumes:
   portainer_data:
   elasticsearch-data:
+
 
 
 

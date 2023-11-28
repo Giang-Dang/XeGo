@@ -13,7 +13,8 @@
         "xego.services.file.api": "StartDebugging",
         "xego.apigateways.ocelot": "StartDebugging",
         "xego.services.notifications.functions": "StartDebugging",
-        "xego.services.ride.api": "StartDebugging"
+        "xego.services.ride.api": "StartDebugging",
+        "xego.services.price.api": "StartDebugging"
       }
     }
   }
