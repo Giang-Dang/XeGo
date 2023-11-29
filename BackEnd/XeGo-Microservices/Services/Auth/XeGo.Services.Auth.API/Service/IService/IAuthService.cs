@@ -10,6 +10,8 @@ namespace XeGo.Services.Auth.API.Service.IService
         Task<string?> RefreshToken(string refreshToken, string userId, string loginApp);
         Task<bool> AssignRoleAsync(string email, string roleName);
         Task<bool> RemoveRoleAsync(string userId, string roleName);
+
+        Task<string?> GetRiderType(string riderId);
         bool CreateRole(string roleName);
         bool RemoveRole(string roleName);
     }

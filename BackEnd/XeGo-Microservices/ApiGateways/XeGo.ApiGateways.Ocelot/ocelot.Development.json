@@ -2,6 +2,18 @@
   "Routes": [
     //Auth
     {
+      "DownstreamPathTemplate": "/api/auth/user/rider-type",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.auth.api",
+          "Port": "8080"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/auth/user/rider-type",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
       "DownstreamPathTemplate": "/api/auth/user/register",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [

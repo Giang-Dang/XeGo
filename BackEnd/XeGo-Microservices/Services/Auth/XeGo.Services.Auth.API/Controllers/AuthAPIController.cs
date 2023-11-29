@@ -7,17 +7,41 @@ namespace XeGo.Services.Auth.API.Controllers
 {
     [Route("api/auth")]
     [ApiController]
-    public class AuthApiController : ControllerBase
+    public class AuthApiController(IAuthService authService, ILogger<AuthApiController> logger)
+        : ControllerBase
     {
-        private readonly IAuthService _authService;
-        private readonly ILogger<AuthApiController> _logger;
-        protected ResponseDto ResponseDto;
+        private readonly IAuthService _authService = authService ?? throw new ArgumentNullException(nameof(authService));
+        private readonly ILogger<AuthApiController> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        protected ResponseDto ResponseDto = new();
 
-        public AuthApiController(IAuthService authService, ILogger<AuthApiController> logger)
+        [HttpGet("user/rider-type")]
+        public async Task<ResponseDto> GetRiderType(string id)
         {
-            _authService = authService ?? throw new ArgumentNullException(nameof(authService));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            ResponseDto = new();
+            _logger.LogInformation("{class}>{function}: Received", nameof(AuthApiController), nameof(GetRiderType));
+
+            try
+            {
+                var type = await _authService.GetRiderType(id);
+                if (type == null)
+                {
+                    ResponseDto.Message = "Not Found!";
+                    ResponseDto.IsSuccess = false;
+                    return ResponseDto;
+                }
+
+                ResponseDto.Data = type;
+                ResponseDto.IsSuccess = true;
+                _logger.LogInformation("{class}>{function}: Done", nameof(AuthApiController), nameof(GetRiderType));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"{nameof(AuthApiController)}>{nameof(GetRiderType)}: {e.Message}");
+                ResponseDto.IsSuccess = false;
+                ResponseDto.Data = null;
+                ResponseDto.Message = e.Message;
+            }
+
+            return ResponseDto;
         }
 
         [HttpPost("user/register")]

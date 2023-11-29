@@ -9,20 +9,14 @@ using XeGo.Shared.Lib.Models;
 
 namespace XeGo.Services.Auth.API.Service
 {
-    public class AuthService : IAuthService
+    public class AuthService(AppDbContext db, UserManager<ApplicationUser> userManager,
+            RoleManager<IdentityRole> roleManager, IJwtTokenGenerator jwtTokenGenerator)
+        : IAuthService
     {
-        private readonly AppDbContext _db;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly IJwtTokenGenerator _jwtTokenGenerator;
-
-        public AuthService(AppDbContext db, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IJwtTokenGenerator jwtTokenGenerator)
-        {
-            _db = db ?? throw new ArgumentNullException(nameof(db));
-            _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
-            _roleManager = roleManager ?? throw new ArgumentNullException(nameof(roleManager));
-            _jwtTokenGenerator = jwtTokenGenerator ?? throw new ArgumentNullException(nameof(jwtTokenGenerator));
-        }
+        private readonly AppDbContext _db = db ?? throw new ArgumentNullException(nameof(db));
+        private readonly UserManager<ApplicationUser> _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+        private readonly RoleManager<IdentityRole> _roleManager = roleManager ?? throw new ArgumentNullException(nameof(roleManager));
+        private readonly IJwtTokenGenerator _jwtTokenGenerator = jwtTokenGenerator ?? throw new ArgumentNullException(nameof(jwtTokenGenerator));
 
         public async Task<bool> AssignRoleAsync(string userId, string roleName)
         {
@@ -151,12 +145,6 @@ namespace XeGo.Services.Auth.API.Service
                     Address = requestDto.Address,
                 };
 
-                var isUserInfoExisted =
-                    await _db.ApplicationUsers.AnyAsync(u =>
-                        u.NormalizedEmail == requestDto.Email.ToUpper()
-                        || u.NormalizedUserName == requestDto.UserName.ToUpper()
-                        || u.PhoneNumber == requestDto.PhoneNumber);
-
                 var emailExists = await _db.ApplicationUsers.AnyAsync(u =>
                     u.NormalizedEmail == requestDto.Email.ToUpper());
                 if (emailExists)
@@ -229,7 +217,7 @@ namespace XeGo.Services.Auth.API.Service
 
         public async Task<string?> RefreshToken(string refreshToken, string userId, string loginApp)
         {
-            var user = _db.ApplicationUsers.FirstOrDefault(u => u.Id == userId);
+            var user = await _db.ApplicationUsers.FirstOrDefaultAsync(u => u.Id == userId);
             if (user == null)
             {
                 return null;
@@ -245,6 +233,17 @@ namespace XeGo.Services.Auth.API.Service
             var newAccessToken = await _jwtTokenGenerator.GenerateAccessTokenAsync(user, loginApp);
             await ReplaceAccessToken(user, newAccessToken, loginApp);
             return newAccessToken;
+        }
+
+        public async Task<string?> GetRiderType(string riderId)
+        {
+            var cRider = await _db.Riders.FirstOrDefaultAsync(r => r.RiderId == riderId);
+            if (cRider == null)
+            {
+                return null;
+            }
+
+            return cRider.Type;
         }
 
         #region Private Methods
