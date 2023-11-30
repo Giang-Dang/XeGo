@@ -2,8 +2,8 @@
 {
     public static class AppNameConstants
     {
-        public const string AdministratorApp = "ADMINISTRATOR_APP";
-        public const string CustomApp = "CUSTOM_APP";
-        public const string DriverApp = "DRIVER_APP";
+        public const string AdministratorApp = "ADMIN";
+        public const string RiderApp = "RIDER";
+        public const string DriverApp = "DRIVER";
     }
 }

@@ -199,6 +199,7 @@ namespace XeGo.Services.Auth.API.Service
                         LastModifiedDate = DateTime.UtcNow
                     };
                     await _db.Riders.AddAsync(riderType);
+                    await _db.SaveChangesAsync();
                 }
 
                 responseDto.IsSuccess = true;
