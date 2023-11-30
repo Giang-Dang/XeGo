@@ -56,12 +56,12 @@ class MyApp extends StatelessWidget {
       title: Constants.kTopScreenAppTitle,
       theme: KTheme.kTheme,
       home: Scaffold(
-        body: SplashScreen(),
-        // body: MapWidget(
-        //   pickUpLocation: LatLng(10.762622, 106.964172),
-        //   destinationLocation: LatLng(10.763511, 106.944817),
-        //   driverLocationsList: [LatLng(10.760622, 106.968172)],
-        // ),
+        // body: SplashScreen(),
+        body: MapWidget(
+          pickUpLocation: LatLng(10.762622, 106.964172),
+          destinationLocation: LatLng(10.763511, 106.944817),
+          driverLocationsList: [LatLng(10.760622, 106.968172)],
+        ),
         // body: ChooseLocationMapWidget(
         //   onLocationSelected: (location) {},
         // ),

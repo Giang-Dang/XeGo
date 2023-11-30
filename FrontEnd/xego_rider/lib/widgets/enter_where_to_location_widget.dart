@@ -60,13 +60,13 @@ class _EnterWhereToLocationWidgetState
                   _address ?? 'Where to?',
                   style: const TextStyle(
                     color: KColors.kTertiaryColor,
-                    fontSize: 16,
+                    fontSize: 14,
                   ),
                 ),
               ),
               const Gap(5),
               const Icon(
-                Icons.map_outlined,
+                Icons.add_location_outlined,
                 color: KColors.kTertiaryColor,
               )
             ],

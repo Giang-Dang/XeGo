@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:xego_rider/models/Dto/direction_google_api_response_dto.dart';
 import 'package:xego_rider/services/location_services.dart';
 import 'package:xego_rider/settings/kColors.dart';
 
@@ -27,13 +28,23 @@ class _MapWidgetState extends State<MapWidget> {
   BitmapDescriptor? _pickUpIcon;
   BitmapDescriptor? _destinationIcon;
   BitmapDescriptor? _driverIcon;
+  DirectionGoogleApiResponseDto? _directionResponse;
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
 
   _initialize() async {
+    _directionResponse = await _locationServices.getPlaceDirectionDetails(
+      widget.pickUpLocation,
+      widget.destinationLocation,
+    );
+    if (_directionResponse == null) {
+      return;
+    }
+
     final polylines = await _locationServices.getDirectionPolylines(
-        widget.pickUpLocation, widget.destinationLocation,
-        directionColor: KColors.kBlue);
+      _directionResponse!,
+      directionColor: KColors.kBlue,
+    );
     if (context.mounted) {
       setState(() {
         _polylines = polylines;

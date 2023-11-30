@@ -4,14 +4,14 @@ import 'package:xego_rider/settings/kColors.dart';
 import 'package:xego_rider/widgets/info_section_container.dart';
 import 'package:xego_rider/widgets/where_to_box_widget.dart';
 
-class GetRideWidget extends StatefulWidget {
-  const GetRideWidget({super.key});
+class HomeWidget extends StatefulWidget {
+  const HomeWidget({super.key});
 
   @override
-  State<GetRideWidget> createState() => _GetRideWidgetState();
+  State<HomeWidget> createState() => _HomeWidgetState();
 }
 
-class _GetRideWidgetState extends State<GetRideWidget> {
+class _HomeWidgetState extends State<HomeWidget> {
   @override
   Widget build(BuildContext context) {
     return const SingleChildScrollView(

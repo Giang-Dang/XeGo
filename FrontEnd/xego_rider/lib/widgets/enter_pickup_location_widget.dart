@@ -59,13 +59,13 @@ class _EnterPickUpLocationWidgetState extends State<EnterPickUpLocationWidget> {
                   _address ?? 'Enter pickup location',
                   style: const TextStyle(
                     color: KColors.kTertiaryColor,
-                    fontSize: 16,
+                    fontSize: 14,
                   ),
                 ),
               ),
               const Gap(5),
               const Icon(
-                Icons.map_outlined,
+                Icons.person_pin_circle_outlined,
                 color: KColors.kTertiaryColor,
               )
             ],

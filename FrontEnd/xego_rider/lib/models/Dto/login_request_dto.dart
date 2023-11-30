@@ -2,7 +2,7 @@ class LoginRequestDto {
   const LoginRequestDto(
       {required this.phoneNumber,
       required this.password,
-      this.fromApp = "DRIVER"});
+      this.fromApp = "RIDER"});
 
   final String phoneNumber;
   final String password;
@@ -12,7 +12,7 @@ class LoginRequestDto {
     return LoginRequestDto(
       phoneNumber: json['phoneNumber'],
       password: json['password'],
-      fromApp: json['fromApp'] ?? "DRIVER",
+      fromApp: json['fromApp'] ?? "RIDER",
     );
   }
 

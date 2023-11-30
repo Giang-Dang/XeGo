@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xego_rider/settings/kColors.dart';
-import 'package:xego_rider/screens/choose_end_point_locations_screen.dart';
+import 'package:xego_rider/screens/get_a_ride_screen.dart';
 
 class WhereToBoxWidget extends StatefulWidget {
   const WhereToBoxWidget({Key? key}) : super(key: key);
@@ -18,7 +18,7 @@ class _WhereToBoxWidgetState extends State<WhereToBoxWidget> {
         onTap: () {
           if (context.mounted) {
             Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const ChooseEndPointLocationsScreen(),
+              builder: (context) => const GetARideScreen(),
             ));
           }
         },

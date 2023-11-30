@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -108,6 +109,8 @@ class LocationServices {
 
     var res = await _apiServices.get(directionUrl);
 
+    log(res.toString());
+
     if (res.data['status'].toString().toUpperCase() != 'OK') {
       return null;
     }
@@ -130,24 +133,22 @@ class LocationServices {
   }
 
   Future<Set<Polyline>> getDirectionPolylines(
-      LatLng startLocation, LatLng destinationLocation,
+      DirectionGoogleApiResponseDto directionResponse,
       {Color directionColor = Colors.blue}) async {
     Set<Polyline> polylines = {};
-    DirectionGoogleApiResponseDto? directionResponse =
-        await getPlaceDirectionDetails(startLocation, destinationLocation);
-    if (directionResponse != null) {
-      PolylinePoints polylinePoints = PolylinePoints();
-      List<PointLatLng> decodedPolylinePoints =
-          polylinePoints.decodePolyline(directionResponse.encodedPoints!);
-      polylines.add(Polyline(
-        polylineId: PolylineId('direction'),
-        points: decodedPolylinePoints
-            .map((point) => LatLng(point.latitude, point.longitude))
-            .toList(),
-        color: directionColor,
-        width: 3,
-      ));
-    }
+
+    PolylinePoints polylinePoints = PolylinePoints();
+    List<PointLatLng> decodedPolylinePoints =
+        polylinePoints.decodePolyline(directionResponse.encodedPoints!);
+    polylines.add(Polyline(
+      polylineId: PolylineId('direction'),
+      points: decodedPolylinePoints
+          .map((point) => LatLng(point.latitude, point.longitude))
+          .toList(),
+      color: directionColor,
+      width: 3,
+    ));
+
     return polylines;
   }
 

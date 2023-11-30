@@ -58,7 +58,10 @@ class _SplashScreenState extends State<SplashScreen>
           ),
         );
       }
+      return;
     }
+
+    await userServices.updateRiderType(UserServices.userDto!.userId);
 
     if (context.mounted) {
       Navigator.pushReplacement(
