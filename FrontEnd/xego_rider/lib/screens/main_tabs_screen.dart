@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xego_rider/settings/constants.dart';
 import 'package:xego_rider/settings/kColors.dart';
-import 'package:xego_rider/widgets/get_ride_widget.dart';
+import 'package:xego_rider/widgets/home_widget.dart';
 import 'package:xego_rider/widgets/history_widget.dart';
 import 'package:xego_rider/widgets/me_widget.dart';
 
@@ -17,7 +17,7 @@ class _MainTabsScreenState extends State<MainTabsScreen> {
   bool _isFindRideButtonOn = false;
 
   final List<Widget> _pages = [
-    const GetRideWidget(),
+    const HomeWidget(),
     const HistoryWidget(),
     const Me(),
   ];

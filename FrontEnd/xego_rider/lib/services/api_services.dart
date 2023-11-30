@@ -49,6 +49,10 @@ class ApiServices {
         .toJson();
     final response = await post(url, data: data);
 
+    if (!response.data['isSuccess']) {
+      return false;
+    }
+
     final newAccessToken = response.data['data'];
 
     tokensDto = TokensDto(

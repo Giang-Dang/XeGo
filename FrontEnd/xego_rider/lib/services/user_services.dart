@@ -16,6 +16,7 @@ import 'package:xego_rider/settings/kSecrets.dart';
 class UserServices {
   static bool isAuthorized = false;
   static UserDto? userDto;
+  static String? riderType;
   static double currentLongitude = 0.0;
   static double currentLatitude = 0.0;
   final apiServices = ApiServices();
@@ -69,6 +70,23 @@ class UserServices {
     );
 
     return response;
+  }
+
+  Future<bool> updateRiderType(String userId) async {
+    const subApiUrl = 'api/auth/user/rider-type';
+    final url = Uri.http(KSecret.kApiIp, subApiUrl, {"id": userId});
+
+    final response = await apiServices.get(url.toString());
+
+    log(response.data.toString());
+
+    if (response.data['isSuccess']) {
+      riderType = response.data['data'];
+      log(riderType ?? "null");
+      return true;
+    }
+
+    return false;
   }
 
   Future<void> getUserLocation() async {

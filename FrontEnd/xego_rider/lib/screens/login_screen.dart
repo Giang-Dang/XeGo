@@ -41,12 +41,14 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     final isLoginSuccess = await _userServices.login(loginRequestDto);
-    final isDriverAssigned =
-        await _vehicleServices.isDriverAssigned(UserServices.userDto!.userId);
 
     _setLogining(false);
 
     if (isLoginSuccess) {
+      final isUpdateRiderTypeSuccess =
+          await _userServices.updateRiderType(UserServices.userDto!.userId);
+      final isDriverAssigned =
+          await _vehicleServices.isDriverAssigned(UserServices.userDto!.userId);
       _setLoginFailed(false);
       _navigateToNextScreen(context);
     } else {

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:xego_rider/models/Dto/vehicle_response_dto.dart';
 import 'package:xego_rider/models/Entities/vehicle.dart';
 import 'package:xego_rider/services/api_services.dart';
@@ -24,27 +26,24 @@ class VehicleServices {
   }) async {
     try {
       const subApiUrl = 'api/vehicles';
-      final url = Uri.http(KSecret.kApiIp, subApiUrl);
+      final url = Uri.http(KSecret.kApiIp, subApiUrl, {
+        'id': id,
+        'plateNumber': plateNumber,
+        'type': type,
+        'driverId': driverId,
+        'isActive': isActive,
+        'createdBy': createdBy,
+        'createdStartDate': createdStartDate?.toIso8601String(),
+        'createdEndDate': createdEndDate?.toIso8601String(),
+        'lastModifiedBy': lastModifiedBy,
+        'lastModifiedStartDate': lastModifiedStartDate?.toIso8601String(),
+        'lastModifiedEndDate': lastModifiedEndDate?.toIso8601String(),
+        'searchString': searchString,
+        'pageNumber': pageNumber,
+        'pageSize': pageSize,
+      });
 
-      final response = await apiServices.get(
-        url.toString(),
-        headers: {
-          'id': id,
-          'plateNumber': plateNumber,
-          'type': type,
-          'driverId': driverId,
-          'isActive': isActive,
-          'createdBy': createdBy,
-          'createdStartDate': createdStartDate?.toIso8601String(),
-          'createdEndDate': createdEndDate?.toIso8601String(),
-          'lastModifiedBy': lastModifiedBy,
-          'lastModifiedStartDate': lastModifiedStartDate?.toIso8601String(),
-          'lastModifiedEndDate': lastModifiedEndDate?.toIso8601String(),
-          'searchString': searchString,
-          'pageNumber': pageNumber,
-          'pageSize': pageSize,
-        },
-      );
+      final response = await apiServices.get(url.toString());
 
       if (response.statusCode != 200) {
         return [];
@@ -61,6 +60,18 @@ class VehicleServices {
       return [];
     }
   }
+
+  // Future<List<VehicleTypeDto>> GetAllVehicleTypes() {
+  //   try {
+  //     const subApiUrl = 'api/vehicles/types';
+  //     final url = Uri.http(KSecret.kApiIp, subApiUrl, {'isActive': true});
+
+  //     final response = apiServices.get(url.toString());
+  //   } catch (e) {
+  //     log(e.toString());
+  //     return List<VehicleTypeDto>();
+  //   }
+  // }
 
   Future<bool> isDriverAssigned(String driverId) async {
     var vehicleList = await getAllVehicles(driverId: driverId);

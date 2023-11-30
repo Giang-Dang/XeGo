@@ -9,7 +9,9 @@ class Constants {
   static const kFirstNameKeyName = 'firstName';
   static const kLastNameKeyName = 'lastName';
   static const kAddressKeyName = 'address';
-  static const kFromAppValue = 'DRIVER';
-  static const kDefaultRoleValue = 'DRIVER';
+  static const kFromAppValue = 'RIDER';
+  static const kDefaultRoleValue = 'RIDER';
   static const kTopScreenAppTitle = 'XeGo - Rider';
+  static const kRiderType_Normal = "NORMAL";
+  static const kRiderType_Vip = "VIP";
 }
