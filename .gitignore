@@ -33,6 +33,8 @@
 /BackEnd/XeGo-Microservices/Services/Notifications/XeGo.Services.Notifications.Functions/obj/
 /BackEnd/XeGo-Microservices/Services/Price/XeGo.Services.Price.API/bin/
 /BackEnd/XeGo-Microservices/Services/Price/XeGo.Services.Price.API/obj/
+/BackEnd/XeGo-Microservices/Services/Price/XeGo.Services.Price.Grpc/bin/
+/BackEnd/XeGo-Microservices/Services/Price/XeGo.Services.Price.Grpc/obj/
 /BackEnd/XeGo-Microservices/Shared/XeGo.Shared.Lib/bin/
 /BackEnd/XeGo-Microservices/Shared/XeGo.Shared.Lib/obj/
 /BackEnd/XeGo-Microservices/Shared/XeGo.Shared.GrpcConsumer/bin/
