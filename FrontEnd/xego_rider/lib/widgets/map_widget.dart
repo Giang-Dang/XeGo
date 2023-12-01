@@ -10,12 +10,17 @@ class MapWidget extends StatefulWidget {
   final LatLng pickUpLocation;
   final LatLng destinationLocation;
   final List<LatLng> driverLocationsList;
+  final LatLng? riderLocation;
+  final DirectionGoogleApiResponseDto? directionGoogleApiDto;
 
-  const MapWidget(
-      {super.key,
-      required this.pickUpLocation,
-      required this.destinationLocation,
-      this.driverLocationsList = const []});
+  const MapWidget({
+    super.key,
+    required this.pickUpLocation,
+    required this.destinationLocation,
+    this.driverLocationsList = const [],
+    this.riderLocation,
+    this.directionGoogleApiDto,
+  });
 
   @override
   _MapWidgetState createState() => _MapWidgetState();
@@ -28,15 +33,17 @@ class _MapWidgetState extends State<MapWidget> {
   BitmapDescriptor? _pickUpIcon;
   BitmapDescriptor? _destinationIcon;
   BitmapDescriptor? _driverIcon;
+  BitmapDescriptor? _riderIcon;
   DirectionGoogleApiResponseDto? _directionResponse;
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
 
   _initialize() async {
-    _directionResponse = await _locationServices.getPlaceDirectionDetails(
-      widget.pickUpLocation,
-      widget.destinationLocation,
-    );
+    _directionResponse = widget.directionGoogleApiDto ??
+        await _locationServices.getPlaceDirectionDetails(
+          widget.pickUpLocation,
+          widget.destinationLocation,
+        );
     if (_directionResponse == null) {
       return;
     }
@@ -55,22 +62,27 @@ class _MapWidgetState extends State<MapWidget> {
 
   Future<void> _loadMarkerIcon() async {
     final pickUpIcon = await BitmapDescriptor.fromAssetImage(
-      ImageConfiguration(devicePixelRatio: 2.5),
-      'assets/images/pick_up_location_icon.png', // Replace with the path to your icon
+      const ImageConfiguration(devicePixelRatio: 2.5),
+      'assets/images/start_location.png', // Replace with the path to your icon
     );
     final destinationIcon = await BitmapDescriptor.fromAssetImage(
-      ImageConfiguration(devicePixelRatio: 2.5),
+      const ImageConfiguration(devicePixelRatio: 2.5),
       'assets/images/destination_location_icon.png', // Replace with the path to your icon
     );
     final driverIcon = await BitmapDescriptor.fromAssetImage(
-      ImageConfiguration(devicePixelRatio: 2.5),
+      const ImageConfiguration(devicePixelRatio: 2.5),
       'assets/images/car_location_icon.png', // Replace with the path to your icon
+    );
+    final riderIcon = await BitmapDescriptor.fromAssetImage(
+      const ImageConfiguration(devicePixelRatio: 2.5),
+      'assets/images/user_location.png', // Replace with the path to your icon
     );
     if (mounted) {
       setState(() {
         _pickUpIcon = pickUpIcon;
         _destinationIcon = destinationIcon;
         _driverIcon = driverIcon;
+        _riderIcon = riderIcon;
       });
     }
   }
@@ -113,7 +125,7 @@ class _MapWidgetState extends State<MapWidget> {
   Widget build(BuildContext context) {
     return GoogleMap(
       initialCameraPosition: CameraPosition(
-        target: widget.pickUpLocation,
+        target: widget.riderLocation ?? widget.pickUpLocation,
         zoom: 15,
       ),
       myLocationEnabled: true,
@@ -137,20 +149,28 @@ class _MapWidgetState extends State<MapWidget> {
             infoWindow: const InfoWindow(title: 'Driver Location'),
             icon: _driverIcon ?? BitmapDescriptor.defaultMarker,
           ),
+        if (widget.riderLocation != null)
+          Marker(
+            markerId: const MarkerId('riderLocation'),
+            position: widget.riderLocation!,
+            infoWindow: const InfoWindow(title: 'Rider Location'),
+            icon: _riderIcon ?? BitmapDescriptor.defaultMarker,
+          ),
       },
       polylines: _polylines,
-      onMapCreated: (GoogleMapController controller) {
-        _controller.complete(controller);
-        Future.delayed(
-            const Duration(milliseconds: 200),
-            () => controller.animateCamera(CameraUpdate.newLatLngBounds(
-                _boundsFromLatLngList([
-                  widget.destinationLocation,
-                  widget.pickUpLocation,
-                  ...widget.driverLocationsList,
-                ]),
-                30)));
-      },
+      // onMapCreated: (GoogleMapController controller) {
+      //   _controller.complete(controller);
+      //   Future.delayed(
+      //       const Duration(milliseconds: 200),
+      //       () => controller.animateCamera(CameraUpdate.newLatLngBounds(
+      //           _boundsFromLatLngList([
+      //             widget.destinationLocation,
+      //             widget.pickUpLocation,
+      //             widget.riderLocation ?? widget.pickUpLocation,
+      //             ...widget.driverLocationsList,
+      //           ]),
+      //           30)));
+      // },
     );
   }
 }
