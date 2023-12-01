@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+import "google/protobuf/wrappers.proto";
+
+option csharp_namespace = "XeGo.Services.Price.Grpc.Protos";
+
+service VehicleTypePriceProtoService {
+	rpc GetVehicleTypePriceById(GetVehicleTypePriceByIdRequest) returns (VehicleTypePriceResponse);
+}
+
+message GetVehicleTypePriceByIdRequest {
+	int32 vehicleTypeId = 1;
+}
+
+message VehicleTypePriceResponse {
+  string data = 1;
+  bool isSuccess = 2;
+  string message = 3;
+}

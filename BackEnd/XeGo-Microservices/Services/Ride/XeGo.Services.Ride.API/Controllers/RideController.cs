@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Linq.Expressions;
 using XeGo.Services.Ride.API.Models.Dto;
 using XeGo.Services.Ride.API.Repository.IRepository;
+using XeGo.Shared.GrpcConsumer.Services;
 using XeGo.Shared.Lib.Helpers;
 using XeGo.Shared.Lib.Models;
 
@@ -9,7 +11,7 @@ namespace XeGo.Services.Ride.API.Controllers
 {
     [Route("api/rides")]
     [ApiController]
-    public class RideController(IRideRepository rideRepo, ILogger<RideController> logger) : ControllerBase
+    public class RideController(IRideRepository rideRepo, VehicleTypePriceService vehicleTypePriceService, ILogger<RideController> logger) : ControllerBase
     {
         private ResponseDto ResponseDto { get; set; } = new();
 
@@ -187,6 +189,47 @@ namespace XeGo.Services.Ride.API.Controllers
 
             return ResponseDto;
         }
+
+        [HttpGet("estimated-price")]
+        public async Task<ResponseDto> GetEstimatedPrice(
+            int vehicleTypeId,
+            double distanceInMeters,
+            int? discountId)
+        {
+            logger.LogInformation($"Executing {nameof(RideController)}>{nameof(GetEstimatedPrice)}:...");
+
+            try
+            {
+                var vehicleTypePriceResponse = await vehicleTypePriceService.GetVehicleTypePriceById(vehicleTypeId);
+                var cVehicleTypePrice =
+                    JsonConvert.DeserializeObject<VehicleTypePriceDto>(vehicleTypePriceResponse.Data);
+
+                if (!vehicleTypePriceResponse.IsSuccess || cVehicleTypePrice == null)
+                {
+                    logger.LogError($"{nameof(RideController)}>{nameof(GetEstimatedPrice)}: Not Found!");
+                    ResponseDto.IsSuccess = false;
+                    ResponseDto.Message = vehicleTypePriceResponse.Message;
+                    return ResponseDto;
+                }
+
+                var totalPrice = distanceInMeters < 500
+                    ? cVehicleTypePrice.DropCharge
+                    : Math.Round(distanceInMeters / 1000 * cVehicleTypePrice.PricePerKm, 2);
+
+                ResponseDto.IsSuccess = true;
+                ResponseDto.Data = totalPrice;
+            }
+            catch (Exception e)
+            {
+                logger.LogError($"{nameof(RideController)}>{nameof(GetEstimatedPrice)}: {e.Message}");
+                ResponseDto.IsSuccess = false;
+                ResponseDto.Data = null;
+                ResponseDto.Message = e.Message;
+            }
+
+            return ResponseDto;
+        }
+
     }
 
 }

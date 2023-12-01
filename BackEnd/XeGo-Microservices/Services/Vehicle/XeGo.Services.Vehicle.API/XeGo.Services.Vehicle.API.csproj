@@ -32,6 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Shared\XeGo.Shared.GrpcConsumer\XeGo.Shared.GrpcConsumer.csproj" />
     <ProjectReference Include="..\..\..\Shared\XeGo.Shared.Lib\XeGo.Shared.Lib.csproj" />
   </ItemGroup>
 

@@ -2,14 +2,9 @@
 
 namespace XeGo.Shared.GrpcConsumer.Services
 {
-    public class LocationGrpcService
+    public class LocationGrpcService(LocationProtoService.LocationProtoServiceClient service)
     {
-        private LocationProtoService.LocationProtoServiceClient _service;
-
-        public LocationGrpcService(LocationProtoService.LocationProtoServiceClient service)
-        {
-            _service = service ?? throw new ArgumentNullException(nameof(service));
-        }
+        private LocationProtoService.LocationProtoServiceClient _service = service ?? throw new ArgumentNullException(nameof(service));
 
         public async Task<Response> FindNearbyDrivers(double latitude, double longitude, double geoHashSquareSideInMeters, double maxRadius)
         {

@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using XeGo.Shared.Lib.Entities;
 
-namespace XeGo.Services.Price.API.Entities
+namespace XeGo.Services.Price.Grpc.Entities
 {
     public class Price : BaseEntity
     {

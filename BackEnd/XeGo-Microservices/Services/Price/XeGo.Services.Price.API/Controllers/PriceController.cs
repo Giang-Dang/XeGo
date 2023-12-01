@@ -64,6 +64,14 @@ namespace XeGo.Services.Price.API.Controllers
 
             try
             {
+                var cPrice = await priceRepo.GetAsync(p => p.RideId == requestDto.RideId);
+                if (cPrice != null)
+                {
+                    logger.LogError($"{nameof(PriceController)}>{nameof(CreatePrice)}: Already exists!");
+                    ResponseDto.IsSuccess = false;
+                    ResponseDto.Message = "Already exists!";
+                    return ResponseDto;
+                }
                 var createDto = new Entities.Price()
                 {
                     RideId = requestDto.RideId,
