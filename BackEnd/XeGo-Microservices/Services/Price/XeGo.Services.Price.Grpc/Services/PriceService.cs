@@ -21,9 +21,9 @@ namespace XeGo.Services.Price.Grpc.Services
                 {
                     Response.IsSuccess = false;
                     Response.Message = "Not found!";
+                    logger.LogError($"{nameof(PriceService)}>{nameof(GetPriceByRideId)}: Not Found!");
                     return Response;
                 }
-
 
                 Response.IsSuccess = true;
                 Response.Data = JsonConvert.SerializeObject(cPrice);

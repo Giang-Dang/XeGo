@@ -20,13 +20,13 @@ namespace XeGo.Services.Price.Grpc.Entities
         public void CalculateTotalPrice()
         {
             double discount = Discount?.Percent ?? 0;
-            if (DistanceInMeters < 0.5)
+            if (DistanceInMeters < 500)
             {
                 TotalPrice = VehicleTypePrice.DropCharge * (1 - discount);
             }
             else
             {
-                TotalPrice = (DistanceInMeters * VehicleTypePrice.PricePerKm) * (1 - discount);
+                TotalPrice = Math.Round((DistanceInMeters / 1000 * VehicleTypePrice.PricePerKm) * (1 - discount), 2);
             }
         }
     }

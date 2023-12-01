@@ -39,6 +39,7 @@ namespace XeGo.Services.Vehicle.API.Controllers
                     return ResponseDto;
                 }
 
+
                 _logger.LogInformation($"{nameof(VehicleController)}>{nameof(GetById)} {vehicleId} : Found!");
                 ResponseDto.IsSuccess = true;
                 ResponseDto.Data = vehicleInfo;

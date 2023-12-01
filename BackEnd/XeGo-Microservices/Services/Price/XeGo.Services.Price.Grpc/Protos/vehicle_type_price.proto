@@ -6,27 +6,11 @@ option csharp_namespace = "XeGo.Services.Price.Grpc.Protos";
 
 service VehicleTypePriceProtoService {
 	rpc GetVehicleTypePriceById(GetVehicleTypePriceByIdRequest) returns (VehicleTypePriceResponse);
-	rpc CreateVehicleTypePrice(CreateVehicleTypePriceRequest) returns (VehicleTypePriceResponse);
-	rpc EditVehicleTypePrice(EditVehicleTypePriceRequest) returns (VehicleTypePriceResponse);
 }
 
 message GetVehicleTypePriceByIdRequest {
 	int32 vehicleTypeId = 1;
 }
-
-message CreateVehicleTypePriceRequest {
-	int32 vehicleTypeId = 1;
-	double pricePerKm = 2;
-	double dropCharge = 3;
-}
-
-message EditVehicleTypePriceRequest {
-	int32 vehicleTypeId = 1;
-	google.protobuf.DoubleValue pricePerKm = 2;
-	google.protobuf.DoubleValue dropCharge = 3;
-	string modifiedBy = 4;
-}
-
 
 message VehicleTypePriceResponse {
   string data = 1;

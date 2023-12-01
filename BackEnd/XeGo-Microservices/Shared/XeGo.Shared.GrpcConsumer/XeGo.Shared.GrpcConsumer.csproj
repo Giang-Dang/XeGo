@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -22,6 +22,12 @@
   <ItemGroup>
     <Protobuf Include="..\..\Services\Location\XeGo.Services.Location.Grpc\Protos\location.proto" GrpcServices="Client">
       <Link>Protos\location.proto</Link>
+    </Protobuf>
+    <Protobuf Include="..\..\Services\Price\XeGo.Services.Price.Grpc\Protos\price.proto" GrpcServices="Client">
+      <Link>Protos\price.proto</Link>
+    </Protobuf>
+    <Protobuf Include="..\..\Services\Price\XeGo.Services.Price.Grpc\Protos\vehicle_type_price.proto" GrpcServices="Client">
+      <Link>Protos\vehicle_type_price.proto</Link>
     </Protobuf>
   </ItemGroup>
 

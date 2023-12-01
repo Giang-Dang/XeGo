@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System.Reflection;
 using XeGo.Services.Location.Grpc.Protos;
+using XeGo.Services.Price.Grpc.Protos;
 using XeGo.Services.Ride.API.Data;
 using XeGo.Services.Ride.API.Hubs;
 using XeGo.Services.Ride.API.Providers;
@@ -27,11 +28,6 @@ builder.Services.AddScoped<ICodeValueRepository, CodeValueRepository>();
 
 builder.Services.AddSignalR();
 
-builder.Services.AddGrpcClient<LocationProtoService.LocationProtoServiceClient>(o =>
-    o.Address = new Uri(builder.Configuration["GrpcSettings:LocationGrpcUrl"])
-);
-builder.Services.AddScoped<LocationGrpcService>();
-
 builder.Services.AddAppDbContext<AppDbContext>(builder.Configuration, "DefaultConnection");
 
 // Add logging service
@@ -43,6 +39,19 @@ builder.Host.UseSerilog();
 builder.Services.AddGrpcClient<LocationProtoService.LocationProtoServiceClient>(o =>
     o.Address = new Uri(builder.Configuration["GrpcSettings:LocationGrpcUrl"])
 );
+
+//Add PriceGrpc Service
+builder.Services.AddGrpcClient<PriceProtoService.PriceProtoServiceClient>(o =>
+    o.Address = new Uri(builder.Configuration["GrpcSettings:PriceGrpcUrl"])
+);
+builder.Services.AddScoped<PriceGrpcService>();
+
+//Add VehicleTypePriceGrpc Service
+builder.Services.AddGrpcClient<VehicleTypePriceProtoService.VehicleTypePriceProtoServiceClient>(o =>
+    o.Address = new Uri(builder.Configuration["GrpcSettings:PriceGrpcUrl"])
+);
+builder.Services.AddScoped<VehicleTypePriceService>();
+
 
 var app = builder.Build();
 

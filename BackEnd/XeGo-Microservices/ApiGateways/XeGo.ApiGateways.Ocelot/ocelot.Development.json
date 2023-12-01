@@ -211,7 +211,18 @@
       "UpstreamPathTemplate": "/api/rides",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT" ]
     },
-
+    {
+      "DownstreamPathTemplate": "/api/rides/estimated-price",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.ride.api",
+          "Port": "8080"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/rides/estimated-price",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
     //Price
     {
       "DownstreamPathTemplate": "/api/vehicle-type-price",
