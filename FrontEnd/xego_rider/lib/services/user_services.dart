@@ -10,7 +10,7 @@ import 'package:xego_rider/models/Dto/tokens_dto.dart';
 import 'package:xego_rider/models/Dto/user_dto.dart';
 import 'package:xego_rider/services/api_services.dart';
 import 'package:xego_rider/services/location_services.dart';
-import 'package:xego_rider/settings/constants.dart';
+import 'package:xego_rider/settings/app_constants.dart';
 import 'package:xego_rider/settings/kSecrets.dart';
 
 class UserServices {
@@ -28,7 +28,7 @@ class UserServices {
     final jsonData = requestDto.toJson();
 
     final response = await apiServices.post(url.toString(),
-        headers: Constants.kJsonHeader, data: jsonData);
+        headers: AppConstants.kJsonHeader, data: jsonData);
 
     if (!response.data['isSuccess']) {
       return false;
@@ -53,7 +53,7 @@ class UserServices {
     final jsonData = requestDto.toJson();
 
     final response = await apiServices.post(url.toString(),
-        headers: Constants.kJsonHeader, data: jsonData);
+        headers: AppConstants.kJsonHeader, data: jsonData);
 
     if (!response.data['isSuccess']) {
       return response;
@@ -119,13 +119,14 @@ class UserServices {
 
   Future<bool> updateUserDtoFromStorage() async {
     final storage = _getSecureStorage();
-    final userId = await storage.read(key: Constants.kUserIdKeyName);
-    final userName = await storage.read(key: Constants.kUserNameKeyName);
-    final email = await storage.read(key: Constants.kEmailKeyName);
-    final phoneNumber = await storage.read(key: Constants.kPhoneNumberKeyName);
-    final firstName = await storage.read(key: Constants.kFirstNameKeyName);
-    final lastName = await storage.read(key: Constants.kLastNameKeyName);
-    final address = await storage.read(key: Constants.kAddressKeyName);
+    final userId = await storage.read(key: AppConstants.kUserIdKeyName);
+    final userName = await storage.read(key: AppConstants.kUserNameKeyName);
+    final email = await storage.read(key: AppConstants.kEmailKeyName);
+    final phoneNumber =
+        await storage.read(key: AppConstants.kPhoneNumberKeyName);
+    final firstName = await storage.read(key: AppConstants.kFirstNameKeyName);
+    final lastName = await storage.read(key: AppConstants.kLastNameKeyName);
+    final address = await storage.read(key: AppConstants.kAddressKeyName);
 
     if (userId == null || phoneNumber == null) {
       return false;
@@ -147,8 +148,9 @@ class UserServices {
   Future<bool> updateTokensDtoFromStorage() async {
     final storage = _getSecureStorage();
     final refreshToken =
-        await storage.read(key: Constants.kRefreshTokenKeyName);
-    final accessToken = await storage.read(key: Constants.kAccessTokenKeyName);
+        await storage.read(key: AppConstants.kRefreshTokenKeyName);
+    final accessToken =
+        await storage.read(key: AppConstants.kAccessTokenKeyName);
 
     if (refreshToken == null || accessToken == null) {
       return false;
@@ -209,50 +211,52 @@ class UserServices {
   ) async {
     final storage = _getSecureStorage();
     await storage.write(
-        key: Constants.kAccessTokenKeyName, value: tokens.accessToken);
+        key: AppConstants.kAccessTokenKeyName, value: tokens.accessToken);
     await storage.write(
-        key: Constants.kRefreshTokenKeyName, value: tokens.refreshToken);
+        key: AppConstants.kRefreshTokenKeyName, value: tokens.refreshToken);
   }
 
   Future<void> _saveUserDto(UserDto user) async {
     final storage = _getSecureStorage();
-    await storage.write(key: Constants.kUserIdKeyName, value: user.userId);
-    await storage.write(key: Constants.kUserNameKeyName, value: user.userName);
-    await storage.write(key: Constants.kEmailKeyName, value: user.email);
+    await storage.write(key: AppConstants.kUserIdKeyName, value: user.userId);
     await storage.write(
-        key: Constants.kPhoneNumberKeyName, value: user.phoneNumber);
+        key: AppConstants.kUserNameKeyName, value: user.userName);
+    await storage.write(key: AppConstants.kEmailKeyName, value: user.email);
     await storage.write(
-        key: Constants.kFirstNameKeyName, value: user.firstName);
-    await storage.write(key: Constants.kLastNameKeyName, value: user.lastName);
-    await storage.write(key: Constants.kAddressKeyName, value: user.address);
+        key: AppConstants.kPhoneNumberKeyName, value: user.phoneNumber);
+    await storage.write(
+        key: AppConstants.kFirstNameKeyName, value: user.firstName);
+    await storage.write(
+        key: AppConstants.kLastNameKeyName, value: user.lastName);
+    await storage.write(key: AppConstants.kAddressKeyName, value: user.address);
   }
 
   Future<void> _deleteAllStoredLoginInfo() async {
     final storage = _getSecureStorage();
-    await storage.delete(key: Constants.kAccessTokenKeyName);
-    await storage.delete(key: Constants.kRefreshTokenKeyName);
-    await storage.delete(key: Constants.kUserIdKeyName);
-    await storage.delete(key: Constants.kUserNameKeyName);
-    await storage.delete(key: Constants.kEmailKeyName);
-    await storage.delete(key: Constants.kPhoneNumberKeyName);
-    await storage.delete(key: Constants.kFirstNameKeyName);
-    await storage.delete(key: Constants.kLastNameKeyName);
-    await storage.delete(key: Constants.kAddressKeyName);
+    await storage.delete(key: AppConstants.kAccessTokenKeyName);
+    await storage.delete(key: AppConstants.kRefreshTokenKeyName);
+    await storage.delete(key: AppConstants.kUserIdKeyName);
+    await storage.delete(key: AppConstants.kUserNameKeyName);
+    await storage.delete(key: AppConstants.kEmailKeyName);
+    await storage.delete(key: AppConstants.kPhoneNumberKeyName);
+    await storage.delete(key: AppConstants.kFirstNameKeyName);
+    await storage.delete(key: AppConstants.kLastNameKeyName);
+    await storage.delete(key: AppConstants.kAddressKeyName);
   }
 
   Future<String?> getAccessToken() async {
     final storage = _getSecureStorage();
-    return await storage.read(key: Constants.kAccessTokenKeyName);
+    return await storage.read(key: AppConstants.kAccessTokenKeyName);
   }
 
   Future<String?> getRefreshToken() async {
     final storage = _getSecureStorage();
-    return await storage.read(key: Constants.kRefreshTokenKeyName);
+    return await storage.read(key: AppConstants.kRefreshTokenKeyName);
   }
 
   Future<String?> getStoredUserId() async {
     final storage = _getSecureStorage();
-    return await storage.read(key: Constants.kUserIdKeyName);
+    return await storage.read(key: AppConstants.kUserIdKeyName);
   }
 
   FlutterSecureStorage _getSecureStorage() {

@@ -1,4 +1,4 @@
-class Constants {
+class AppConstants {
   static const kJsonHeader = {'Content-Type': 'application/json'};
   static const kAccessTokenKeyName = 'accessToken';
   static const kRefreshTokenKeyName = 'refreshToken';

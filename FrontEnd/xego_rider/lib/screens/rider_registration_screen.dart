@@ -5,7 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:xego_rider/models/Dto/registration_request_dto.dart';
 import 'package:xego_rider/screens/login_screen.dart';
 import 'package:xego_rider/services/user_services.dart';
-import 'package:xego_rider/settings/constants.dart';
+import 'package:xego_rider/settings/app_constants.dart';
 import 'package:xego_rider/settings/kColors.dart';
 import 'package:xego_rider/widgets/address_input_form_field.dart';
 import 'package:xego_rider/widgets/email_input_field.dart';
@@ -64,7 +64,7 @@ class _RiderRegistrationScreenState extends State<RiderRegistrationScreen> {
         firstName: _firstNameController.text,
         lastName: _lastNameController.text,
         address: _addressController.text,
-        role: Constants.kDefaultRoleValue);
+        role: AppConstants.kDefaultRoleValue);
 
     var response = await _userServices.register(registrationRequestDto);
 
@@ -134,7 +134,7 @@ class _RiderRegistrationScreenState extends State<RiderRegistrationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(Constants.kTopScreenAppTitle),
+        title: const Text(AppConstants.kTopScreenAppTitle),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(10, 15, 15, 30),

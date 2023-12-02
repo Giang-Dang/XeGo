@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:google_api_availability/google_api_availability.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:xego_rider/screens/choose_vehicle_type_screen.dart';
+import 'package:xego_rider/screens/ride_screen.dart';
 import 'package:xego_rider/screens/splash_screen.dart';
-import 'package:xego_rider/settings/constants.dart';
+import 'package:xego_rider/settings/app_constants.dart';
 import 'package:xego_rider/settings/kTheme.dart';
 import 'package:xego_rider/widgets/choose_location_map_widget.dart';
 import 'package:xego_rider/widgets/map_widget.dart';
@@ -54,7 +55,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: Constants.kTopScreenAppTitle,
+      title: AppConstants.kTopScreenAppTitle,
       theme: KTheme.kTheme,
       home: Scaffold(
         body: SplashScreen(),
@@ -67,6 +68,7 @@ class MyApp extends StatelessWidget {
         // body: ChooseLocationMapWidget(
         //   onLocationSelected: (location) {},
         // ),
+        // body: RideScreen(),
       ),
     );
   }

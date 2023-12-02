@@ -1,13 +1,14 @@
 import 'dart:developer';
 
 import 'package:xego_rider/models/Dto/create_ride_request_dto.dart';
+import 'package:xego_rider/models/Entities/ride.dart';
 import 'package:xego_rider/services/api_services.dart';
 import 'package:xego_rider/settings/kSecrets.dart';
 
 class RideServices {
   final apiServices = ApiServices();
 
-  Future<int> createRide(CreateRideRequestDto requestDto) async {
+  Future<Ride?> createRide(CreateRideRequestDto requestDto) async {
     const subApiUrl = 'api/rides';
     final url = Uri.http(KSecret.kApiIp, subApiUrl);
 
@@ -19,6 +20,7 @@ class RideServices {
       return null;
     }
 
-    return re;
+    final res = Ride.fromJson(response.data['data']);
+    return res;
   }
 }

@@ -128,7 +128,7 @@ class _ChooseLocationOnMapScreenState extends State<ChooseLocationOnMapScreen> {
               target: widget.initialLatLng ??
                   LocationServices.currentLocation ??
                   const LatLng(10.762622, 106.964172),
-              zoom: 17,
+              zoom: 15,
             ),
             minMaxZoomPreference: const MinMaxZoomPreference(9, 50),
             zoomControlsEnabled: false,

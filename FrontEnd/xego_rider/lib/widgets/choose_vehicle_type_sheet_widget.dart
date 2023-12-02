@@ -24,9 +24,9 @@ class _ChooseVehicleTypeSheetWidgetState
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
-      initialChildSize: 0.05,
-      minChildSize: 0.05,
-      maxChildSize: 0.25,
+      initialChildSize: 0.15,
+      minChildSize: 0.15,
+      maxChildSize: 0.3,
       builder: (BuildContext context, ScrollController scrollController) {
         return Container(
           decoration: BoxDecoration(

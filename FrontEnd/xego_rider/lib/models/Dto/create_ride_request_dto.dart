@@ -11,8 +11,8 @@ class CreateRideRequestDto {
   final double destinationLatitude;
   final double destinationLongitude;
   final String destinationAddress;
-  final int distanceInMeters;
-  final String pickupTime;
+  final double distanceInMeters;
+  final DateTime pickupTime;
   final bool isScheduleRide;
   String? cancelledBy;
   String? cancellationReason;
@@ -54,7 +54,7 @@ class CreateRideRequestDto {
       destinationLongitude: json['destinationLongitude'],
       destinationAddress: json['destinationAddress'],
       distanceInMeters: json['distanceInMeters'],
-      pickupTime: json['pickupTime'],
+      pickupTime: DateTime.parse(json['pickupTime']),
       isScheduleRide: json['isScheduleRide'],
       cancelledBy: json['cancelledBy'],
       cancellationReason: json['cancellationReason'],
@@ -77,7 +77,7 @@ class CreateRideRequestDto {
       'destinationLongitude': destinationLongitude,
       'destinationAddress': destinationAddress,
       'distanceInMeters': distanceInMeters,
-      'pickupTime': pickupTime,
+      'pickupTime': pickupTime.toIso8601String(),
       'isScheduleRide': isScheduleRide,
       'cancelledBy': cancelledBy,
       'cancellationReason': cancellationReason,

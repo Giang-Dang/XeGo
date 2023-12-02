@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -12,6 +13,9 @@ class MapWidget extends StatefulWidget {
   final List<LatLng> driverLocationsList;
   final LatLng? riderLocation;
   final DirectionGoogleApiResponseDto? directionGoogleApiDto;
+  final bool? mapZoomControllerEnabled;
+  final bool? mapMyLocationEnabled;
+  final double? markerOutterPadding;
 
   const MapWidget({
     super.key,
@@ -20,6 +24,9 @@ class MapWidget extends StatefulWidget {
     this.driverLocationsList = const [],
     this.riderLocation,
     this.directionGoogleApiDto,
+    this.mapZoomControllerEnabled,
+    this.mapMyLocationEnabled,
+    this.markerOutterPadding,
   });
 
   @override
@@ -35,6 +42,7 @@ class _MapWidgetState extends State<MapWidget> {
   BitmapDescriptor? _driverIcon;
   BitmapDescriptor? _riderIcon;
   DirectionGoogleApiResponseDto? _directionResponse;
+  GoogleMapController? _googleMapController;
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
 
@@ -57,7 +65,6 @@ class _MapWidgetState extends State<MapWidget> {
         _polylines = polylines;
       });
     }
-    await _loadMarkerIcon();
   }
 
   Future<void> _loadMarkerIcon() async {
@@ -108,7 +115,7 @@ class _MapWidgetState extends State<MapWidget> {
   void initState() {
     super.initState();
 
-    _initTimer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
+    _initTimer = Timer.periodic(const Duration(milliseconds: 500), (timer) {
       _initialize();
       _initTimer?.cancel();
     });
@@ -118,6 +125,7 @@ class _MapWidgetState extends State<MapWidget> {
   void dispose() {
     // TODO: implement dispose
     _initTimer?.cancel();
+    _googleMapController?.dispose();
     super.dispose();
   }
 
@@ -128,7 +136,8 @@ class _MapWidgetState extends State<MapWidget> {
         target: widget.riderLocation ?? widget.pickUpLocation,
         zoom: 15,
       ),
-      myLocationEnabled: true,
+      myLocationEnabled: widget.mapMyLocationEnabled ?? true,
+      zoomControlsEnabled: widget.mapZoomControllerEnabled ?? true,
       markers: <Marker>{
         Marker(
           markerId: const MarkerId('pickupLocation'),
@@ -158,19 +167,23 @@ class _MapWidgetState extends State<MapWidget> {
           ),
       },
       polylines: _polylines,
-      // onMapCreated: (GoogleMapController controller) {
-      //   _controller.complete(controller);
-      //   Future.delayed(
-      //       const Duration(milliseconds: 200),
-      //       () => controller.animateCamera(CameraUpdate.newLatLngBounds(
-      //           _boundsFromLatLngList([
-      //             widget.destinationLocation,
-      //             widget.pickUpLocation,
-      //             widget.riderLocation ?? widget.pickUpLocation,
-      //             ...widget.driverLocationsList,
-      //           ]),
-      //           30)));
-      // },
+      onMapCreated: (GoogleMapController controller) async {
+        _controller.complete(controller);
+        _googleMapController = controller;
+        await _loadMarkerIcon();
+        try {
+          await Future.delayed(const Duration(milliseconds: 1200));
+          _googleMapController!.animateCamera(CameraUpdate.newLatLngBounds(
+              _boundsFromLatLngList([
+                widget.destinationLocation,
+                widget.pickUpLocation,
+                ...widget.driverLocationsList,
+              ]),
+              widget.markerOutterPadding ?? 40));
+        } catch (e) {
+          log(e.toString());
+        }
+      },
     );
   }
 }

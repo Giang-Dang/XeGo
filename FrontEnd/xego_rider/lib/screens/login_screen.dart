@@ -5,7 +5,7 @@ import 'package:xego_rider/screens/main_tabs_screen.dart';
 import 'package:xego_rider/screens/rider_registration_screen.dart';
 import 'package:xego_rider/services/user_services.dart';
 import 'package:xego_rider/services/vehicle_services.dart';
-import 'package:xego_rider/settings/constants.dart';
+import 'package:xego_rider/settings/app_constants.dart';
 import 'package:xego_rider/settings/kColors.dart';
 import 'package:xego_rider/widgets/navigation_rich_text.dart';
 
@@ -98,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(Constants.kTopScreenAppTitle),
+        title: const Text(AppConstants.kTopScreenAppTitle),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(35, 25, 40, 0),

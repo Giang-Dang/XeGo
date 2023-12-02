@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:xego_rider/settings/constants.dart';
+import 'package:xego_rider/settings/app_constants.dart';
 import 'package:xego_rider/settings/kColors.dart';
 import 'package:xego_rider/widgets/home_widget.dart';
 import 'package:xego_rider/widgets/history_widget.dart';
@@ -48,7 +48,7 @@ class _MainTabsScreenState extends State<MainTabsScreen> {
         : AppBar(
             backgroundColor: KColors.kBackgroundColor,
             title: Text(
-              Constants.kTopScreenAppTitle,
+              AppConstants.kTopScreenAppTitle,
               style: Theme.of(context).textTheme.titleLarge!.copyWith(
                     color: KColors.kPrimaryColor,
                     fontSize: 24,

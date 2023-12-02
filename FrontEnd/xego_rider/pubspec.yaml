@@ -50,6 +50,7 @@ dependencies:
   carousel_slider: ^4.2.1
   omni_datetime_picker: ^1.0.9
   intl: ^0.18.1
+  signalr_netcore: ^0.1.7+2-nullsafety.3
 
 dev_dependencies:
   flutter_test:
@@ -83,6 +84,7 @@ flutter:
     - assets/images/car_location_icon.png
     - assets/images/user_location.png
     - assets/images/start_location.png
+    - assets/images/looking_for_driver.gif
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

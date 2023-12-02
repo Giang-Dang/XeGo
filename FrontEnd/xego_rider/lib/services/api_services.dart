@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:xego_rider/models/Dto/refresh_token_request_dto.dart';
 import 'package:xego_rider/models/Dto/tokens_dto.dart';
 import 'package:xego_rider/services/user_services.dart';
-import 'package:xego_rider/settings/constants.dart';
+import 'package:xego_rider/settings/app_constants.dart';
 import 'package:xego_rider/settings/kSecrets.dart';
 
 class ApiServices {
@@ -45,7 +45,7 @@ class ApiServices {
     final data = RefreshTokenRequestDto(
             refreshToken: tokensDto.refreshToken,
             userId: userId,
-            fromApp: Constants.kFromAppValue)
+            fromApp: AppConstants.kFromAppValue)
         .toJson();
     final response = await post(url, data: data);
 
