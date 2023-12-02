@@ -1,9 +1,16 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:signalr_netcore/hub_connection.dart';
+import 'package:signalr_netcore/hub_connection_builder.dart';
 import 'package:xego_rider/models/Dto/direction_google_api_response_dto.dart';
 import 'package:xego_rider/models/Entities/ride.dart';
+import 'package:xego_rider/services/user_services.dart';
 import 'package:xego_rider/settings/kColors.dart';
+import 'package:xego_rider/settings/kSecrets.dart';
 import 'package:xego_rider/widgets/map_widget.dart';
 
 class RideScreen extends StatefulWidget {
@@ -25,11 +32,61 @@ class RideScreen extends StatefulWidget {
 }
 
 class _RideScreenState extends State<RideScreen> {
+  Timer? _initialTimer;
+  HubConnection? _rideHubConnection;
+
+  _initialize() async {
+    const subHubUrl = 'hubs/ride-hub';
+    final hubUrl = Uri.http('192.168.10.32:6008', subHubUrl);
+    _rideHubConnection =
+        HubConnectionBuilder().withUrl(hubUrl.toString()).build();
+    _rideHubConnection!.onclose((error) => log("Ride Hub Connection Closed"));
+
+    try {
+      await _rideHubConnection!.start();
+      log('Ride Hub Connection started');
+      var driverId = await _rideHubConnection!.invoke(
+        'FindDriver',
+        args: [UserServices.userDto!.userId, widget.rideInfo.id],
+      );
+      log(driverId.toString());
+
+      var registerConnectionId = await _rideHubConnection!.invoke(
+        'RegisterConnectionId',
+        args: [UserServices.userDto!.userId],
+      );
+      log(registerConnectionId.toString());
+    } catch (e) {
+      log('Ride Hub Connection failed: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _initialTimer = Timer.periodic(
+      const Duration(milliseconds: 100),
+      (timer) {
+        _initialize();
+        _initialTimer?.cancel();
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _initialTimer?.cancel();
+    _rideHubConnection?.stop();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    const bottomContainerHeight = 280.0;
+    const bottomContainerHeight = 310.0;
     const circularContainerHeight = 120.0;
     const circularContainerWidth = 120.0;
     const roundedBorderContainerHeight = 80.0;
