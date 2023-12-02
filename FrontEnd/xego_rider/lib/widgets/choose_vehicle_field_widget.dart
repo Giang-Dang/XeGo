@@ -37,7 +37,7 @@ class ChooseVehicleFieldWidget extends StatefulWidget {
 class _ChooseVehicleFieldWidgetState extends State<ChooseVehicleFieldWidget> {
   late List<VehicleTypeCalculatedPriceInfoDto>?
       _vehicleTypeCalculatedPriceInfoDto;
-  Timer? _initializationTimer;
+  Timer? _initialTimer;
   final _vehicleServices = VehicleServices();
 
   _showAlertDialog(String title, String message, void Function() onOkPressed) {
@@ -67,11 +67,11 @@ class _ChooseVehicleFieldWidgetState extends State<ChooseVehicleFieldWidget> {
     // TODO: implement initState
     super.initState();
 
-    _initializationTimer = Timer.periodic(
+    _initialTimer = Timer.periodic(
       const Duration(milliseconds: 100),
       (timer) {
         _initialize();
-        _initializationTimer?.cancel();
+        _initialTimer?.cancel();
       },
     );
   }
@@ -79,7 +79,7 @@ class _ChooseVehicleFieldWidgetState extends State<ChooseVehicleFieldWidget> {
   @override
   void dispose() {
     // TODO: implement dispose
-    _initializationTimer?.cancel();
+    _initialTimer?.cancel();
     super.dispose();
   }
 

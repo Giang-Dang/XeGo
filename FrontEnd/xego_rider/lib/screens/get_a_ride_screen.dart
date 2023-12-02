@@ -95,7 +95,7 @@ class _GetARideScreenState extends State<GetARideScreen> {
     }
 
     if (context.mounted) {
-      Navigator.of(context).pushReplacement(
+      Navigator.of(context).push(
         MaterialPageRoute(
           builder: (BuildContext context) => RideScreen(
             rideInfo: response!,
