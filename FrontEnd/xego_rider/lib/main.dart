@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:google_api_availability/google_api_availability.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:xego_rider/screens/choose_vehicle_type_screen.dart';
 import 'package:xego_rider/screens/splash_screen.dart';
 import 'package:xego_rider/settings/constants.dart';
 import 'package:xego_rider/settings/kTheme.dart';
@@ -56,12 +57,13 @@ class MyApp extends StatelessWidget {
       title: Constants.kTopScreenAppTitle,
       theme: KTheme.kTheme,
       home: Scaffold(
-        // body: SplashScreen(),
-        body: MapWidget(
-          pickUpLocation: LatLng(10.762622, 106.964172),
-          destinationLocation: LatLng(10.763511, 106.944817),
-          driverLocationsList: [LatLng(10.760622, 106.968172)],
-        ),
+        body: SplashScreen(),
+        // body: MapWidget(
+        //   pickUpLocation: LatLng(10.762622, 106.964172),
+        //   destinationLocation: LatLng(10.763511, 106.944817),
+        //   driverLocationsList: [LatLng(10.760622, 106.968172)],
+        //   riderLocation: LatLng(10.762622, 106.967352),
+        // ),
         // body: ChooseLocationMapWidget(
         //   onLocationSelected: (location) {},
         // ),

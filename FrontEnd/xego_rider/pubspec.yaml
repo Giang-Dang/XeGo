@@ -81,6 +81,8 @@ flutter:
     - assets/images/pick_up_location_icon.png
     - assets/images/destination_location_icon.png
     - assets/images/car_location_icon.png
+    - assets/images/user_location.png
+    - assets/images/start_location.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

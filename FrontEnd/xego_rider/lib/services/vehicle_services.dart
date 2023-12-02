@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:xego_rider/models/Dto/vehicle_response_dto.dart';
+import 'package:xego_rider/models/Dto/vehicle_type_dto.dart';
+import 'package:xego_rider/models/Dto/vehicle_type_calculated_price_info_dto.dart';
 import 'package:xego_rider/models/Entities/vehicle.dart';
 import 'package:xego_rider/services/api_services.dart';
 import 'package:xego_rider/settings/kSecrets.dart';
@@ -61,17 +63,74 @@ class VehicleServices {
     }
   }
 
-  // Future<List<VehicleTypeDto>> GetAllVehicleTypes() {
-  //   try {
-  //     const subApiUrl = 'api/vehicles/types';
-  //     final url = Uri.http(KSecret.kApiIp, subApiUrl, {'isActive': true});
+  Future<List<VehicleTypeDto>> getAllActiveVehicleTypes() async {
+    try {
+      const subApiUrl = 'api/vehicles/types';
+      final url = Uri.http(KSecret.kApiIp, subApiUrl);
 
-  //     final response = apiServices.get(url.toString());
-  //   } catch (e) {
-  //     log(e.toString());
-  //     return List<VehicleTypeDto>();
-  //   }
-  // }
+      final response = await apiServices.get(url.toString());
+
+      if (response.statusCode != 200) {
+        return [];
+      }
+
+      final vehicleTypeList = (response.data['data'] as List)
+          .map((json) => VehicleTypeDto.fromJson(json))
+          .toList();
+
+      return vehicleTypeList;
+    } catch (e) {
+      log(e.toString());
+      return [];
+    }
+  }
+
+  Future<double> getVehicleTypeCalculatedPriceInfo(
+      int vehicleTypeId, double distanceInMeters, int? discountId) async {
+    try {
+      const subApiUrl = 'api/rides/estimated-price';
+      final url = Uri.http(KSecret.kApiIp, subApiUrl, {
+        "vehicleTypeId": vehicleTypeId.toString(),
+        "distanceInMeters": distanceInMeters.toString(),
+        if (discountId != null) "discountId": discountId.toString()
+      });
+
+      final response = await apiServices.get(url.toString());
+
+      if (response.statusCode != 200) {
+        return 0;
+      }
+
+      return (response.data['data'] ?? 0.0) as double;
+    } catch (e) {
+      log(e.toString());
+      return 0;
+    }
+  }
+
+  Future<List<VehicleTypeCalculatedPriceInfoDto>>
+      getAllActiveVehicleTypeCalculatedPriceInfo(
+          double distanceInMeters, int? discountId) async {
+    try {
+      final vehicleTypeList = await getAllActiveVehicleTypes();
+      List<VehicleTypeCalculatedPriceInfoDto>
+          vehicleTypeCalculatedPriceInfoList = [];
+
+      for (var vt in vehicleTypeList) {
+        double price = await getVehicleTypeCalculatedPriceInfo(
+            vt.id, distanceInMeters, discountId);
+        vehicleTypeCalculatedPriceInfoList.add(
+          VehicleTypeCalculatedPriceInfoDto(
+              vehicleTypeName: vt.name, calculatedPrice: price),
+        );
+      }
+
+      return vehicleTypeCalculatedPriceInfoList;
+    } catch (e) {
+      log(e.toString());
+      return [];
+    }
+  }
 
   Future<bool> isDriverAssigned(String driverId) async {
     var vehicleList = await getAllVehicles(driverId: driverId);
