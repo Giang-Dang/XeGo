@@ -27,6 +27,8 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 
+app.UseWebSockets();
+
 app.UseRouting();
 
 #pragma warning disable ASP0014 // Suggest using top level route registrations

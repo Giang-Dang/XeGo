@@ -39,6 +39,7 @@ builder.Host.UseSerilog();
 builder.Services.AddGrpcClient<LocationProtoService.LocationProtoServiceClient>(o =>
     o.Address = new Uri(builder.Configuration["GrpcSettings:LocationGrpcUrl"])
 );
+builder.Services.AddScoped<LocationGrpcService>();
 
 //Add PriceGrpc Service
 builder.Services.AddGrpcClient<PriceProtoService.PriceProtoServiceClient>(o =>

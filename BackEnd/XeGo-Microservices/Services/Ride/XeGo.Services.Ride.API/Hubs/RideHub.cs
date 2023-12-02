@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Collections.Concurrent;
-using System.IdentityModel.Tokens.Jwt;
 using XeGo.Services.Ride.API.Data;
 using XeGo.Services.Ride.API.Entities;
 using XeGo.Services.Ride.API.Models.Dto;
@@ -12,10 +11,13 @@ using XeGo.Shared.Lib.Helpers;
 
 namespace XeGo.Services.Ride.API.Hubs
 {
-    public class RideHub(ILogger<RideHub> logger, AppDbContext db, LocationGrpcService locationGrpcService) : Hub
+    public class RideHub(
+        ILogger<RideHub> logger,
+        AppDbContext db,
+        LocationGrpcService locationGrpcService) : Hub
     {
         private readonly ConcurrentDictionary<string, TaskCompletionSource<bool>> _pendingRides = new();
-        public async Task FindDriver(string fromUserId, int rideId)
+        public async Task<string> FindDriver(string fromUserId, int rideId)
         {
             try
             {
@@ -23,7 +25,7 @@ namespace XeGo.Services.Ride.API.Hubs
                 if (cRide == null)
                 {
                     logger.LogError($"Ride not found! (id:{rideId})");
-                    return;
+                    return "Not Found!";
                 }
 
                 var cRider = await GetUserConnectionAsync(fromUserId);
@@ -32,17 +34,25 @@ namespace XeGo.Services.Ride.API.Hubs
 
                 if (driverIdList != null)
                 {
-                    await AssignDriverToRide(driverIdList, cRide, cRider!);
+                    var acceptedDriverId = await AssignDriverToRide(driverIdList, cRide, cRider!);
+                    if (acceptedDriverId == null)
+                    {
+                        logger.LogInformation($"Drivers not found! (id:{rideId})");
+                        return "Not Found!";
+                    }
+
+                    return acceptedDriverId;
                 }
                 else
                 {
                     logger.LogError($"Drivers not found! (id:{rideId})");
-                    await InformRiderNoDriverFound(cRider!);
+                    return "Not Found!";
                 }
             }
             catch (Exception e)
             {
                 logger.LogError($"{nameof(FindDriver)}: {e.Message}");
+                return "Not Found!";
             }
         }
 
@@ -114,18 +124,11 @@ namespace XeGo.Services.Ride.API.Hubs
 
         }
 
-        public override async Task OnConnectedAsync()
+        public async Task<bool> RegisterConnectionId(string userId)
         {
+            logger.LogInformation($"{nameof(RideHub)} > {nameof(RegisterConnectionId)} : Triggered!");
             try
             {
-                var userIdClaim = Context.User?.FindFirst(JwtRegisteredClaimNames.Sub);
-                if (userIdClaim == null)
-                {
-                    logger.LogError($"{nameof(OnConnectedAsync)}: userIdClaim is null!");
-                    return;
-                }
-
-                var userId = userIdClaim.Value;
                 var connectionId = Context.ConnectionId;
 
                 var cUserId = await db.UserConnectionIds.FirstOrDefaultAsync(u => u.UserId == userId);
@@ -134,7 +137,7 @@ namespace XeGo.Services.Ride.API.Hubs
                     // Update
                     cUserId.ConnectionId = connectionId;
                     await db.SaveChangesAsync();
-                    logger.LogInformation($"{nameof(OnConnectedAsync)}: UserConnectionId has been updated! (userId: {userId})");
+                    logger.LogInformation($"{nameof(RegisterConnectionId)}: UserConnectionId has been updated! (userId: {userId})");
                 }
                 else
                 {
@@ -149,17 +152,16 @@ namespace XeGo.Services.Ride.API.Hubs
 
                     await db.UserConnectionIds.AddAsync(createDto);
                     await db.SaveChangesAsync();
-                    logger.LogInformation($"{nameof(OnConnectedAsync)}: UserConnectionId has been created! (userId: {userId})");
+                    logger.LogInformation($"{nameof(RegisterConnectionId)}: UserConnectionId has been created! (userId: {userId})");
                 }
 
-
+                return true;
             }
             catch (Exception e)
             {
-                logger.LogError($"override {nameof(OnConnectedAsync)}: {e.Message}");
+                logger.LogError($"{nameof(RegisterConnectionId)}: {e.Message}");
+                return false;
             }
-            await base.OnConnectedAsync();
-
         }
 
         #region Private Methods
@@ -214,6 +216,11 @@ namespace XeGo.Services.Ride.API.Hubs
 
         private async Task<List<UserConnectionId>> GetDriverList(List<string>? driverIdList)
         {
+            if (driverIdList == null)
+            {
+                return new List<UserConnectionId>();
+            }
+
             return await db.UserConnectionIds
                 .Where(u => driverIdList.Contains(u.UserId))
                 .ToListAsync();
@@ -243,7 +250,7 @@ namespace XeGo.Services.Ride.API.Hubs
             await Clients.Clients(cRider.UserId).SendAsync("cannotFindDriver");
         }
 
-        private async Task AssignDriverToRide(List<string> driverIdList, Entities.Ride cRide, UserConnectionId cRider)
+        private async Task<string?> AssignDriverToRide(List<string> driverIdList, Entities.Ride cRide, UserConnectionId cRider)
         {
             var driverList = await GetDriverList(driverIdList);
 
@@ -253,9 +260,12 @@ namespace XeGo.Services.Ride.API.Hubs
                 {
                     cRide.DriverId = driver.UserId;
                     await db.SaveChangesAsync();
-                    break;
+
+                    return driver.UserId;
                 }
             }
+
+            return null;
         }
 
         #endregion
