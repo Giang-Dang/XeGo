@@ -11,7 +11,11 @@ namespace XeGo.Services.Ride.API.Controllers
 {
     [Route("api/rides")]
     [ApiController]
-    public class RideController(IRideRepository rideRepo, VehicleTypePriceService vehicleTypePriceService, ILogger<RideController> logger) : ControllerBase
+    public class RideController(
+        IRideRepository rideRepo,
+        VehicleTypePriceGrpcService vehicleTypePriceGrpcService,
+        PriceGrpcService priceGrpcService,
+        ILogger<RideController> logger) : ControllerBase
     {
         private ResponseDto ResponseDto { get; set; } = new();
 
@@ -47,7 +51,7 @@ namespace XeGo.Services.Ride.API.Controllers
                     (id == null || r.Id == id) &&
                     (riderId == null || r.RiderId == riderId) &&
                     (driverId == null || r.DriverId == driverId) &&
-                    (couponId == null || r.CouponId == couponId) &&
+                    (couponId == null || r.DiscountId == couponId) &&
                     (status == null || r.Status == status) &&
                     (startAddress == null || r.StartAddress == startAddress) &&
                     (destinationAddress == null || r.DestinationAddress == destinationAddress) &&
@@ -112,9 +116,10 @@ namespace XeGo.Services.Ride.API.Controllers
                 {
                     RiderId = requestDto.RiderId,
                     DriverId = requestDto.DriverId,
-                    CouponId = requestDto.CouponId,
+                    DiscountId = requestDto.DiscountId,
                     Status = requestDto.Status,
                     VehicleId = requestDto.VehicleId,
+                    VehicleTypeId = requestDto.VehicleTypeId,
                     StartLatitude = requestDto.StartLatitude,
                     StartLongitude = requestDto.StartLongitude,
                     StartAddress = requestDto.StartAddress,
@@ -130,6 +135,10 @@ namespace XeGo.Services.Ride.API.Controllers
                 };
 
                 ResponseDto.Data = await rideRepo.CreateAsync(createDto);
+
+                await priceGrpcService.CreatePrice(createDto.Id, createDto.DiscountId, requestDto.VehicleTypeId,
+                   requestDto.DistanceInMeters, requestDto.ModifiedBy);
+
                 ResponseDto.IsSuccess = true;
                 logger.LogInformation($"Ride is created!");
             }
@@ -161,7 +170,7 @@ namespace XeGo.Services.Ride.API.Controllers
 
                 cRide.RiderId = requestDto.RiderId ?? cRide.RiderId;
                 cRide.DriverId = requestDto.DriverId ?? cRide.DriverId;
-                cRide.CouponId = requestDto.CouponId ?? cRide.CouponId;
+                cRide.DiscountId = requestDto.CouponId ?? cRide.DiscountId;
                 cRide.Status = requestDto.Status ?? cRide.Status;
                 cRide.VehicleId = requestDto.VehicleId ?? cRide.VehicleId;
                 cRide.StartLatitude = requestDto.StartLatitude ?? cRide.StartLatitude;
@@ -200,7 +209,7 @@ namespace XeGo.Services.Ride.API.Controllers
 
             try
             {
-                var vehicleTypePriceResponse = await vehicleTypePriceService.GetVehicleTypePriceById(vehicleTypeId);
+                var vehicleTypePriceResponse = await vehicleTypePriceGrpcService.GetVehicleTypePriceById(vehicleTypeId);
                 var cVehicleTypePrice =
                     JsonConvert.DeserializeObject<VehicleTypePriceDto>(vehicleTypePriceResponse.Data);
 

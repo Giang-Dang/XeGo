@@ -50,7 +50,7 @@ builder.Services.AddScoped<PriceGrpcService>();
 builder.Services.AddGrpcClient<VehicleTypePriceProtoService.VehicleTypePriceProtoServiceClient>(o =>
     o.Address = new Uri(builder.Configuration["GrpcSettings:PriceGrpcUrl"])
 );
-builder.Services.AddScoped<VehicleTypePriceService>();
+builder.Services.AddScoped<VehicleTypePriceGrpcService>();
 
 
 var app = builder.Build();

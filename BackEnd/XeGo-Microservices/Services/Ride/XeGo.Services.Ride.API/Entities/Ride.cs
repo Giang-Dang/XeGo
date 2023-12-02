@@ -10,8 +10,9 @@ namespace XeGo.Services.Ride.API.Entities
         [Key][DatabaseGenerated(DatabaseGeneratedOption.Identity)] public int Id { get; set; }
         [Required] public string RiderId { get; set; } = string.Empty!;
         public string? DriverId { get; set; }
-        public int? CouponId { get; set; }
-        [Required] public int VehicleId { get; set; }
+        public int? DiscountId { get; set; }
+        public int? VehicleId { get; set; }
+        [Required] public int VehicleTypeId { get; set; }
         [Required] public string Status { get; set; } = RideStatusConstants.FindingDriver;
         [Required] public double StartLatitude { get; set; }
         [Required] public double StartLongitude { get; set; }
