@@ -263,11 +263,15 @@ services:
       - ApiSettings__JwtOptions__Issuer=xego-auth-api
       - ApiSettings__JwtOptions__Audience=xego-client
       - ElasticConfiguration__Uri=http://elasticsearch 
+      - GrpcSettings__LocationGrpcUrl=http://xego.services.location.grpc:8080
+      - GrpcSettings__PriceGrpcUrl=http://xego.services.price.grpc:8080
     ports:
       - "6008:8080"
     depends_on:
       - ridedb
       - elasticsearch
+      - xego.services.price.grpc
+      - xego.services.location.grpc
 
   xego.services.notifications.functions:
     container_name: xego.services.notifications.functions
@@ -311,6 +315,24 @@ services:
       - ElasticConfiguration__Uri=http://elasticsearch 
     ports:
       - "6010:8080"
+    depends_on:
+      - pricedb
+      - elasticsearch
+
+  xego.services.price.grpc:
+    container_name: xego.services.price.grpc
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=pricedb;Database=XeGoPrice;User Id=sa;Password=admin1234@A;TrustServerCertificate=True
+      - ASPNETCORE_ENVIRONMENT=Development
+      - Serilog__MinimumLevel__Default=Debug
+      - Serilog__MinimumLevel__Override__Microsoft=Debug
+      - Serilog__MinimumLevel__Override__System=Warning
+      - ApiSettings__JwtOptions__Secret=adfh@JDFDKSAF1234sdf*%$$#feifkdmvcoaerDSJFAOEDFDFJffDSAFjkAjdfA485723AjdfAJfDjfAjdfdjferYGjASDJfEjfvdav
+      - ApiSettings__JwtOptions__Issuer=xego-auth-api
+      - ApiSettings__JwtOptions__Audience=xego-client
+      - ElasticConfiguration__Uri=http://elasticsearch 
+    ports:
+      - "6011:8080"
     depends_on:
       - pricedb
       - elasticsearch
@@ -369,7 +391,7 @@ services:
       - xego.services.location.api
       - xego.services.vehicle.api
       - xego.services.file.api
-
+      - xego.services.price.api
 
 networks:
   elastic:
@@ -399,6 +421,7 @@ volumes:
   sqlserver-pricedb:
   portainer_data:  
   elasticsearch-data:
+
 
 
 

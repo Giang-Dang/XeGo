@@ -11,3 +11,4 @@ xego.services.file.api						6007:8080		filedb			1437
 xego.services.ride.api						6008:8080		ridedb			1438
 xego.services.notifications.functions				6009:8080		notificationdb		1439
 xego.services.price.api						6010:8080		pricedb			1440
+xego.services.price.grpc					6011:8080		pricedb			1440
