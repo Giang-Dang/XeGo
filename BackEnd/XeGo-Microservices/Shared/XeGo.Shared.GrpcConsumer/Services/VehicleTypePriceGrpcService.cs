@@ -2,7 +2,7 @@
 
 namespace XeGo.Shared.GrpcConsumer.Services
 {
-    public class VehicleTypePriceService(VehicleTypePriceProtoService.VehicleTypePriceProtoServiceClient service)
+    public class VehicleTypePriceGrpcService(VehicleTypePriceProtoService.VehicleTypePriceProtoServiceClient service)
     {
         private VehicleTypePriceProtoService.VehicleTypePriceProtoServiceClient _service = service ?? throw new ArgumentNullException(nameof(service));
 

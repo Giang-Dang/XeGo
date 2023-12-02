@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using XeGo.Services.Ride.API.Data;
 
@@ -11,9 +12,11 @@ using XeGo.Services.Ride.API.Data;
 namespace XeGo.Services.Ride.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231202030919_changeCouponIdToDiscountId")]
+    partial class changeCouponIdToDiscountId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -151,12 +154,12 @@ namespace XeGo.Services.Ride.API.Migrations
                         {
                             Id = 11,
                             CreatedBy = "ADMIN",
-                            CreatedDate = new DateTime(2023, 12, 2, 4, 50, 54, 773, DateTimeKind.Utc).AddTicks(6867),
+                            CreatedDate = new DateTime(2023, 12, 2, 3, 9, 18, 417, DateTimeKind.Utc).AddTicks(1956),
                             EffectiveEndDate = new DateTime(9999, 12, 31, 23, 59, 59, 999, DateTimeKind.Unspecified).AddTicks(9999),
-                            EffectiveStartDate = new DateTime(2023, 12, 2, 4, 50, 54, 773, DateTimeKind.Utc).AddTicks(6863),
+                            EffectiveStartDate = new DateTime(2023, 12, 2, 3, 9, 18, 417, DateTimeKind.Utc).AddTicks(1952),
                             IsActive = true,
                             LastModifiedBy = "ADMIN",
-                            LastModifiedDate = new DateTime(2023, 12, 2, 4, 50, 54, 773, DateTimeKind.Utc).AddTicks(6867),
+                            LastModifiedDate = new DateTime(2023, 12, 2, 3, 9, 18, 417, DateTimeKind.Utc).AddTicks(1957),
                             Name = "GEOHASH",
                             SortOrder = 1,
                             Value1 = "GEO_HASH_SQUARE_SIDE_IN_METERS",
@@ -168,12 +171,12 @@ namespace XeGo.Services.Ride.API.Migrations
                         {
                             Id = 12,
                             CreatedBy = "ADMIN",
-                            CreatedDate = new DateTime(2023, 12, 2, 4, 50, 54, 773, DateTimeKind.Utc).AddTicks(6872),
+                            CreatedDate = new DateTime(2023, 12, 2, 3, 9, 18, 417, DateTimeKind.Utc).AddTicks(1961),
                             EffectiveEndDate = new DateTime(9999, 12, 31, 23, 59, 59, 999, DateTimeKind.Unspecified).AddTicks(9999),
-                            EffectiveStartDate = new DateTime(2023, 12, 2, 4, 50, 54, 773, DateTimeKind.Utc).AddTicks(6870),
+                            EffectiveStartDate = new DateTime(2023, 12, 2, 3, 9, 18, 417, DateTimeKind.Utc).AddTicks(1959),
                             IsActive = true,
                             LastModifiedBy = "ADMIN",
-                            LastModifiedDate = new DateTime(2023, 12, 2, 4, 50, 54, 773, DateTimeKind.Utc).AddTicks(6872),
+                            LastModifiedDate = new DateTime(2023, 12, 2, 3, 9, 18, 417, DateTimeKind.Utc).AddTicks(1962),
                             Name = "GEOHASH",
                             SortOrder = 1,
                             Value1 = "MAX_RADIUS_IN_METERS",
@@ -251,10 +254,7 @@ namespace XeGo.Services.Ride.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("VehicleId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("VehicleTypeId")
+                    b.Property<int>("VehicleId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

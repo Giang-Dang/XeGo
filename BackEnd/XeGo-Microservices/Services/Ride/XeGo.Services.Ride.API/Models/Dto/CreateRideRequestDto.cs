@@ -7,8 +7,9 @@ namespace XeGo.Services.Ride.API.Models.Dto
     {
         [Required] public string RiderId { get; set; } = string.Empty!;
         public string? DriverId { get; set; }
-        public int? CouponId { get; set; }
-        [Required] public int VehicleId { get; set; }
+        public int? DiscountId { get; set; }
+        public int? VehicleId { get; set; }
+        [Required] public int VehicleTypeId { get; set; }
         [Required] public string Status { get; set; } = RideStatusConstants.FindingDriver;
         [Required] public double StartLatitude { get; set; }
         [Required] public double StartLongitude { get; set; }
@@ -16,6 +17,7 @@ namespace XeGo.Services.Ride.API.Models.Dto
         [Required] public double DestinationLatitude { get; set; }
         [Required] public double DestinationLongitude { get; set; }
         [Required] public string DestinationAddress { get; set; } = String.Empty!;
+        [Required] public double DistanceInMeters { get; set; }
         [Required] public DateTime PickupTime { get; set; }
         [Required] public bool IsScheduleRide { get; set; }
         public string? CancelledBy { get; set; }
