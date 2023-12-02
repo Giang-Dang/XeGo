@@ -126,7 +126,7 @@ namespace XeGo.Services.Ride.API.Controllers
                     DestinationLatitude = requestDto.DestinationLatitude,
                     DestinationLongitude = requestDto.DestinationLongitude,
                     DestinationAddress = requestDto.DestinationAddress,
-                    PickupTime = requestDto.PickupTime,
+                    PickupTime = DateTimeHelper.ConvertVietnamTimeToUtc(requestDto.PickupTime),
                     IsScheduleRide = requestDto.IsScheduleRide,
                     CreatedBy = requestDto.ModifiedBy,
                     LastModifiedBy = requestDto.ModifiedBy,
@@ -136,7 +136,7 @@ namespace XeGo.Services.Ride.API.Controllers
 
                 ResponseDto.Data = await rideRepo.CreateAsync(createDto);
 
-                await priceGrpcService.CreatePrice(createDto.Id, createDto.DiscountId, requestDto.VehicleTypeId,
+                var createdPriceResponse = await priceGrpcService.CreatePrice(createDto.Id, createDto.DiscountId, requestDto.VehicleTypeId,
                    requestDto.DistanceInMeters, requestDto.ModifiedBy);
 
                 ResponseDto.IsSuccess = true;
