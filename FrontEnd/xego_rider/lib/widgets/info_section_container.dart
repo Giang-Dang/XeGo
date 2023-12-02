@@ -37,7 +37,7 @@ class InfoSectionContainer extends StatelessWidget {
     final Color titleColor = isDisable
         ? cDisableColor
         : (this.titleColor ?? KColors.kLightTextColor);
-    final Color borderColor = KColors.kPrimaryColor.withOpacity(0.3);
+    final Color borderColor = isDisable ? cDisableColor : KColors.kPrimaryColor;
     const Color containerColor = KColors.kOnBackgroundColor;
 
     return Container(

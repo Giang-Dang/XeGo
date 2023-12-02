@@ -1,11 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:xego_rider/models/Dto/direction_google_api_response_dto.dart';
 import 'package:xego_rider/models/Dto/vehicle_type_calculated_price_info_dto.dart';
-import 'package:xego_rider/screens/choose_location_on_map_screen.dart';
 import 'package:xego_rider/screens/choose_vehicle_type_screen.dart';
 import 'package:xego_rider/services/location_services.dart';
 import 'package:xego_rider/services/vehicle_services.dart';
@@ -19,13 +17,17 @@ class ChooseVehicleFieldWidget extends StatefulWidget {
     this.discountId,
     this.pickupLatLng,
     this.destinationLatLng,
+    this.vehicleTypeName,
+    this.calculatedPrice,
   }) : super(key: key);
 
   final LatLng? pickupLatLng;
   final LatLng? destinationLatLng;
   final DirectionGoogleApiResponseDto directionResponse;
-  final Function(int) setVehicleTypeId;
+  final Function(int, String, double) setVehicleTypeId;
   final int? discountId;
+  final String? vehicleTypeName;
+  final double? calculatedPrice;
 
   @override
   State<ChooseVehicleFieldWidget> createState() =>
@@ -115,6 +117,7 @@ class _ChooseVehicleFieldWidgetState extends State<ChooseVehicleFieldWidget> {
                 directionResponse: widget.directionResponse,
                 vehicleTypePriceInfoList:
                     _vehicleTypeCalculatedPriceInfoDto ?? [],
+                setVehicleTypeId: widget.setVehicleTypeId,
               ),
             ));
           }
@@ -127,17 +130,29 @@ class _ChooseVehicleFieldWidgetState extends State<ChooseVehicleFieldWidget> {
             ),
             borderRadius: BorderRadius.circular(20.0),
           ),
-          child: const Row(
+          child: Row(
             children: [
               Expanded(
+                flex: widget.calculatedPrice == null ? 1 : 3,
                 child: Text(
-                  'Press here to select vehicle',
-                  style: TextStyle(
+                  widget.vehicleTypeName ?? 'Press here to select vehicle',
+                  style: const TextStyle(
                     color: KColors.kTertiaryColor,
                     fontSize: 14,
                   ),
                 ),
-              )
+              ),
+              if (widget.calculatedPrice != null)
+                Expanded(
+                  flex: 1,
+                  child: Text(
+                    '\$${widget.calculatedPrice}',
+                    style: const TextStyle(
+                      color: KColors.kColor6,
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
             ],
           ),
         ),

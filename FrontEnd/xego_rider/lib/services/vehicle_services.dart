@@ -121,7 +121,10 @@ class VehicleServices {
             vt.id, distanceInMeters, discountId);
         vehicleTypeCalculatedPriceInfoList.add(
           VehicleTypeCalculatedPriceInfoDto(
-              vehicleTypeName: vt.name, calculatedPrice: price),
+            vehicleTypeId: vt.id,
+            vehicleTypeName: vt.name,
+            calculatedPrice: price,
+          ),
         );
       }
 

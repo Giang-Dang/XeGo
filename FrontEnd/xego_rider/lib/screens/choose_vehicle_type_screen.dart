@@ -14,13 +14,15 @@ class ChooseVehicleTypeScreen extends StatefulWidget {
       required this.destinationLatLng,
       required this.currentRiderLatLng,
       this.directionResponse,
-      required this.vehicleTypePriceInfoList});
+      required this.vehicleTypePriceInfoList,
+      required this.setVehicleTypeId});
 
   final LatLng pickupLatLng;
   final LatLng destinationLatLng;
   final LatLng currentRiderLatLng;
   final List<VehicleTypeCalculatedPriceInfoDto> vehicleTypePriceInfoList;
   final DirectionGoogleApiResponseDto? directionResponse;
+  final Function(int, String, double) setVehicleTypeId;
 
   @override
   State<ChooseVehicleTypeScreen> createState() =>
@@ -52,6 +54,7 @@ class _ChooseVehicleTypeScreenState extends State<ChooseVehicleTypeScreen> {
       ),
       ChooseVehicleTypeSheetWidget(
         vehicleTypePriceList: widget.vehicleTypePriceInfoList,
+        setVehicleTypeId: widget.setVehicleTypeId,
       ),
     ]));
   }

@@ -29,7 +29,9 @@ class _GetARideScreenState extends State<GetARideScreen> {
   LatLng? _destinationLatLng;
   DirectionGoogleApiResponseDto? _directionResponse;
   DateTime? _pickupDateTime;
-  int? _vehicleId;
+  int? _vehicleTypeId;
+  String? _vehicleTypeName;
+  double? _calculatedPrice;
   final bool _isVipRider = UserServices.riderType == Constants.kRiderType_Vip;
 
   final _locationServices = LocationServices();
@@ -48,7 +50,7 @@ class _GetARideScreenState extends State<GetARideScreen> {
                   title: 'Where To?',
                   titleFontSize: 18,
                   titleColor: KColors.kPrimaryColor,
-                  haveBoxBorder: false,
+                  haveBoxBorder: true,
                   innerPadding: const EdgeInsets.symmetric(vertical: 10),
                   children: [
                     EnterPickUpLocationWidget(
@@ -134,22 +136,37 @@ class _GetARideScreenState extends State<GetARideScreen> {
                   title: 'Choose Vehicle',
                   titleColor: KColors.kPrimaryColor,
                   titleFontSize: 18,
-                  haveBoxBorder: false,
+                  innerPadding: EdgeInsets.fromLTRB(0, 15, 0, 15),
+                  haveBoxBorder: true,
                   children: [
                     ChooseVehicleFieldWidget(
                         pickupLatLng: _startLatLng,
                         destinationLatLng: _destinationLatLng,
                         directionResponse: _directionResponse ??
                             DirectionGoogleApiResponseDto(),
-                        setVehicleTypeId: (a) {})
+                        vehicleTypeName: _vehicleTypeName,
+                        calculatedPrice: _calculatedPrice,
+                        setVehicleTypeId: (
+                          vehicleTypeId,
+                          vehicleTypeName,
+                          calculatedPrice,
+                        ) {
+                          if (context.mounted) {
+                            setState(() {
+                              _vehicleTypeId = vehicleTypeId;
+                              _vehicleTypeName = vehicleTypeName;
+                              _calculatedPrice = calculatedPrice;
+                            });
+                          }
+                        })
                   ],
                 ),
                 InfoSectionContainer(
                   title: 'Scheduled Ride (👑 VIP only)',
                   titleColor: _isVipRider ? KColors.kPrimaryColor : Colors.grey,
                   titleFontSize: 18,
-                  haveBoxBorder: false,
-                  innerPadding: const EdgeInsets.symmetric(vertical: 10),
+                  haveBoxBorder: true,
+                  innerPadding: const EdgeInsets.symmetric(vertical: 15),
                   isDisable: !_isVipRider,
                   children: [
                     DateTimePickerWidget(
@@ -164,6 +181,8 @@ class _GetARideScreenState extends State<GetARideScreen> {
                     )
                   ],
                 ),
+                ElevatedButton(
+                    onPressed: () {}, child: const Text('Order Ride')),
               ],
             )));
   }

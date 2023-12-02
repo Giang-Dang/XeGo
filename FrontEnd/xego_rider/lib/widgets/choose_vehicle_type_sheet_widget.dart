@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:xego_rider/models/Dto/vehicle_type_calculated_price_info_dto.dart';
-import 'package:xego_rider/models/Entities/vehicle_type.dart';
-import 'package:xego_rider/models/Entities/vehicle_type_price.dart';
 import 'package:xego_rider/settings/kColors.dart';
 import 'package:xego_rider/widgets/rounded_border_container_widget.dart';
 
@@ -10,9 +8,11 @@ class ChooseVehicleTypeSheetWidget extends StatefulWidget {
   const ChooseVehicleTypeSheetWidget({
     super.key,
     required this.vehicleTypePriceList,
+    required this.setVehicleTypeId,
   });
 
   final List<VehicleTypeCalculatedPriceInfoDto> vehicleTypePriceList;
+  final Function(int, String, double) setVehicleTypeId;
 
   @override
   State<ChooseVehicleTypeSheetWidget> createState() =>
@@ -24,14 +24,14 @@ class _ChooseVehicleTypeSheetWidgetState
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
-      initialChildSize: 0.1,
-      minChildSize: 0.1,
-      maxChildSize: 0.5,
+      initialChildSize: 0.05,
+      minChildSize: 0.05,
+      maxChildSize: 0.25,
       builder: (BuildContext context, ScrollController scrollController) {
         return Container(
           decoration: BoxDecoration(
-            color: KColors.kColor5,
-            borderRadius: BorderRadius.only(
+            color: KColors.kOnBackgroundColor,
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(24.0),
               topRight: Radius.circular(24.0),
             ),
@@ -53,7 +53,17 @@ class _ChooseVehicleTypeSheetWidgetState
                 );
               } else {
                 return GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    widget.setVehicleTypeId(
+                      widget.vehicleTypePriceList[index - 1].vehicleTypeId,
+                      widget.vehicleTypePriceList[index - 1].vehicleTypeName,
+                      widget.vehicleTypePriceList[index - 1].calculatedPrice,
+                    );
+
+                    if (context.mounted) {
+                      Navigator.of(context).pop();
+                    }
+                  },
                   child: RoundedBorderContainerWidget(
                     padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
                     borderColor: KColors.kPrimaryColor,

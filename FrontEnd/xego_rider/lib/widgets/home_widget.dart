@@ -20,10 +20,13 @@ class _HomeWidgetState extends State<HomeWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           InfoSectionContainer(
-            title: null,
+            title: 'Welcome!',
+            titleColor: KColors.kPrimaryColor,
+            titleFontSize: 26,
+            titleFontWeight: FontWeight.bold,
             padding: EdgeInsets.all(1.0),
-            innerPadding: EdgeInsets.symmetric(vertical: 10),
-            haveBoxBorder: false,
+            innerPadding: EdgeInsets.symmetric(vertical: 20),
+            haveBoxBorder: true,
             children: [
               WhereToBoxWidget(),
             ],
@@ -33,7 +36,7 @@ class _HomeWidgetState extends State<HomeWidget> {
           ),
           InfoSectionContainer(
             title: 'Discount',
-            titleFontSize: 26,
+            titleFontSize: 22,
             titleFontWeight: FontWeight.w500,
             titleColor: KColors.kColor4,
             padding: EdgeInsets.all(1.0),
