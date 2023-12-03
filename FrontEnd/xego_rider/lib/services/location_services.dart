@@ -8,6 +8,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:xego_rider/models/Dto/direction_google_api_response_dto.dart';
+import 'package:xego_rider/models/Dto/push_location_request_dto.dart';
 import 'package:xego_rider/services/api_services.dart';
 import 'dart:math' as math;
 
@@ -150,6 +151,34 @@ class LocationServices {
     ));
 
     return polylines;
+  }
+
+  Future<bool> pushRiderLocation(LatLng latLng, String userId) async {
+    try {
+      const subApiUrl = 'api/locations/riders';
+      final url = Uri.http(KSecret.kApiIp, subApiUrl).toString();
+
+      final requestDto = PushLocationRequestDto(
+          userId: userId,
+          latitude: latLng.latitude,
+          longitude: latLng.longitude,
+          createdBy: userId,
+          modifiedBy: userId);
+
+      final jsonPayload = requestDto.toJson();
+
+      final response = await _apiServices.post(url, data: jsonPayload);
+
+      if (!response.data['isSuccess']) {
+        log(response.data['message']);
+        return false;
+      }
+
+      return true;
+    } catch (e) {
+      log(e.toString());
+      return false;
+    }
   }
 
   double calculateDistance(double lat1, double lng1, double lat2, double lng2) {

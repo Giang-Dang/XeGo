@@ -3,11 +3,13 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:signalr_netcore/hub_connection.dart';
 import 'package:signalr_netcore/hub_connection_builder.dart';
 import 'package:xego_rider/models/Dto/direction_google_api_response_dto.dart';
 import 'package:xego_rider/models/Entities/ride.dart';
+import 'package:xego_rider/services/location_services.dart';
 import 'package:xego_rider/services/user_services.dart';
 import 'package:xego_rider/settings/kColors.dart';
 import 'package:xego_rider/settings/kSecrets.dart';
@@ -34,31 +36,72 @@ class RideScreen extends StatefulWidget {
 class _RideScreenState extends State<RideScreen> {
   Timer? _initialTimer;
   HubConnection? _rideHubConnection;
+  final _locationServices = LocationServices();
+  List<LatLng> _driverLocationList = [];
+
+//   // Assuming you have a HubConnection instance `hubConnection`
+// hubConnection.on("ReceiveLocation", _handleLocationUpdate);
 
   _initialize() async {
+    await _locationServices.updateCurrentLocation();
+    await _locationServices.pushRiderLocation(
+        LocationServices.currentLocation!, UserServices.userDto!.userId);
+
     const subHubUrl = 'hubs/ride-hub';
-    final hubUrl = Uri.http('192.168.10.32:6008', subHubUrl);
+    final hubUrl = Uri.http('192.168.10.32:6100', subHubUrl);
     _rideHubConnection =
         HubConnectionBuilder().withUrl(hubUrl.toString()).build();
     _rideHubConnection!.onclose((error) => log("Ride Hub Connection Closed"));
+    _rideHubConnection!.on("ReceiveLocation", _handleDriverLocationUpdate);
 
     try {
       await _rideHubConnection!.start();
       log('Ride Hub Connection started');
-      var driverId = await _rideHubConnection!.invoke(
-        'FindDriver',
-        args: [UserServices.userDto!.userId, widget.rideInfo.id],
-      );
-      log(driverId.toString());
 
       var registerConnectionId = await _rideHubConnection!.invoke(
         'RegisterConnectionId',
         args: [UserServices.userDto!.userId],
       );
       log(registerConnectionId.toString());
+
+      var driverId = await _rideHubConnection!.invoke(
+        'FindDriver',
+        args: [UserServices.userDto!.userId, widget.rideInfo.id],
+      );
+      log(driverId.toString());
+
+      // Geolocator.getPositionStream().listen((Position position) async {
+      //   log(position.latitude.toString());
+      //   log(position.longitude.toString());
+      //   // Assuming you have a HubConnection instance `hubConnection`
+      //   await _rideHubConnection!.invoke(
+      //     "SendLocation",
+      //     args: [
+      //       driverId,
+      //       position.latitude,
+      //       position.longitude,
+      //     ],
+      //   );
+      // }, onError: (e) {
+      //   log('getPositionStream: ${e.toString()}');
+      //   return;
+      // });
     } catch (e) {
       log('Ride Hub Connection failed: $e');
     }
+  }
+
+  void _handleDriverLocationUpdate(List<dynamic>? parameters) {
+    if (parameters == null) {
+      log("_handleDriverLocationUpdate: parameters are null!");
+      return;
+    }
+
+    LatLng newDriverLocation =
+        LatLng(parameters[0] as double, parameters[1] as double);
+    setState(() {
+      _driverLocationList = [newDriverLocation];
+    });
   }
 
   @override
@@ -100,7 +143,6 @@ class _RideScreenState extends State<RideScreen> {
       widget.rideInfo.destinationLatitude,
       widget.rideInfo.destinationLongitude,
     );
-    List<LatLng> driverLocationList = [];
 
     return Scaffold(
       body: Stack(
@@ -114,7 +156,7 @@ class _RideScreenState extends State<RideScreen> {
             child: MapWidget(
               pickUpLocation: pickUpLocation,
               destinationLocation: destinationLocation,
-              driverLocationsList: driverLocationList,
+              driverLocationsList: _driverLocationList,
               mapMyLocationEnabled: false,
               mapZoomControllerEnabled: false,
               markerOutterPadding: 100,
