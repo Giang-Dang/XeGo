@@ -3,7 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:xego_driver/models/Dto/refresh_token_request_dto.dart';
 import 'package:xego_driver/models/Dto/tokens_dto.dart';
 import 'package:xego_driver/services/user_services.dart';
-import 'package:xego_driver/settings/constants.dart';
+import 'package:xego_driver/settings/app_constants.dart';
 import 'package:xego_driver/settings/kSecrets.dart';
 
 class ApiServices {
@@ -46,9 +46,13 @@ class ApiServices {
     final data = RefreshTokenRequestDto(
             refreshToken: tokensDto.refreshToken,
             userId: userId,
-            fromApp: Constants.kFromAppValue)
+            fromApp: AppConstants.kFromAppValue)
         .toJson();
     final response = await post(url, data: data);
+
+    if (!response.data['isSuccess']) {
+      return false;
+    }
 
     final newAccessToken = response.data['data'];
 

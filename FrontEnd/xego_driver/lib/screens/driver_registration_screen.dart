@@ -5,7 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:xego_driver/models/Dto/registration_request_dto.dart';
 import 'package:xego_driver/screens/login_screen.dart';
 import 'package:xego_driver/services/user_services.dart';
-import 'package:xego_driver/settings/constants.dart';
+import 'package:xego_driver/settings/app_constants.dart';
 import 'package:xego_driver/settings/kColors.dart';
 import 'package:xego_driver/widgets/address_input_form_field.dart';
 import 'package:xego_driver/widgets/email_input_field.dart';
@@ -64,7 +64,7 @@ class _DriverRegistrationScreenState extends State<DriverRegistrationScreen> {
         firstName: _firstNameController.text,
         lastName: _lastNameController.text,
         address: _addressController.text,
-        role: Constants.kDefaultRoleValue);
+        role: AppConstants.kDefaultRoleValue);
 
     var response = await _userServices.register(registrationRequestDto);
 
@@ -134,7 +134,7 @@ class _DriverRegistrationScreenState extends State<DriverRegistrationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(Constants.kTopScreenAppTitle),
+        title: const Text(AppConstants.kTopScreenAppTitle),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(10, 15, 15, 30),
