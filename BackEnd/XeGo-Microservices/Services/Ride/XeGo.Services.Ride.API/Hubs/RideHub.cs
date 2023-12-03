@@ -192,27 +192,27 @@ namespace XeGo.Services.Ride.API.Hubs
             }
         }
 
-        public async Task SendLocation(double latitude, double longitude, string userId)
+        public async Task SendLocation(string toUserId, double latitude, double longitude)
         {
-            logger.LogInformation($"{nameof(RideHub)} > {nameof(SendLocation)} (userId:{userId}): Triggered!");
+            logger.LogInformation($"{nameof(RideHub)} > {nameof(SendLocation)} (to userId:{toUserId}): Triggered!");
 
             try
             {
-                var cUserConnectionId = await db.UserConnectionIds.FirstOrDefaultAsync(u => u.UserId == userId);
+                var cUserConnectionId = await db.UserConnectionIds.FirstOrDefaultAsync(u => u.UserId == toUserId);
 
                 if (cUserConnectionId == null)
                 {
-                    logger.LogError($"{nameof(SendLocation)} (userId:{userId}): Not Found!");
+                    logger.LogError($"{nameof(SendLocation)} (to userId:{toUserId}): Not Found!");
                     return;
                 }
 
                 await Clients.Clients(cUserConnectionId.ConnectionId)
                     .SendAsync("ReceiveLocation", latitude, longitude);
-                logger.LogInformation($"{nameof(RideHub)} > {nameof(SendLocation)} (userId:{userId}): Done!");
+                logger.LogInformation($"{nameof(RideHub)} > {nameof(SendLocation)} (to userId:{toUserId}): Done!");
             }
             catch (Exception e)
             {
-                logger.LogError($"{nameof(SendLocation)} (userId:{userId}): {e.Message}");
+                logger.LogError($"{nameof(SendLocation)} (to userId:{toUserId}): {e.Message}");
             }
 
         }

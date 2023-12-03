@@ -90,12 +90,17 @@ namespace XeGo.Services.Location.API.Controllers
                 if (userLocationRes == null)
                 {
                     //Create
-                    DriverLocation createEntity = new();
-                    _mapper.Map(requestDto, createEntity);
-
-                    createEntity.Geohash = geoHash;
-                    createEntity.CreatedBy = requestDto.CreatedBy ?? requestDto.ModifiedBy;
-                    createEntity.LastModifiedBy = requestDto.ModifiedBy;
+                    DriverLocation createEntity = new()
+                    {
+                        UserId = requestDto.UserId,
+                        Geohash = geoHash,
+                        Latitude = requestDto.Latitude,
+                        Longitude = requestDto.Longitude,
+                        CreatedBy = requestDto.CreatedBy ?? requestDto.ModifiedBy,
+                        LastModifiedBy = requestDto.ModifiedBy,
+                        CreatedDate = DateTime.UtcNow,
+                        LastModifiedDate = DateTime.UtcNow,
+                    };
 
                     await _dbContext.DriverLocations.AddAsync(createEntity);
                     await _dbContext.SaveChangesAsync();

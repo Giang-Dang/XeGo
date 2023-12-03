@@ -20,12 +20,25 @@ builder.Services.AddOcelot()
 
 builder.Services.AddSignalR();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowXeGoAdminWeb",
+        corsPolicyBuilder =>
+        {
+            corsPolicyBuilder.WithOrigins("http://localhost:5100")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
 }
+
+app.UseCors("AllowXeGoAdminWeb");
 
 app.UseWebSockets();
 

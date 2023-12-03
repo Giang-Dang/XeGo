@@ -46,7 +46,7 @@ namespace XeGo.Services.Auth.API.Service
             };
             foreach (var role in userRoles)
             {
-                claimList.Add(new Claim(ClaimTypes.Role, role));
+                claimList.Add(new Claim(ClaimTypes.Role, role.ToUpper()));
             }
 
             int daysToExpire = await GetRefreshTokenDaysToExpire();
