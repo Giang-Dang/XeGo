@@ -37,15 +37,21 @@ namespace XeGo.Services.Ride.API.Hubs
                     var acceptedDriverId = await AssignDriverToRide(driverIdList, cRide, cRider!);
                     if (acceptedDriverId == null)
                     {
-                        logger.LogInformation($"Drivers not found! (id:{rideId})");
+                        logger.LogInformation($"Driver not found! (id:{rideId})");
                         return "Not Found!";
                     }
+
+                    cRide.Status = RideStatusConstants.AwaitingPickup;
+                    db.Rides.Update(cRide);
+                    await db.SaveChangesAsync();
+
+                    logger.LogInformation($"Driver found! (RideId:{rideId}; DriverId:{acceptedDriverId})");
 
                     return acceptedDriverId;
                 }
                 else
                 {
-                    logger.LogError($"Drivers not found! (id:{rideId})");
+                    logger.LogError($"Driver not found! (id:{rideId})");
                     return "Not Found!";
                 }
             }
@@ -162,6 +168,53 @@ namespace XeGo.Services.Ride.API.Hubs
                 logger.LogError($"{nameof(RegisterConnectionId)}: {e.Message}");
                 return false;
             }
+        }
+
+        public async Task RemoveConnectionId(string userId)
+        {
+            logger.LogInformation($"{nameof(RideHub)} > {nameof(RemoveConnectionId)} : Triggered!");
+            try
+            {
+                var cUserConnectionId = await db.UserConnectionIds.FirstOrDefaultAsync(u => u.UserId == userId);
+                if (cUserConnectionId == null)
+                {
+                    logger.LogError($"{nameof(RemoveConnectionId)}: Not Found!");
+                    return;
+                }
+
+                db.UserConnectionIds.Remove(cUserConnectionId);
+                await db.SaveChangesAsync();
+                logger.LogInformation($"{nameof(RideHub)} > {nameof(RemoveConnectionId)} : Done!");
+            }
+            catch (Exception e)
+            {
+                logger.LogError($"{nameof(RemoveConnectionId)}: {e.Message}");
+            }
+        }
+
+        public async Task SendLocation(double latitude, double longitude, string userId)
+        {
+            logger.LogInformation($"{nameof(RideHub)} > {nameof(SendLocation)} (userId:{userId}): Triggered!");
+
+            try
+            {
+                var cUserConnectionId = await db.UserConnectionIds.FirstOrDefaultAsync(u => u.UserId == userId);
+
+                if (cUserConnectionId == null)
+                {
+                    logger.LogError($"{nameof(SendLocation)} (userId:{userId}): Not Found!");
+                    return;
+                }
+
+                await Clients.Clients(cUserConnectionId.ConnectionId)
+                    .SendAsync("ReceiveLocation", latitude, longitude);
+                logger.LogInformation($"{nameof(RideHub)} > {nameof(SendLocation)} (userId:{userId}): Done!");
+            }
+            catch (Exception e)
+            {
+                logger.LogError($"{nameof(SendLocation)} (userId:{userId}): {e.Message}");
+            }
+
         }
 
         #region Private Methods
