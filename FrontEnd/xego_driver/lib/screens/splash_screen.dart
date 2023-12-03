@@ -22,12 +22,6 @@ class _SplashScreenState extends State<SplashScreen>
   final userServices = UserServices();
   final apiServices = ApiServices();
 
-  // logintest() async {
-  //   const requestDto =
-  //       LoginRequestDto(phoneNumber: '0123456789', password: 'Driver1234@');
-  //   await userServices.login(requestDto);
-  // }
-
   _initialize() async {
     await Future.wait<void>([userServices.getUserLocation(), _login()]);
   }
@@ -52,6 +46,7 @@ class _SplashScreenState extends State<SplashScreen>
           ),
         );
       }
+      return;
     }
 
     if (context.mounted) {

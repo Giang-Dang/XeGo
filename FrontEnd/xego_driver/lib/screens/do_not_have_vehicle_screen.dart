@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:xego_driver/settings/constants.dart';
+import 'package:xego_driver/settings/app_constants.dart';
 import 'package:xego_driver/settings/kColors.dart';
 
 class DoNotHaveVehicleScreen extends StatefulWidget {
@@ -15,7 +15,7 @@ class _DoNotHaveVehicleScreenState extends State<DoNotHaveVehicleScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(Constants.kTopScreenAppTitle),
+        title: const Text(AppConstants.kTopScreenAppTitle),
       ),
       body: Center(
         child: Column(
