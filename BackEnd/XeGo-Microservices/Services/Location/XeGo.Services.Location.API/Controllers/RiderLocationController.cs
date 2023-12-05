@@ -86,17 +86,22 @@ namespace XeGo.Services.Location.API.Controllers
 
                 var geoHash = _geoHashService.Geohash(requestDto.Latitude, requestDto.Longitude, geoSquareSideInMeters);
                 var userLocationRes =
-                    await _dbContext.DriverLocations.FirstOrDefaultAsync(e => e.UserId == requestDto.UserId);
+                    await _dbContext.RiderLocations.FirstOrDefaultAsync(e => e.UserId == requestDto.UserId);
 
                 if (userLocationRes == null)
                 {
                     //Create
-                    RiderLocation createEntity = new();
-                    _mapper.Map(requestDto, createEntity);
-
-                    createEntity.Geohash = geoHash;
-                    createEntity.CreatedBy = requestDto.CreatedBy ?? requestDto.ModifiedBy;
-                    createEntity.LastModifiedBy = requestDto.ModifiedBy;
+                    RiderLocation createEntity = new()
+                    {
+                        UserId = requestDto.UserId,
+                        Geohash = geoHash,
+                        Latitude = requestDto.Latitude,
+                        Longitude = requestDto.Longitude,
+                        CreatedBy = requestDto.CreatedBy ?? requestDto.ModifiedBy,
+                        LastModifiedBy = requestDto.ModifiedBy,
+                        CreatedDate = DateTime.UtcNow,
+                        LastModifiedDate = DateTime.UtcNow,
+                    };
 
                     await _dbContext.RiderLocations.AddAsync(createEntity);
                     await _dbContext.SaveChangesAsync();
@@ -120,7 +125,7 @@ namespace XeGo.Services.Location.API.Controllers
                 ResponseDto.IsSuccess = true;
                 ResponseDto.Data = null;
 
-                _dbContext.DriverLocations.Update(userLocationRes);
+                _dbContext.RiderLocations.Update(userLocationRes);
                 await _dbContext.SaveChangesAsync();
 
                 _logger.LogInformation($"{nameof(RiderLocationRequestDto)}>{nameof(PushLocation)}: Done!");

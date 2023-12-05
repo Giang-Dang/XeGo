@@ -61,6 +61,27 @@ namespace XeGo.Services.Auth.API.Data
                     LastModifiedDate = DateTime.UtcNow
                 }
             );
+
+            modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole
+            {
+                Name = "Admin",
+                NormalizedName = "ADMIN"
+            },
+                new IdentityRole
+                {
+                    Name = "Driver",
+                    NormalizedName = "DRIVER"
+                },
+                new IdentityRole
+                {
+                    Name = "Rider",
+                    NormalizedName = "RIDER"
+                },
+                new IdentityRole
+                {
+                    Name = "Staff",
+                    NormalizedName = "STAFF"
+                });
         }
     }
 }

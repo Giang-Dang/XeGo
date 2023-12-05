@@ -87,7 +87,7 @@ namespace XeGo.Services.Auth.API.Controllers
                 if (loginResponse.User == null)
                 {
                     ResponseDto.IsSuccess = false;
-                    ResponseDto.Message = "Username or password is incorrect";
+                    ResponseDto.Message = "Login Failed";
                     _logger.LogInformation("{class}>{function}: Login Failed",
                         nameof(AuthApiController), nameof(Register));
                     return ResponseDto;

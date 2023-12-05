@@ -96,6 +96,30 @@ namespace XeGo.Services.Auth.API.Service
                 return new LoginResponseDto() { User = null, Tokens = new() };
             }
 
+            var haveRightRole = false;
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            foreach (var userRole in userRoles)
+            {
+                if (loginRequestDto.FromApp.ToUpper() == userRole.ToUpper())
+                {
+                    haveRightRole = true;
+                    break;
+                }
+
+                if (loginRequestDto.FromApp.ToUpper() == RoleConstants.Admin &&
+                    userRole.ToUpper() == RoleConstants.Staff)
+                {
+                    haveRightRole = true;
+                    break;
+                }
+            }
+
+            if (!haveRightRole)
+            {
+                return new LoginResponseDto() { User = null, Tokens = new() };
+            }
+
             //if user was found, generate jwt token
             string accessToken = await _jwtTokenGenerator.GenerateAccessTokenAsync(user, loginRequestDto.FromApp);
             string refreshToken = _jwtTokenGenerator.GenerateRefreshToken();

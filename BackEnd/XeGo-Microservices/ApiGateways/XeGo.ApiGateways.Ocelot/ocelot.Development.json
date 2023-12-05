@@ -223,6 +223,31 @@
       "UpstreamPathTemplate": "/api/rides/estimated-price",
       "UpstreamHttpMethod": [ "GET" ]
     },
+    //Ride Hub
+    {
+      "DownstreamPathTemplate": "/hubs/ride-hub/{everything}",
+      "DownstreamScheme": "ws",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.ride.api",
+          "Port": "8080"
+        }
+      ],
+      "UpstreamPathTemplate": "/hubs/ride-hub/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "OPTIONS" ]
+    },
+    {
+      "DownstreamPathTemplate": "/hubs/ride-hub",
+      "DownstreamScheme": "ws",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.ride.api",
+          "Port": "8080"
+        }
+      ],
+      "UpstreamPathTemplate": "/hubs/ride-hub",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "OPTIONS" ]
+    },
     //Price
     {
       "DownstreamPathTemplate": "/api/vehicle-type-price",
@@ -259,6 +284,32 @@
       ],
       "UpstreamPathTemplate": "/api/price",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT" ]
+    },
+
+    //Locations
+    {
+      "DownstreamPathTemplate": "/api/locations/riders",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.location.api",
+          "Port": "8080"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/locations/riders",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/locations/drivers",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.location.api",
+          "Port": "8080"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/locations/drivers",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
     }
   ],
   // for hubs
@@ -275,6 +326,18 @@
         }
       ],
       "UpstreamPathTemplate": "/hubs/ride-hub/{everything}",
+      "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE", "OPTIONS" ]
+    },
+    {
+      "DownstreamPathTemplate": "/hubs/ride-hub",
+      "DownstreamScheme": "ws",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.ride.api",
+          "Port": "8080"
+        }
+      ],
+      "UpstreamPathTemplate": "/hubs/ride-hub",
       "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE", "OPTIONS" ]
     }
   ],
