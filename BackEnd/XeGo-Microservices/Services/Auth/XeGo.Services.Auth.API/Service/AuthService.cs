@@ -139,13 +139,13 @@ namespace XeGo.Services.Auth.API.Service
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Address = user.Address,
+                Roles = userRoles.ToList(),
             };
 
             LoginResponseDto loginResponseDto = new()
             {
                 User = userDto,
-                Tokens = tokenDto,
-                Roles = userRoles.ToList()
+                Tokens = tokenDto
             };
 
             await StoreTokensToDb(user, tokenDto, loginRequestDto.FromApp);

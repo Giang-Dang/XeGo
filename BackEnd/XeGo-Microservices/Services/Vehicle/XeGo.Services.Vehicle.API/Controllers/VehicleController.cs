@@ -102,6 +102,7 @@ namespace XeGo.Services.Vehicle.API.Controllers
 
                 var vehicles = await _vehicleRepo.GetAllAsync(
                     filter: filters,
+                    "VehicleType",
                     pageSize: pageSize,
                     pageNumber: pageNumber);
 
