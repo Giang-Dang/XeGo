@@ -4,13 +4,15 @@ using XeGo.Services.Auth.API.Data;
 using XeGo.Services.Auth.API.Entities;
 using XeGo.Services.Auth.API.Models.Dto;
 using XeGo.Services.Auth.API.Service.IService;
+using XeGo.Shared.GrpcConsumer.Services;
 using XeGo.Shared.Lib.Constants;
 using XeGo.Shared.Lib.Models;
 
 namespace XeGo.Services.Auth.API.Service
 {
     public class AuthService(AppDbContext db, UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole> roleManager, IJwtTokenGenerator jwtTokenGenerator)
+            RoleManager<IdentityRole> roleManager, IJwtTokenGenerator jwtTokenGenerator
+            , DriverGrpcService driverGrpcService)
         : IAuthService
     {
         private readonly AppDbContext _db = db ?? throw new ArgumentNullException(nameof(db));
@@ -213,7 +215,7 @@ namespace XeGo.Services.Auth.API.Service
 
                 await AssignRoleAsync(userToReturn.Id, requestDto.Role);
 
-                if (requestDto.Role == RoleConstants.Rider)
+                if (requestDto.Role.ToUpper() == RoleConstants.Rider)
                 {
                     var riderType = new Rider()
                     {
@@ -225,6 +227,20 @@ namespace XeGo.Services.Auth.API.Service
                     };
                     await _db.Riders.AddAsync(riderType);
                     await _db.SaveChangesAsync();
+                }
+
+                if (requestDto.Role.ToUpper() == RoleConstants.Driver)
+                {
+                    await driverGrpcService.CreateDriver(
+                        userToReturn.Id,
+                        userToReturn.UserName!,
+                        userToReturn.FirstName,
+                        userToReturn.LastName,
+                        userToReturn.PhoneNumber!,
+                        userToReturn.Email!,
+                        userToReturn.Address,
+                        userToReturn.Id
+                        );
                 }
 
                 responseDto.IsSuccess = true;

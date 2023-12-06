@@ -29,6 +29,9 @@
     <Protobuf Include="..\..\Services\Price\XeGo.Services.Price.Grpc\Protos\vehicle_type_price.proto" GrpcServices="Client">
       <Link>Protos\vehicle_type_price.proto</Link>
     </Protobuf>
+    <Protobuf Include="..\..\Services\Vehicle\XeGo.Services.Vehicle.Grpc\Protos\driver.proto" GrpcServices="Client">
+      <Link>Protos\driver.proto</Link>
+    </Protobuf>
   </ItemGroup>
 
 </Project>

@@ -183,6 +183,30 @@
       "UpstreamPathTemplate": "/api/vehicles/assign",
       "UpstreamHttpMethod": [ "POST" ]
     },
+    {
+      "DownstreamPathTemplate": "/api/vehicles/unassign",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.vehicle.api",
+          "Port": "8080"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/vehicles/unassign",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/drivers",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.vehicle.api",
+          "Port": "8080"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/drivers",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
 
     // File
     {

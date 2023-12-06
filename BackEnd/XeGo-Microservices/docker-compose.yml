@@ -109,9 +109,16 @@ services:
       context: .
       dockerfile: Services/Price/XeGo.Services.Price.Grpc/Dockerfile
 
+  xego.services.vehicle.grpc:
+    image: ${DOCKER_REGISTRY-}xegoservicesvehiclegrpc
+    build:
+      context: .
+      dockerfile: Services/Vehicle/XeGo.Services.Vehicle.Grpc/Dockerfile
+
 volumes:
   portainer_data:
   elasticsearch-data:
+
 
 
 

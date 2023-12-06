@@ -7,6 +7,8 @@ using XeGo.Services.Auth.API.Entities;
 using XeGo.Services.Auth.API.Models;
 using XeGo.Services.Auth.API.Service;
 using XeGo.Services.Auth.API.Service.IService;
+using XeGo.Services.Vehicle.Grpc.Protos;
+using XeGo.Shared.GrpcConsumer.Services;
 using XeGo.Shared.Lib.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,6 +30,12 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 LoggingHelpers loggingHelpers = new();
 loggingHelpers.ConfigureLogging(Assembly.GetExecutingAssembly().GetName().Name);
 builder.Host.UseSerilog();
+
+//Add DriverGrpc Service
+builder.Services.AddGrpcClient<DriverProtoService.DriverProtoServiceClient>(o =>
+    o.Address = new Uri(builder.Configuration["GrpcSettings:DriverGrpcUrl"])
+);
+builder.Services.AddScoped<DriverGrpcService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

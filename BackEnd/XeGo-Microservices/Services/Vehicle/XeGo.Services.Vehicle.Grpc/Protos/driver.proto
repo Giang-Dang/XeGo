@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+import "google/protobuf/wrappers.proto";
+
+option csharp_namespace = "XeGo.Services.Vehicle.Grpc.Protos";
+
+service DriverProtoService {
+	rpc CreateDriver(CreateDriverRequest) returns (DriverResponse);
+	rpc EditDriver(EditDriverRequest) returns (DriverResponse);
+
+}
+
+message CreateDriverRequest {
+	string userId = 1;
+	string userName = 2;
+	string firstName = 3;
+	string lastName = 4;
+	string phoneNumber = 5;
+	string email = 6;
+	string address = 7;
+	string modifiedBy = 8;
+}
+
+message EditDriverRequest {
+	string userId = 1;
+	google.protobuf.StringValue userName = 2;
+	google.protobuf.StringValue firstName = 3;
+	google.protobuf.StringValue lastName = 4;
+	google.protobuf.StringValue phoneNumber = 5;
+	google.protobuf.StringValue email = 6;
+	google.protobuf.StringValue address = 7;
+	google.protobuf.BoolValue isAssigned = 8;
+	string modifiedBy = 9;
+}
+
+message DriverResponse {
+  string data = 1;
+  bool isSuccess = 2;
+  string message = 3;
+}

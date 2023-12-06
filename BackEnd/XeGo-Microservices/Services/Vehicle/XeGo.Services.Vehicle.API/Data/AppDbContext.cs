@@ -13,6 +13,8 @@ namespace XeGo.Services.Vehicle.API.Data
         public DbSet<Entities.Vehicle> Vehicles { get; set; }
         public DbSet<VehicleBan> VehicleBans { get; set; }
         public DbSet<VehicleType> VehicleTypes { get; set; }
+        public DbSet<Driver> Drivers { get; set; }
+        public DbSet<DriverVehicle> DriverVehicles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
