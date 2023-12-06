@@ -15,6 +15,8 @@ builder.Services.AddAppDbContext<AppDbContext>(builder.Configuration, "DefaultCo
 builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
 builder.Services.AddScoped<IVehicleBanRepository, VehicleBanRepository>();
 builder.Services.AddScoped<IVehicleTypeRepository, VehicleTypeRepository>();
+builder.Services.AddScoped<IDriverRepository, DriverRepository>();
+builder.Services.AddScoped<IDriverVehicleRepository, DriverVehicleRepository>();
 
 builder.Services.AddAutoMapper(
     typeof(VehicleProfile)

@@ -109,6 +109,7 @@ services:
       - Serilog__MinimumLevel__Override__Microsoft=Debug
       - Serilog__MinimumLevel__Override__System=Warning
       - ElasticConfiguration__Uri=http://elasticsearch 
+      - GrpcSettings__DriverGrpcUrl=http://xego.services.vehicle.grpc
     depends_on:
       - authdb
       - elasticsearch
@@ -337,6 +338,21 @@ services:
       - pricedb
       - elasticsearch
 
+  xego.services.vehicle.grpc:
+    container_name: xego.services.vehicle.grpc
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=vehicledb;Database=XeGoVehicle;User Id=sa;Password=admin1234@A;TrustServerCertificate=True
+      - ASPNETCORE_ENVIRONMENT=Development
+      - Serilog__MinimumLevel__Default=Debug
+      - Serilog__MinimumLevel__Override__Microsoft=Debug
+      - Serilog__MinimumLevel__Override__System=Warning
+      - ApiSettings__JwtOptions__Secret=adfh@JDFDKSAF1234sdf*%$$#feifkdmvcoaerDSJFAOEDFDFJffDSAFjkAjdfA485723AjdfAJfDjfAjdfdjferYGjASDJfEjfvdav
+      - ApiSettings__JwtOptions__Issuer=xego-auth-api
+      - ApiSettings__JwtOptions__Audience=xego-client
+      - ElasticConfiguration__Uri=http://elasticsearch 
+    ports:
+      - "6012:8080"
+
   portainer:
     container_name: portainer
     restart: always
@@ -421,6 +437,7 @@ volumes:
   sqlserver-pricedb:
   portainer_data:  
   elasticsearch-data:
+
 
 
 

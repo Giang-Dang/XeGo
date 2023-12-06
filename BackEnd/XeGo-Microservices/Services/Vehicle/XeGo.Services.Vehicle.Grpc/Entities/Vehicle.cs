@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using XeGo.Shared.Lib.Entities;
 
-namespace XeGo.Services.Vehicle.API.Entities
+namespace XeGo.Services.Vehicle.Grpc.Entities
 {
     public class Vehicle : BaseEntity
     {

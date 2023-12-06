@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using XeGo.Services.Vehicle.API.Data;
 
@@ -11,9 +12,11 @@ using XeGo.Services.Vehicle.API.Data;
 namespace XeGo.Services.Vehicle.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231206135830_addDriversTable")]
+    partial class addDriversTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,10 +29,6 @@ namespace XeGo.Services.Vehicle.API.Migrations
                 {
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -45,9 +44,6 @@ namespace XeGo.Services.Vehicle.API.Migrations
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsAssigned")
-                        .HasColumnType("bit");
 
                     b.Property<string>("LastModifiedBy")
                         .IsRequired()
@@ -68,50 +64,14 @@ namespace XeGo.Services.Vehicle.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("VehicleId")
+                        .HasColumnType("int");
+
                     b.HasKey("UserId");
-
-                    b.ToTable("Drivers");
-                });
-
-            modelBuilder.Entity("XeGo.Services.Vehicle.API.Entities.DriverVehicle", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DriverId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("LastModifiedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("LastModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("VehicleId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DriverId");
 
                     b.HasIndex("VehicleId");
 
-                    b.ToTable("DriverVehicles");
+                    b.ToTable("Drivers");
                 });
 
             modelBuilder.Entity("XeGo.Services.Vehicle.API.Entities.Vehicle", b =>
@@ -129,10 +89,10 @@ namespace XeGo.Services.Vehicle.API.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                    b.Property<string>("DriverId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<bool>("IsAssigned")
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<string>("LastModifiedBy")
@@ -150,6 +110,8 @@ namespace XeGo.Services.Vehicle.API.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DriverId");
 
                     b.HasIndex("TypeId");
 
@@ -239,50 +201,46 @@ namespace XeGo.Services.Vehicle.API.Migrations
                         {
                             Id = 1,
                             CreatedBy = "ADMIN",
-                            CreatedDate = new DateTime(2023, 12, 6, 16, 25, 48, 470, DateTimeKind.Utc).AddTicks(4859),
+                            CreatedDate = new DateTime(2023, 12, 6, 13, 58, 29, 449, DateTimeKind.Utc).AddTicks(654),
                             IsActive = true,
                             LastModifiedBy = "ADMIN",
-                            LastModifiedDate = new DateTime(2023, 12, 6, 16, 25, 48, 470, DateTimeKind.Utc).AddTicks(4860),
+                            LastModifiedDate = new DateTime(2023, 12, 6, 13, 58, 29, 449, DateTimeKind.Utc).AddTicks(655),
                             Name = "4-seater Car"
                         },
                         new
                         {
                             Id = 2,
                             CreatedBy = "ADMIN",
-                            CreatedDate = new DateTime(2023, 12, 6, 16, 25, 48, 470, DateTimeKind.Utc).AddTicks(4863),
+                            CreatedDate = new DateTime(2023, 12, 6, 13, 58, 29, 449, DateTimeKind.Utc).AddTicks(667),
                             IsActive = true,
                             LastModifiedBy = "ADMIN",
-                            LastModifiedDate = new DateTime(2023, 12, 6, 16, 25, 48, 470, DateTimeKind.Utc).AddTicks(4863),
+                            LastModifiedDate = new DateTime(2023, 12, 6, 13, 58, 29, 449, DateTimeKind.Utc).AddTicks(667),
                             Name = "7-seater Car"
                         });
                 });
 
-            modelBuilder.Entity("XeGo.Services.Vehicle.API.Entities.DriverVehicle", b =>
+            modelBuilder.Entity("XeGo.Services.Vehicle.API.Entities.Driver", b =>
                 {
-                    b.HasOne("XeGo.Services.Vehicle.API.Entities.Driver", "Driver")
-                        .WithMany()
-                        .HasForeignKey("DriverId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("XeGo.Services.Vehicle.API.Entities.Vehicle", "Vehicle")
                         .WithMany()
-                        .HasForeignKey("VehicleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Driver");
+                        .HasForeignKey("VehicleId");
 
                     b.Navigation("Vehicle");
                 });
 
             modelBuilder.Entity("XeGo.Services.Vehicle.API.Entities.Vehicle", b =>
                 {
+                    b.HasOne("XeGo.Services.Vehicle.API.Entities.Driver", "Driver")
+                        .WithMany()
+                        .HasForeignKey("DriverId");
+
                     b.HasOne("XeGo.Services.Vehicle.API.Entities.VehicleType", "VehicleType")
                         .WithMany()
                         .HasForeignKey("TypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Driver");
 
                     b.Navigation("VehicleType");
                 });

@@ -14,6 +14,8 @@ namespace XeGo.Services.Vehicle.API.Controllers
     public class VehicleController(
             IVehicleRepository vehicleRepo,
             IVehicleBanRepository vehicleBanRepo,
+            IDriverRepository driverRepo,
+            IDriverVehicleRepository driverVehicleRepo,
             ILogger<VehicleController> logger,
             IMapper mapper)
         : ControllerBase
@@ -60,7 +62,7 @@ namespace XeGo.Services.Vehicle.API.Controllers
             int? id,
             string? plateNumber,
             string? type,
-            string? driverId,
+            bool? isAssigned,
             bool? isActive,
             string? createdBy,
             DateTime? createdStartDate,
@@ -77,11 +79,11 @@ namespace XeGo.Services.Vehicle.API.Controllers
             try
             {
                 Expression<Func<Entities.Vehicle, bool>> filters = v =>
-                    (id == null || v.Id == id) &&
+                    (id == null || v.Id == id.Value) &&
                     (plateNumber == null || v.PlateNumber.Contains(plateNumber)) &&
                     (type == null || v.VehicleType.Name.Contains(type)) &&
-                    (driverId == null || v.DriverId == driverId) &&
-                    (isActive == null || v.IsActive == isActive) &&
+                    (isAssigned == null || v.IsAssigned == isAssigned.Value) &&
+                    (isActive == null || v.IsActive == isActive.Value) &&
                     (createdBy == null || v.CreatedBy == createdBy) &&
                     (createdStartDate == null || v.CreatedDate >= createdStartDate) &&
                     (createdEndDate == null || v.CreatedDate <= createdEndDate) &&
@@ -365,9 +367,10 @@ namespace XeGo.Services.Vehicle.API.Controllers
         [HttpPost("assign")]
         public async Task<ResponseDto> AssignVehicle([FromBody] AssignVehicleRequestDto requestDto)
         {
+            _logger.LogInformation($"{nameof(VehicleController)}>{nameof(AssignVehicle)}: begin.");
+
             try
             {
-                var utcNow = DateTime.UtcNow;
                 var cVehicle = await vehicleRepo
                     .GetAsync(v => v.Id == requestDto.VehicleId);
 
@@ -378,27 +381,50 @@ namespace XeGo.Services.Vehicle.API.Controllers
                     return ResponseDto;
                 }
 
-                if (cVehicle.DriverId != null)
+                if (cVehicle.IsAssigned)
                 {
                     ResponseDto.Message = "This vehicle has been already assigned.";
                     ResponseDto.IsSuccess = false;
                     return ResponseDto;
                 }
 
-                var cDriver = await vehicleRepo
-                    .GetAsync(v =>
-                        v.DriverId == requestDto.DriverId);
-                if (cDriver != null)
+                var cDriver = await driverRepo
+                    .GetAsync(d =>
+                        d.UserId == requestDto.DriverId && d.IsAssigned);
+                if (cDriver == null)
                 {
                     ResponseDto.Message = "This driver has been already assigned.";
                     ResponseDto.IsSuccess = false;
                     return ResponseDto;
                 }
 
-                cVehicle.DriverId = requestDto.DriverId;
-                ResponseDto.Data = await vehicleRepo.UpdateAsync(cVehicle);
+                cVehicle.IsAssigned = true;
+                cVehicle.LastModifiedBy = requestDto.ModifiedBy;
+                cVehicle.LastModifiedDate = DateTime.UtcNow;
+                await vehicleRepo.UpdateAsync(cVehicle);
+
+                cDriver.IsAssigned = true;
+                cDriver.LastModifiedBy = requestDto.ModifiedBy;
+                cDriver.LastModifiedDate = DateTime.UtcNow;
+                await driverRepo.UpdateAsync(cDriver);
+
+                var driverVehicle = new DriverVehicle()
+                {
+                    DriverId = requestDto.DriverId,
+                    VehicleId = requestDto.VehicleId,
+                    IsDeleted = false,
+                    CreatedBy = requestDto.ModifiedBy,
+                    LastModifiedBy = requestDto.ModifiedBy,
+                    CreatedDate = DateTime.UtcNow,
+                    LastModifiedDate = DateTime.UtcNow,
+                };
+
+                await driverVehicleRepo.CreateAsync(driverVehicle);
+
+                ResponseDto.Data = await driverVehicleRepo.GetAsync(dv => dv.Id == driverVehicle.Id, false, includeProperties: "Driver,Vehicle");
                 ResponseDto.IsSuccess = true;
 
+                _logger.LogInformation($"{nameof(VehicleController)}>{nameof(AssignVehicle)}: done.");
             }
             catch (Exception e)
             {
@@ -412,5 +438,62 @@ namespace XeGo.Services.Vehicle.API.Controllers
 
         }
 
+        [HttpPost("unassign")]
+        public async Task<ResponseDto> UnassignVehicle([FromBody] UnassignVehicleRequestDto requestDto)
+        {
+            _logger.LogInformation($"{nameof(VehicleController)}>{nameof(UnassignVehicle)}: begin.");
+            try
+            {
+                var cDriverVehicle = await driverVehicleRepo.GetAsync(dv => dv.Id == requestDto.Id);
+                if (cDriverVehicle == null)
+                {
+                    ResponseDto.Message = "Not Found!";
+                    ResponseDto.IsSuccess = false;
+                    return ResponseDto;
+                }
+
+                if (cDriverVehicle.IsDeleted)
+                {
+                    ResponseDto.Message = "DriverVehicle already deleted!";
+                    ResponseDto.IsSuccess = false;
+                    return ResponseDto;
+                }
+
+                cDriverVehicle.IsDeleted = true;
+                cDriverVehicle.LastModifiedBy = requestDto.ModifiedBy;
+                cDriverVehicle.LastModifiedDate = DateTime.UtcNow;
+                await driverVehicleRepo.UpdateAsync(cDriverVehicle);
+
+                var cVehicle = await vehicleRepo.GetAsync(v => v.Id == cDriverVehicle.VehicleId);
+                cVehicle!.IsAssigned = false;
+                cVehicle.LastModifiedBy = requestDto.ModifiedBy;
+                cVehicle.LastModifiedDate = DateTime.UtcNow;
+                await vehicleRepo.UpdateAsync(cVehicle);
+
+                var cDriver = await driverRepo.GetAsync(d => d.UserId == cDriverVehicle.DriverId);
+                cDriver!.IsAssigned = false;
+                cDriver.LastModifiedBy = requestDto.ModifiedBy;
+                cDriver.LastModifiedDate = DateTime.UtcNow;
+                await driverRepo.UpdateAsync(cDriver);
+
+                ResponseDto.IsSuccess = true;
+                ResponseDto.Data =
+                    await driverVehicleRepo
+                        .GetAsync(
+                            dv => dv.Id == requestDto.Id,
+                            false,
+                            "Driver,Vehicle"
+                            );
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"{nameof(VehicleController)}>{nameof(UnassignVehicle)}: {e.Message}");
+                ResponseDto.IsSuccess = false;
+                ResponseDto.Data = null;
+                ResponseDto.Message = e.Message;
+            }
+
+            return ResponseDto;
+        }
     }
 }

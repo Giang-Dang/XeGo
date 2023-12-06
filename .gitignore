@@ -29,6 +29,8 @@
 /BackEnd/XeGo-Microservices/Services/Ride/XeGo.Services.User.API/obj/
 /BackEnd/XeGo-Microservices/Services/Vehicle/XeGo.Services.Vehicle.API/bin/
 /BackEnd/XeGo-Microservices/Services/Vehicle/XeGo.Services.Vehicle.API/obj/
+/BackEnd/XeGo-Microservices/Services/Vehicle/XeGo.Services.Vehicle.Grpc/bin/
+/BackEnd/XeGo-Microservices/Services/Vehicle/XeGo.Services.Vehicle.Grpc/obj/
 /BackEnd/XeGo-Microservices/Services/Notifications/XeGo.Services.Notifications.Functions/bin/
 /BackEnd/XeGo-Microservices/Services/Notifications/XeGo.Services.Notifications.Functions/obj/
 /BackEnd/XeGo-Microservices/Services/Price/XeGo.Services.Price.API/bin/
