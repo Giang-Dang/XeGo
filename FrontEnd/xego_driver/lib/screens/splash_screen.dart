@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:xego_driver/screens/do_not_have_vehicle_screen.dart';
 import 'package:xego_driver/screens/login_screen.dart';
 import 'package:xego_driver/screens/main_tabs_screen.dart';
 import 'package:xego_driver/services/api_services.dart';
 import 'package:xego_driver/services/user_services.dart';
+import 'package:xego_driver/services/vehicle_services.dart';
 import 'package:xego_driver/settings/kcolors.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -21,6 +23,7 @@ class _SplashScreenState extends State<SplashScreen>
   Timer? _loginTimer;
   final userServices = UserServices();
   final apiServices = ApiServices();
+  final vehicleServices = VehicleServices();
 
   _initialize() async {
     await Future.wait<void>([userServices.getUserLocation(), _login()]);
@@ -49,6 +52,20 @@ class _SplashScreenState extends State<SplashScreen>
       return;
     }
 
+    final driverHasVehicle =
+        await vehicleServices.isDriverAssigned(UserServices.userDto!.userId);
+
+    if (!driverHasVehicle) {
+      if (context.mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const DoNotHaveVehicleScreen(),
+          ),
+        );
+      }
+      return;
+    }
     if (context.mounted) {
       Navigator.pushReplacement(
         context,

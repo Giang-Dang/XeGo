@@ -1,4 +1,4 @@
-import VehicleDataTable from "./VehicleDataTable";
+import VehicleDataTable from "../../components/VehicleDataTable";
 
 export function VehiclePage(): React.ReactElement {
   return (

@@ -1,17 +1,21 @@
 // import { TableProps } from "antd";
 import { useEffect, useState } from "react";
-import IVehicle from "../../models/interfaces/IVehicle";
+import IVehicle from "../models/interfaces/IVehicle";
 import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
 import { format } from "date-fns";
-import VehicleService from "../../services/VehicleServices";
-import { convertUtcToVn } from "../../utils/DateUtils";
+import VehicleService from "../services/VehicleServices";
+import { convertUtcToVn } from "../utils/DateUtils";
 import { Button, Modal } from "antd";
-import VehicleInfoBox from "../../components/VehicleInfoBox";
+import VehicleInfoBox from "./VehicleInfoBox";
+import { FindAllUsersByPhoneNumberForm } from "./FindAllUsersByPhoneNumberForm";
+import UserDto from "../models/dto/UserDto";
+import UserDataTable from "./UserDataTable";
 
 const VehicleDataTable: React.FC = () => {
   const [vehicleData, setVehicleData] = useState<IVehicle[]>([]);
   const [rowData, setRowData] = useState<IVehicle | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [userDtos, setUserDtos] = useState<UserDto[]>([]);
   // const [pagination, setPagination] = useState<TableProps<IVehicle>['pagination']>({ current: 1, pageSize: 10});
 
   const onAssignDriverClick = (vehicle: IVehicle) : void  => {
@@ -47,12 +51,16 @@ const VehicleDataTable: React.FC = () => {
       headerClassName: "bg-gray-300 text-[1.02rem]",
       flex: 1,
       renderCell: (params) =>
-        params.row.driverId ? (
-          params.row.driverId
+        params.row.isAssigned ? (
+          <div className="w-full text-center" style={{ color: "green" }}>
+            Assigned
+          </div>
         ) : (
-          <Button danger onClick={() => onAssignDriverClick(params.row)}>
-            Assign Driver
-          </Button>
+          <div className="w-full flex justify-center">
+            <Button danger onClick={() => onAssignDriverClick(params.row)}>
+              Assign Driver
+            </Button>
+          </div>
         ),
     },
     {
@@ -108,6 +116,7 @@ const VehicleDataTable: React.FC = () => {
       <Modal
         title="Assign Driver"
         open={modalVisible}
+        width={1000}
         footer={[
           <Button key="back" onClick={handleModalCancel}>
             Return
@@ -117,9 +126,13 @@ const VehicleDataTable: React.FC = () => {
           </Button>,
         ]}
       >
-        {rowData && 
-          <VehicleInfoBox vehicle={rowData}/>
-        }
+        {rowData && (
+          <>
+            <VehicleInfoBox vehicle={rowData} />
+            <FindAllUsersByPhoneNumberForm setUserDtos={setUserDtos} />
+            <UserDataTable userDtos={userDtos} />
+          </>
+        )}
       </Modal>
     </>
   );
