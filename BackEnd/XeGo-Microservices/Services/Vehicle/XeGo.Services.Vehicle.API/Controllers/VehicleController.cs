@@ -390,8 +390,15 @@ namespace XeGo.Services.Vehicle.API.Controllers
 
                 var cDriver = await driverRepo
                     .GetAsync(d =>
-                        d.UserId == requestDto.DriverId && d.IsAssigned);
+                        d.UserId == requestDto.DriverId);
                 if (cDriver == null)
+                {
+                    ResponseDto.Message = "Driver Not Found!";
+                    ResponseDto.IsSuccess = false;
+                    return ResponseDto;
+                }
+
+                if (cDriver.IsAssigned)
                 {
                     ResponseDto.Message = "This driver has been already assigned.";
                     ResponseDto.IsSuccess = false;
