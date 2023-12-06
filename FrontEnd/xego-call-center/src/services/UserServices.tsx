@@ -29,9 +29,9 @@ const UserServices = () =>
     } catch (error) {
       let loginResponseDto: LoginResponseDto | null;
       if (error instanceof Error) {
-        loginResponseDto = new LoginResponseDto(null, null, null, false, error.message);
+        loginResponseDto = new LoginResponseDto(null, null, false, error.message);
       } else {
-        loginResponseDto = new LoginResponseDto(null, null, null, false, "Caught an unknown error!");
+        loginResponseDto = new LoginResponseDto(null, null, false, "Caught an unknown error!");
       }
       return loginResponseDto;
     }
