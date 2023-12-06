@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:xego_driver/models/Dto/vehicle_response_dto.dart';
 import 'package:xego_driver/models/Entities/vehicle.dart';
 import 'package:xego_driver/services/api_services.dart';
@@ -24,27 +26,24 @@ class VehicleServices {
   }) async {
     try {
       const subApiUrl = 'api/vehicles';
-      final url = Uri.http(KSecret.kApiIp, subApiUrl);
+      final url = Uri.http(KSecret.kApiIp, subApiUrl, {
+        'id': id,
+        'plateNumber': plateNumber,
+        'type': type,
+        'driverId': driverId,
+        'isActive': isActive,
+        'createdBy': createdBy,
+        'createdStartDate': createdStartDate?.toIso8601String(),
+        'createdEndDate': createdEndDate?.toIso8601String(),
+        'lastModifiedBy': lastModifiedBy,
+        'lastModifiedStartDate': lastModifiedStartDate?.toIso8601String(),
+        'lastModifiedEndDate': lastModifiedEndDate?.toIso8601String(),
+        'searchString': searchString,
+        'pageNumber': pageNumber,
+        'pageSize': pageSize,
+      });
 
-      final response = await apiServices.get(
-        url.toString(),
-        headers: {
-          'id': id,
-          'plateNumber': plateNumber,
-          'type': type,
-          'driverId': driverId,
-          'isActive': isActive,
-          'createdBy': createdBy,
-          'createdStartDate': createdStartDate?.toIso8601String(),
-          'createdEndDate': createdEndDate?.toIso8601String(),
-          'lastModifiedBy': lastModifiedBy,
-          'lastModifiedStartDate': lastModifiedStartDate?.toIso8601String(),
-          'lastModifiedEndDate': lastModifiedEndDate?.toIso8601String(),
-          'searchString': searchString,
-          'pageNumber': pageNumber,
-          'pageSize': pageSize,
-        },
-      );
+      final response = await apiServices.get(url.toString());
 
       if (response.statusCode != 200) {
         return [];
@@ -58,12 +57,27 @@ class VehicleServices {
       }
       return vehicleResponseDto.vehicles;
     } catch (e) {
+      log(e.toString());
       return [];
     }
   }
 
   Future<bool> isDriverAssigned(String driverId) async {
-    var vehicleList = await getAllVehicles(driverId: driverId);
-    return vehicleList.isNotEmpty;
+    try {
+      const subApiUrl = 'api/drivers';
+      final url = Uri.http(KSecret.kApiIp, subApiUrl, {
+        "userId": driverId,
+      });
+      final response = await apiServices.get(url.toString());
+
+      if (response.data['isSuccess'] as bool) {
+        return false;
+      }
+
+      return response.data['data']['isAssigned'] as bool;
+    } catch (e) {
+      log(e.toString());
+      return false;
+    }
   }
 }

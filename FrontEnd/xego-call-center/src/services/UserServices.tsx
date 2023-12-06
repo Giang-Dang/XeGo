@@ -2,6 +2,8 @@ import axios from 'axios';
 import getAppConstants from '../constants/AppConstants';
 import LoginRequestDto from '../models/dto/LoginRequestDto';
 import LoginResponseDto from '../models/dto/LoginResponseDto';
+import UserDto from '../models/dto/UserDto';
+import GetAllUsersResponseDto from '../models/dto/GetAllUserResponseDto';
 
 
 
@@ -65,26 +67,52 @@ const UserServices = () =>
     //         return null;
     //     }
     // },
+  
+  async function getAllUsers(params: {
+    userName?: string;
+    email?: string;
+    phoneNumber?: string;
+    firstName?: string;
+    lastName?: string;
+    address?: string;
+    role?: string;
+    pageNumber?: number;
+    pageSize?: number;
+  }): Promise<UserDto[] | null> {
+    const { ApiUrl } = getAppConstants();
+    const url = `http://${ApiUrl}/api/auth/user`;
+    let userDtos: UserDto[] | null = null;
 
-    const saveLoginInfo = (loginInfo: LoginResponseDto) => {
-        localStorage.setItem("loginInfo", JSON.stringify(loginInfo));
-    };
+    try {
+      const response = await axios.get<GetAllUsersResponseDto>(url, { params });
+      userDtos = response.data.data;
+    } catch (error) {
+      console.error(error);
+    }
 
-    const getLoginInfo = () : LoginResponseDto | null => {
-        const loginInfoResponse = localStorage.getItem("loginInfo");
-        if(loginInfoResponse) {
-            const loginResponse = LoginResponseDto
-                .fromJson(JSON.parse(loginInfoResponse));
-            return loginResponse;
-        }
-        return null;
-    };
+    return userDtos;
+  }
 
-    return {
-        login: login,
-        saveLoginInfo: saveLoginInfo,
-        getLoginInfo: getLoginInfo,
-    };
+  const saveLoginInfo = (loginInfo: LoginResponseDto) => {
+      localStorage.setItem("loginInfo", JSON.stringify(loginInfo));
+  };
+
+  const getLoginInfo = () : LoginResponseDto | null => {
+      const loginInfoResponse = localStorage.getItem("loginInfo");
+      if(loginInfoResponse) {
+          const loginResponse = LoginResponseDto
+              .fromJson(JSON.parse(loginInfoResponse));
+          return loginResponse;
+      }
+      return null;
+  };
+
+  return {
+    login: login,
+    saveLoginInfo: saveLoginInfo,
+    getLoginInfo: getLoginInfo,
+    getAllUsers: getAllUsers,
+  };
 };
 
 export default UserServices;

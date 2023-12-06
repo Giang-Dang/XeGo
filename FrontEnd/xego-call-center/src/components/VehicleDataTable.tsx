@@ -1,12 +1,12 @@
 // import { TableProps } from "antd";
 import { useEffect, useState } from "react";
-import IVehicle from "../../models/interfaces/IVehicle";
+import IVehicle from "../models/interfaces/IVehicle";
 import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
 import { format } from "date-fns";
-import VehicleService from "../../services/VehicleServices";
-import { convertUtcToVn } from "../../utils/DateUtils";
+import VehicleService from "../services/VehicleServices";
+import { convertUtcToVn } from "../utils/DateUtils";
 import { Button, Modal } from "antd";
-import VehicleInfoBox from "../../components/VehicleInfoBox";
+import VehicleInfoBox from "./VehicleInfoBox";
 
 const VehicleDataTable: React.FC = () => {
   const [vehicleData, setVehicleData] = useState<IVehicle[]>([]);

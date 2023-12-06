@@ -32,7 +32,6 @@ export default function VehicleService() {
       const response = await axios.get<GetAllResponseDto>(url, { params });
       responseDto = response.data;
       console.log(response.data);
-      return response.data;
     } catch (error) {
       console.error(error);
     }
