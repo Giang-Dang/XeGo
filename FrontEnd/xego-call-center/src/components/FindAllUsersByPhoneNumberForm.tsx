@@ -6,7 +6,7 @@ import UserServices from "../services/UserServices";
 export function FindAllUsersByPhoneNumberForm({
   setUserDtos,
 }: {
-  setUserDtos: React.Dispatch<React.SetStateAction<UserDto | null>>;
+  setUserDtos: React.Dispatch<React.SetStateAction<UserDto[]>>;
 }): React.ReactElement {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -20,7 +20,7 @@ export function FindAllUsersByPhoneNumberForm({
       setIsLoading(() => true);
       const userDtos = await UserServices().getAllUsers({ phoneNumber: values.phoneNumber });
 
-      if (userDtos) {
+      if (!userDtos) {
         Modal.error({
           title: "Finding User Failed",
           content: "Caught an unknown error!",

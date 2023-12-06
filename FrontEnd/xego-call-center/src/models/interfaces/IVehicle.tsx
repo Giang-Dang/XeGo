@@ -5,6 +5,7 @@ export default interface IVehicle extends IBaseEntity {
   id: number;
   plateNumber: string;
   typeId: number;
-  driverId?: string;
   vehicleType: IVehicleType;
+  isActive: boolean;
+  isAssigned: boolean;
 }
