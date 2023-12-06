@@ -6,6 +6,7 @@ export default class UserDto {
   firstName: string;
   lastName: string;
   address: string;
+  roles: string[];
 
   constructor(
     userId: string,
@@ -14,15 +15,17 @@ export default class UserDto {
     phoneNumber: string,
     firstName: string,
     lastName: string,
-    address: string
+    address: string,
+    roles: string[],
   ) {
-    this.userId = userId;
+    this.userId = userId; 
     this.userName = userName;
     this.email = email;
     this.phoneNumber = phoneNumber;
     this.firstName = firstName;
     this.lastName = lastName;
     this.address = address;
+    this.roles = roles;
   }
 
   static fromJson(json: {
@@ -33,6 +36,7 @@ export default class UserDto {
     firstName: string;
     lastName: string;
     address: string;
+    roles: string[];
   }) {
     return new UserDto(
       json.userId,
@@ -41,7 +45,8 @@ export default class UserDto {
       json.phoneNumber,
       json.firstName,
       json.lastName,
-      json.address
+      json.address,
+      json.roles
     );
   }
 }

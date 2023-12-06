@@ -1,4 +1,4 @@
-import { ReactElement, useEffect } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { Form, Input, Button, Modal } from 'antd';
 import UserServices from "../../services/UserServices";
 import "tailwindcss/tailwind.css";
@@ -9,19 +9,25 @@ import { useNavigate } from "react-router-dom";
 
 
 export default function LoginPage(): ReactElement {
-  const { user, setUser, setRoles }= useUserStore();
+  const { user, setUser }= useUserStore();
   const navigate = useNavigate();
+  const [ isLoggingIn, setIsLoggingIn ] = useState(false);
 
   const onFinish = async (values: { phoneNumber: string, password: string} ) => {
     try {
+      setIsLoggingIn(() => true);
+
       const loginRequestDto = new LoginRequestDto(values.phoneNumber, values.password, getAppConstants().fromAppValue);
       const loginResponse = await UserServices().login(loginRequestDto);
+      
+      setIsLoggingIn(() => false);
       
       if (!loginResponse) {
         Modal.error({
           title: "Login Failed",
           content: "Caught an unknown error!",
         });
+
         return;
       }
 
@@ -38,7 +44,6 @@ export default function LoginPage(): ReactElement {
       console.log(loginResponse.user);
 
       setUser(loginResponse.user);
-      setRoles(loginResponse.roles);
 
     } catch (error) {
       Modal.error({
@@ -74,10 +79,13 @@ export default function LoginPage(): ReactElement {
                 name="phoneNumber"
                 rules={[
                   { required: true, message: "Please enter your phone number!" },
-                  { pattern: new RegExp('^(0|\\+84)(3|5|7|8|9)[0-9]{8}$') , message: "Please enter a valid phone number!"},
+                  {
+                    pattern: new RegExp("^(0|\\+84)(3|5|7|8|9)[0-9]{8}$"),
+                    message: "Please enter a valid phone number!",
+                  },
                 ]}
               >
-                <Input placeholder="Phone number" />
+                <Input type="tel" placeholder="Phone number" />
               </Form.Item>
 
               <Form.Item
@@ -90,7 +98,12 @@ export default function LoginPage(): ReactElement {
 
             <div>
               <Form.Item>
-                <Button type="primary" htmlType="submit" className="login-form-button w-full">
+                <Button
+                  type="primary"
+                  loading={isLoggingIn}
+                  htmlType="submit"
+                  className="login-form-button w-full"
+                >
                   Sign In
                 </Button>
               </Form.Item>

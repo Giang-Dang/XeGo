@@ -5,8 +5,9 @@ import ProtectedRoute from "./pages/ProtectedRoute";
 import { HomePage } from "./pages/Home/HomePage";
 import { RideOrderPage } from "./pages/RideOrder/RideOrderPage";
 import { StatisticsPage } from "./pages/Statistics/StatisticsPage";
-import { MainSidebar } from "./components/MainSidebar";
 import LoginPage from "./pages/Login/LoginPage";
+import SharedLayout from "./components/SharedLayout";
+import { VehiclePage } from "./pages/Vehicle/VehiclePage";
 
 function App() {
   return (
@@ -16,11 +17,12 @@ function App() {
           path="/"
           element={
             <ProtectedRoute>
-              <MainSidebar />
+              <SharedLayout />
             </ProtectedRoute>
           }
         >
           <Route index element={<HomePage />} />
+          <Route path="vehicle" element={<VehiclePage />} />
           <Route path="ride-order" element={<RideOrderPage />} />
           <Route path="statistics" element={<StatisticsPage />} />
         </Route>
