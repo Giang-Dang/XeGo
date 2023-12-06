@@ -145,6 +145,7 @@ namespace XeGo.Services.Auth.API.Service
             {
                 User = userDto,
                 Tokens = tokenDto,
+                Roles = userRoles.ToList()
             };
 
             await StoreTokensToDb(user, tokenDto, loginRequestDto.FromApp);
