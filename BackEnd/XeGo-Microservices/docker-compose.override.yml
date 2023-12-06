@@ -109,10 +109,11 @@ services:
       - Serilog__MinimumLevel__Override__Microsoft=Debug
       - Serilog__MinimumLevel__Override__System=Warning
       - ElasticConfiguration__Uri=http://elasticsearch 
-      - GrpcSettings__DriverGrpcUrl=http://xego.services.vehicle.grpc
+      - GrpcSettings__DriverGrpcUrl=http://xego.services.vehicle.grpc:8080
     depends_on:
       - authdb
       - elasticsearch
+      - xego.services.vehicle.grpc
     ports:
       - "6001:8080"
     volumes:
