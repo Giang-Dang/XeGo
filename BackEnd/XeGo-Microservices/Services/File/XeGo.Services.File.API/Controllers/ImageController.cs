@@ -28,16 +28,15 @@ namespace XeGo.Services.File.API.Controllers
         }
 
         [HttpGet("avatar")]
-        public ResponseDto GetUserAvatarUri(string userId, string imageType, string imageSize)
+        public ResponseDto GetUserAvatarUri(string userId, string imageSize)
         {
             _logger.LogInformation($"Executing {nameof(ImageController)} > {nameof(GetUserAvatarUri)}...");
             try
             {
                 imageSize = imageSize.ToUpper();
-                imageType = imageType.ToUpper();
 
                 var userImage = _db.UserImages
-                    .FirstOrDefault(e => e.UserId == userId && e.ImageType == imageType && e.ImageSize == imageSize);
+                    .FirstOrDefault(e => e.UserId == userId && e.ImageType == ImageTypeConstants.Avatar && e.ImageSize == imageSize);
 
                 if (userImage == null)
                 {
