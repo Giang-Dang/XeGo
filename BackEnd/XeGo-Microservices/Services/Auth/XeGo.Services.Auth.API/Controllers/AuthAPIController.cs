@@ -88,7 +88,7 @@ namespace XeGo.Services.Auth.API.Controllers
                 Expression<Func<ApplicationUser, bool>> filters = u =>
                     (userName == null || u.UserName == null || u.UserName.ToUpper().Contains(userName.ToUpper())) &&
                     (email == null || u.NormalizedEmail == null || u.NormalizedEmail.Contains(email.ToUpper())) &&
-                    (phoneNumber == null || u.PhoneNumber == null || u.PhoneNumber.Contains(phoneNumber)) &&
+                    (phoneNumber == null || u.PhoneNumber == null || u.PhoneNumber == phoneNumber) &&
                     (firstName == null || u.FirstName.ToUpper().Contains(firstName.ToUpper())) &&
                     (lastName == null || u.LastName.ToUpper().Contains(lastName.ToUpper())) &&
                     (address == null || u.Address.ToUpper().Contains(address.ToUpper()));

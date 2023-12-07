@@ -1,12 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using XeGo.Shared.Lib.Entities;
 
 namespace XeGo.Services.File.API.Entities
 {
     [Index(nameof(UserId), IsUnique = false)]
 
-    public class UserImage
+    public class UserImage : BaseEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

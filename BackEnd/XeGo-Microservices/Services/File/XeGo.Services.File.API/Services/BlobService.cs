@@ -58,6 +58,8 @@ namespace XeGo.Services.File.API.Services
         public async Task<bool> UploadBlob(string blobName, IFormFile file, string containerName, Blob? blob)
         {
             BlobContainerClient blobContainerClient = _blobClient.GetBlobContainerClient(containerName);
+            await blobContainerClient.CreateIfNotExistsAsync();
+
             var blobClient = blobContainerClient.GetBlobClient(blobName);
 
             var httpHeaders = new BlobHttpHeaders()
