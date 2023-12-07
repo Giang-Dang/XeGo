@@ -2,8 +2,10 @@ import UserDto from "./UserDto";
 import TokensDto from "./TokensDto";
 
 export default class LoginResponseDto {
-  user: UserDto | null;
-  tokens: TokensDto | null;
+  data: {
+    user: UserDto | null;
+    tokens: TokensDto | null;
+  };
   isSuccess: boolean;
   message: string;
 
@@ -13,14 +15,13 @@ export default class LoginResponseDto {
     isSuccess: boolean,
     message: string
   ) {
-    this.user = userDto;
-    this.tokens = tokensDto;
+    this.data = {user: userDto, tokens: tokensDto};
     this.isSuccess = isSuccess;
     this.message = message;
   }
 
   static fromJson(json: {
-    data: { user: UserDto; tokens: TokensDto};
+    data: { user: UserDto; tokens: TokensDto };
     isSuccess: boolean;
     message: string;
   }) {

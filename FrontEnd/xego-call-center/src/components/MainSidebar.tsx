@@ -1,6 +1,7 @@
 import React from "react";
 import { Layout, Menu, MenuProps } from "antd";
 import { BarChartOutlined, CustomerServiceOutlined, CarOutlined, TeamOutlined, ApiOutlined} from "@ant-design/icons";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 
 const { Sider } = Layout;
 
@@ -11,29 +12,27 @@ function getItem(
   key: React.Key,
   icon?: React.ReactNode,
   children?: MenuItem[],
-  type?: 'group',
+  type?: "group",
+  navigate?: NavigateFunction,
+  path?: string
 ): MenuItem {
+  const handleClick = () => {
+    if (path && navigate) {
+      navigate(path);
+    }
+  };
+
   return {
     key,
     icon,
     children,
     label,
     type,
+    onClick: handleClick,
   } as MenuItem;
 }
 
-const items: MenuProps["items"] = [
-  getItem("Call Center", "callCenter", <CustomerServiceOutlined />),
-  getItem("Vehicle", "vehicle", <CarOutlined />),
-  getItem("Drivers Management", "driverManagement", <TeamOutlined />),
-  getItem("Statistics", "statistics", <BarChartOutlined />, [
-    getItem("By Week", "byWeek"),
-    getItem("By Month", "byMonth"),
-    getItem("By Year", "byYear"),
-  ]),
-  { type: 'divider'},
-  getItem('System Settings', 'systemSettings', <ApiOutlined />),
-];
+
 
 export function MainSidebar({
   collapsed,
@@ -44,6 +43,21 @@ export function MainSidebar({
   onCollapse: () => void;
   onBreakpoint: (broken: boolean) => void;
 }): React.ReactElement {
+  const navigate = useNavigate();
+
+  const items: MenuProps["items"] = [
+    getItem("Call Center", "callCenter", <CustomerServiceOutlined />),
+    getItem("Vehicle", "vehicle", <CarOutlined />, undefined, undefined, navigate, "/vehicles"),
+    getItem("Drivers Management", "driverManagement", <TeamOutlined />),
+    getItem("Statistics", "statistics", <BarChartOutlined />, [
+      getItem("By Week", "byWeek"),
+      getItem("By Month", "byMonth"),
+      getItem("By Year", "byYear"),
+    ]),
+    { type: "divider" },
+    getItem("System Settings", "systemSettings", <ApiOutlined />),
+  ];
+
   const onClick: MenuProps["onClick"] = (e) => {
     console.log(e);
   };

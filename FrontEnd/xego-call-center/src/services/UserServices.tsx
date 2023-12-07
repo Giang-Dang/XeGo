@@ -19,6 +19,8 @@ const UserServices = () =>
           headers: JsonHeader,
       });
 
+      console.log(response.data);
+
       const loginResponseDto: LoginResponseDto | null = LoginResponseDto.fromJson(response.data);
       
       if(loginResponseDto) {
@@ -93,6 +95,21 @@ const UserServices = () =>
     return userDtos;
   }
 
+  async function getUserAvatar(params: {userId: string, imageSize: string}) : Promise<string | null> {
+    const { ApiUrl } = getAppConstants();
+    const url = `http://${ApiUrl}/api/images/avatar`;
+    let res: string | null = null;
+
+    try {
+      const response = await axios.get(url, {params});
+      res = response.data.data;
+    } catch (error) {
+      console.error(error);
+    }
+
+    return res;
+  }
+
   const saveLoginInfo = (loginInfo: LoginResponseDto) => {
       localStorage.setItem("loginInfo", JSON.stringify(loginInfo));
   };
@@ -112,6 +129,7 @@ const UserServices = () =>
     saveLoginInfo: saveLoginInfo,
     getLoginInfo: getLoginInfo,
     getAllUsers: getAllUsers,
+    getUserAvatar: getUserAvatar,
   };
 };
 

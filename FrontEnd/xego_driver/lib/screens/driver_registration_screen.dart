@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -50,6 +51,15 @@ class _DriverRegistrationScreenState extends State<DriverRegistrationScreen> {
       return;
     }
 
+    if (_selectedImage == null) {
+      _showAlertDialog(
+          'Profile Image Required', "Please take a photo for Profile Image!",
+          () {
+        Navigator.pop(context);
+      });
+      return;
+    }
+
     if (mounted) {
       setState(() {
         _isRegistering = true;
@@ -68,17 +78,30 @@ class _DriverRegistrationScreenState extends State<DriverRegistrationScreen> {
 
     var response = await _userServices.register(registrationRequestDto);
 
+    if (!response.data['isSuccess']) {
+      _showAlertDialog('Registration Failed', response.data['message'], () {
+        Navigator.pop(context);
+      });
+      return;
+    }
+
+    log(response.data['data'].toString());
+
+    var imageResponse = await _userServices.uploadAvatar(
+        _selectedImage!, response.data['data']['id']);
+
+    if (!imageResponse.data['isSuccess']) {
+      _showAlertDialog('Upload Image Failed', imageResponse.data['message'],
+          () {
+        Navigator.pop(context);
+      });
+      return;
+    }
+
     if (mounted) {
       setState(() {
         _isRegistering = false;
       });
-    }
-
-    if (!response.data['isSuccess']) {
-      _showAlertDialog('Registration failed', response.data['message'], () {
-        Navigator.pop(context);
-      });
-      return;
     }
 
     _showAlertDialog('Registration success', response.data['message'], () {
@@ -152,7 +175,7 @@ class _DriverRegistrationScreenState extends State<DriverRegistrationScreen> {
               ),
               const Gap(20),
               InfoSectionContainer(
-                title: 'Avatar',
+                title: 'Profile Image',
                 titleColor: KColors.kTertiaryColor,
                 padding: const EdgeInsets.all(14.0),
                 innerPadding: const EdgeInsets.all(14.0),

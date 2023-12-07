@@ -19,6 +19,7 @@ export default function LoginPage(): ReactElement {
 
       const loginRequestDto = new LoginRequestDto(values.phoneNumber, values.password, getAppConstants().fromAppValue);
       const loginResponse = await UserServices().login(loginRequestDto);
+
       
       setIsLoggingIn(() => false);
       
@@ -41,9 +42,9 @@ export default function LoginPage(): ReactElement {
 
       console.log(loginResponse);
 
-      console.log(loginResponse.user);
+      console.log(loginResponse.data.user);
 
-      setUser(loginResponse.user);
+      setUser(loginResponse.data.user);
 
     } catch (error) {
       Modal.error({
