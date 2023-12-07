@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using XeGo.Services.Vehicle.API.Data;
 using XeGo.Services.Vehicle.API.Entities;
 using XeGo.Services.Vehicle.API.Models;
 using XeGo.Services.Vehicle.API.Repository.IRepository;
@@ -16,6 +18,7 @@ namespace XeGo.Services.Vehicle.API.Controllers
             IVehicleBanRepository vehicleBanRepo,
             IDriverRepository driverRepo,
             IDriverVehicleRepository driverVehicleRepo,
+            AppDbContext db,
             ILogger<VehicleController> logger,
             IMapper mapper)
         : ControllerBase
@@ -502,5 +505,46 @@ namespace XeGo.Services.Vehicle.API.Controllers
 
             return ResponseDto;
         }
+
+        [HttpGet("{vehicleId}/assigned-driver")]
+        public async Task<ResponseDto> GetDriverAssignedToVehicle(int vehicleId)
+        {
+            logger.LogInformation("{class}>{function}: Received", nameof(VehicleController), nameof(GetDriverAssignedToVehicle));
+            try
+            {
+                var cDriverQueryable =
+                    from v in db.Vehicles
+                    join dv in db.DriverVehicles on v.Id equals dv.VehicleId
+                    join d in db.Drivers on dv.DriverId equals d.UserId
+                    where dv.IsDeleted == false
+                    select new { Driver = d };
+
+                var cDriver = (await cDriverQueryable.ToListAsync()).FirstOrDefault()?.Driver;
+
+                if (cDriver == null)
+                {
+                    ResponseDto.IsSuccess = false;
+                    ResponseDto.Message = "Not Found!";
+                    logger.LogError($"{nameof(VehicleController)}>{nameof(GetDriverAssignedToVehicle)}: Not Found!");
+
+                    return ResponseDto;
+                }
+
+                ResponseDto.IsSuccess = true;
+                ResponseDto.Data = cDriver;
+
+                logger.LogInformation($"{nameof(VehicleController)}>{nameof(GetDriverAssignedToVehicle)}: Done.");
+            }
+            catch (Exception e)
+            {
+                logger.LogError($"{nameof(VehicleController)}>{nameof(GetDriverAssignedToVehicle)}: {e.Message}");
+                ResponseDto.IsSuccess = false;
+                ResponseDto.Data = null;
+                ResponseDto.Message = e.Message;
+            }
+
+            return ResponseDto;
+        }
+
     }
 }

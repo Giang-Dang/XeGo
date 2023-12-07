@@ -231,6 +231,30 @@
       "UpstreamPathTemplate": "/api/drivers",
       "UpstreamHttpMethod": [ "GET" ]
     },
+    {
+      "DownstreamPathTemplate": "/api/drivers/{driverId}/assigned-vehicle",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.vehicle.api",
+          "Port": "8080"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/drivers/{driverId}/assigned-vehicle",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/vehicles/{vehicleId}/assigned-driver",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.vehicle.api",
+          "Port": "8080"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/vehicles/{vehicleId}/assigned-driver",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
 
     // File
     {
