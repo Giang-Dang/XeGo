@@ -3,10 +3,10 @@ import IVehicle from "../models/interfaces/IVehicle";
 import { convertUtcToVn } from "../utils/DateUtils";
 import { format } from "date-fns";
 
-export default function VehicleInfoBox({ vehicle }: {vehicle: IVehicle}) : React.ReactElement {
+export default function VehicleInfoCard({ vehicle }: {vehicle: IVehicle}) : React.ReactElement {
   return (
     <>
-      <Card title="Vehicle Infomation">
+      <Card className="w-[440px]" title="Vehicle Infomation">
         <p>
           <strong>Plate Number:</strong> {vehicle.plateNumber}
         </p>

@@ -2,7 +2,7 @@ import { Layout } from "antd";
 import { MainSidebar } from "./MainSidebar";
 import { Footer, Header } from "antd/es/layout/layout";
 import { Outlet } from "react-router-dom";
-import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
+// import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
 import { useState } from "react";
 
 export default function SharedLayout() {
@@ -12,31 +12,20 @@ export default function SharedLayout() {
     setCollapsed(!collapsed);
   };
 
-  console.log(collapsed);
-
   return (
     <Layout className="min-h-screen">
-      <Header className="bg-green-500 px-6">
-        {collapsed ? (
-          <MenuUnfoldOutlined className="text-xl" onClick={toggleCollapsed} />
-        ) : (
-          <MenuFoldOutlined className="text-xl" onClick={toggleCollapsed} />
-        )}
-      </Header>
+      <MainSidebar collapsed={collapsed} onCollapse={toggleCollapsed} onBreakpoint={setCollapsed} />
       <Layout>
-        <MainSidebar
-          collapsed={collapsed}
-          onCollapse={toggleCollapsed}
-          onBreakpoint={setCollapsed}
-        />
-        <Layout className="pl-6 pb-6">
-          {/* <Breadcrumb className="my-4" items={[{ title: "Home" }, { title: "List" }]} /> */}
+        <Header className="bg-green-500 px-6 text-center">
+        <span className="text-white text-bold text-2xl">XeGo - Call Center</span>
+        </Header>
+        <Layout className="">
           <Outlet />
         </Layout>
+        <Footer className="bg-gray-200 text-center text-gray-700">
+          ©{new Date().getFullYear()} XeGo - 21880213 - Đặng Vũ Ngọc Giang
+        </Footer>
       </Layout>
-      <Footer className="bg-gray-200 text-center text-gray-700">
-        ©{new Date().getFullYear()} XeGo - 21880213 - Đặng Vũ Ngọc Giang
-      </Footer>
     </Layout>
   );
 }
