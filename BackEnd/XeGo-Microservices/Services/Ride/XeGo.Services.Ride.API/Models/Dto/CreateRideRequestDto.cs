@@ -18,7 +18,7 @@ namespace XeGo.Services.Ride.API.Models.Dto
         [Required] public double DestinationLongitude { get; set; }
         [Required] public string DestinationAddress { get; set; } = String.Empty!;
         [Required] public double DistanceInMeters { get; set; }
-        [Required] public DateTime PickupTime { get; set; }
+        [Required] public string PickupTime { get; set; } = String.Empty!;
         [Required] public bool IsScheduleRide { get; set; }
         public string? CancelledBy { get; set; }
         public string? CancellationReason { get; set; }

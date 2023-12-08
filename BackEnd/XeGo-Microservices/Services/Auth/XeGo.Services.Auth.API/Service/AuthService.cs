@@ -165,21 +165,24 @@ namespace XeGo.Services.Auth.API.Service
                 {
                     UserName = requestDto.UserName,
                     Email = requestDto.Email,
-                    NormalizedEmail = requestDto.Email.ToUpper(),
+                    NormalizedEmail = requestDto.Email?.ToUpper(),
                     PhoneNumber = requestDto.PhoneNumber,
                     FirstName = requestDto.FirstName,
                     LastName = requestDto.LastName,
                     Address = requestDto.Address,
                 };
 
-                var emailExists = await _db.ApplicationUsers.AnyAsync(u =>
-                    u.NormalizedEmail == requestDto.Email.ToUpper());
-                if (emailExists)
+                if (requestDto.Email != null)
                 {
-                    responseDto.Message = "This email already exists!";
-                    responseDto.IsSuccess = false;
+                    var emailExists = await _db.ApplicationUsers.AnyAsync(u =>
+                        u.NormalizedEmail == requestDto.Email.ToUpper());
+                    if (emailExists)
+                    {
+                        responseDto.Message = "This email already exists!";
+                        responseDto.IsSuccess = false;
 
-                    return responseDto;
+                        return responseDto;
+                    }
                 }
 
                 var userNameExists = await _db.ApplicationUsers.AnyAsync(u =>

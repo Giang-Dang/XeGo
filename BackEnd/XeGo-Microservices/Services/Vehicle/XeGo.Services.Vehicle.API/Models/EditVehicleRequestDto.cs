@@ -1,14 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace XeGo.Services.Vehicle.API.Models
+﻿namespace XeGo.Services.Vehicle.API.Models
 {
     public class EditVehicleRequestDto
     {
         public int Id { get; set; }
-        [Required] public string PlateNumber { get; set; } = string.Empty!;
-        [Required] public string Type { get; set; } = string.Empty!;
-        [Required] public string DriverId { get; set; } = string.Empty!;
-        [Required] public bool IsActive { get; set; } = true;
-        [Required] public string ModifiedBy { get; set; } = string.Empty!;
+        public string? PlateNumber { get; set; }
+        public int? TypeId { get; set; }
+        public string? DriverId { get; set; }
+        public bool? IsActive { get; set; }
+        public bool? IsAssigned { get; set; }
+        public string ModifiedBy { get; set; } = string.Empty!;
     }
 }

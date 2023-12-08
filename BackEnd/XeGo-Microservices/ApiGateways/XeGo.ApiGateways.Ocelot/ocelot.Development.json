@@ -295,6 +295,18 @@
       "UpstreamPathTemplate": "/api/rides/estimated-price",
       "UpstreamHttpMethod": [ "GET" ]
     },
+    {
+      "DownstreamPathTemplate": "/api/rides/directions",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.ride.api",
+          "Port": "8080"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/rides/directions",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT" ]
+    },
     //Ride Hub
     {
       "DownstreamPathTemplate": "/hubs/ride-hub/{everything}",
@@ -381,6 +393,18 @@
         }
       ],
       "UpstreamPathTemplate": "/api/locations/drivers",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/locations/directions",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.location.api",
+          "Port": "8080"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/locations/directions",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
     }
   ],

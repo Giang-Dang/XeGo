@@ -37,7 +37,7 @@ namespace XeGo.Services.Vehicle.API.Controllers
                     (email == null || u.Email.ToUpper().Contains(email.ToUpper())) &&
                     (firstName == null || u.FirstName.ToUpper().Contains(firstName.ToUpper())) &&
                     (lastName == null || u.LastName.ToUpper().Contains(lastName.ToUpper())) &&
-                    (phoneNumber == null || u.PhoneNumber.ToUpper().Contains(phoneNumber.ToUpper())) &&
+                    (phoneNumber == null || u.PhoneNumber == phoneNumber) &&
                     (address == null || u.Address.ToUpper().Contains(address.ToUpper())) &&
                     (isAssigned == null || u.IsAssigned == isAssigned.Value);
 
@@ -99,7 +99,7 @@ namespace XeGo.Services.Vehicle.API.Controllers
                     from d in db.Drivers
                     join dv in db.DriverVehicles on d.UserId equals dv.DriverId
                     join v in db.Vehicles on dv.VehicleId equals v.Id
-                    where dv.IsDeleted == false
+                    where dv.IsDeleted == false && d.UserId == driverId
                     select new { Vehicle = v };
 
                 var cVehicle = (await cVehicleQueryable.ToListAsync()).FirstOrDefault()?.Vehicle;

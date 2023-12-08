@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Globalization;
 using System.Linq.Expressions;
 using XeGo.Services.Ride.API.Models.Dto;
 using XeGo.Services.Ride.API.Repository.IRepository;
+using XeGo.Services.Ride.API.Secrets;
 using XeGo.Shared.GrpcConsumer.Services;
 using XeGo.Shared.Lib.Helpers;
 using XeGo.Shared.Lib.Models;
@@ -104,6 +106,35 @@ namespace XeGo.Services.Ride.API.Controllers
             return ResponseDto;
         }
 
+        [HttpGet("directions")]
+        public async Task<ResponseDto> GetDirectionApi(
+            double startLat,
+            double startLng,
+            double endLat,
+            double endLng)
+        {
+            var url = $"https://maps.googleapis.com/maps/api/directions/json?origin={startLat},{startLng}&destination={endLat},{endLng}&key={ApiKey.GoogleMapApiKey}";
+
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    var response = await client.GetAsync(url);
+                    response.EnsureSuccessStatusCode();
+
+                    var stringResponse = await response.Content.ReadAsStringAsync();
+
+                    ResponseDto.IsSuccess = true;
+                    ResponseDto.Data = stringResponse;
+                }
+                catch (HttpRequestException httpRequestException)
+                {
+                    ResponseDto.IsSuccess = false;
+                    ResponseDto.Message = httpRequestException.Message;
+                }
+            }
+            return ResponseDto;
+        }
 
         [HttpPost]
         public async Task<ResponseDto> CreateRide(CreateRideRequestDto requestDto)
@@ -112,6 +143,21 @@ namespace XeGo.Services.Ride.API.Controllers
 
             try
             {
+                DateTime pickUpTime;
+                string format = "yyyy-MM-ddTHH:mm:ss.fffZ";
+                DateTimeStyles styles = DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal;
+
+                if (!DateTime.TryParse(requestDto.PickupTime, out pickUpTime))
+                {
+                    if (!DateTime.TryParseExact(requestDto.PickupTime, format, CultureInfo.InvariantCulture, styles, out pickUpTime))
+                    {
+                        logger.LogError($"{nameof(RideController)}>{nameof(CreateRide)} : Can't convert {requestDto.PickupTime}");
+                    }
+                }
+                logger.LogInformation($"{nameof(RideController)}>{nameof(CreateRide)} : {requestDto.PickupTime}");
+
+                logger.LogInformation($"{nameof(RideController)}>{nameof(CreateRide)} : {pickUpTime}");
+
                 var createDto = new Entities.Ride()
                 {
                     RiderId = requestDto.RiderId,
@@ -126,7 +172,7 @@ namespace XeGo.Services.Ride.API.Controllers
                     DestinationLatitude = requestDto.DestinationLatitude,
                     DestinationLongitude = requestDto.DestinationLongitude,
                     DestinationAddress = requestDto.DestinationAddress,
-                    PickupTime = DateTimeHelper.ConvertVietnamTimeToUtc(requestDto.PickupTime),
+                    PickupTime = pickUpTime,
                     IsScheduleRide = requestDto.IsScheduleRide,
                     CreatedBy = requestDto.ModifiedBy,
                     LastModifiedBy = requestDto.ModifiedBy,

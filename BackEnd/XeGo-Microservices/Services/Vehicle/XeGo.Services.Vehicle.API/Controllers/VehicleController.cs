@@ -168,17 +168,6 @@ namespace XeGo.Services.Vehicle.API.Controllers
             _logger.LogInformation("Editing Vehicle...");
             try
             {
-                var vehicleExists = await _vehicleRepo.AnyAsync(v =>
-                    v != null
-                    && v.PlateNumber.ToUpper() == requestDto.PlateNumber.ToUpper());
-                if (!vehicleExists)
-                {
-                    _logger.LogInformation($"Editing Vehicle Failed. Vehicle does not exist!");
-                    ResponseDto.Message = "Vehicle does not exist!";
-                    ResponseDto.IsSuccess = false;
-                    return ResponseDto;
-                }
-
                 var vehicle = await _vehicleRepo.GetAsync(v => v.Id == requestDto.Id);
                 if (vehicle == null)
                 {
@@ -188,7 +177,22 @@ namespace XeGo.Services.Vehicle.API.Controllers
                     return ResponseDto;
                 }
 
-                mapper.Map(requestDto, vehicle);
+                var vehicleSamePlateNumber = await _vehicleRepo.GetAsync(v =>
+                    (requestDto.PlateNumber != null && v.PlateNumber == requestDto.PlateNumber));
+
+                if (vehicleSamePlateNumber != null)
+                {
+                    _logger.LogInformation("Editing Vehicle Failed. Plate Number already Exists!");
+                    ResponseDto.Message = "Plate Number already Exists!";
+                    ResponseDto.IsSuccess = false;
+                    return ResponseDto;
+                }
+
+                vehicle.PlateNumber = requestDto.PlateNumber ?? vehicle.PlateNumber;
+                vehicle.TypeId = requestDto.TypeId ?? vehicle.TypeId;
+                vehicle.IsActive = requestDto.IsActive ?? vehicle.IsActive;
+                vehicle.IsAssigned = requestDto.IsAssigned ?? vehicle.IsAssigned;
+
                 vehicle.LastModifiedDate = DateTime.UtcNow;
                 vehicle.LastModifiedBy = requestDto.ModifiedBy;
 
@@ -516,7 +520,7 @@ namespace XeGo.Services.Vehicle.API.Controllers
                     from v in db.Vehicles
                     join dv in db.DriverVehicles on v.Id equals dv.VehicleId
                     join d in db.Drivers on dv.DriverId equals d.UserId
-                    where dv.IsDeleted == false
+                    where dv.IsDeleted == false && v.Id == vehicleId
                     select new { Driver = d };
 
                 var cDriver = (await cDriverQueryable.ToListAsync()).FirstOrDefault()?.Driver;

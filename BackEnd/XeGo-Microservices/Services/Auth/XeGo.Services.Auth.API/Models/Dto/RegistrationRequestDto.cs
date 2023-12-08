@@ -4,7 +4,7 @@ namespace XeGo.Services.Auth.API.Models.Dto
 {
     public class RegistrationRequestDto
     {
-        [Required] public string Email { get; set; } = string.Empty!;
+        public string? Email { get; set; }
         [Required] public string UserName { get; set; } = string.Empty!;
         [Required] public string PhoneNumber { get; set; } = string.Empty!;
         [Required] public string Password { get; set; } = string.Empty!;
