@@ -1,10 +1,10 @@
-import { Button, Card, Form, Image, Input, Modal } from "antd";
+import { Button, Card, Form, Image, Input, Modal, Typography } from "antd";
 import UserDto from "../models/dto/UserDto";
 import { useState } from "react";
 import UserServices from "../services/UserServices";
 import ImageSizeConstants from "../constants/ImageSizeConstants";
 
-export function FindAllUsersByPhoneNumberForm({
+export function FindDriverByPhoneForm({
   setSelectedDriver,
 }: {
   setSelectedDriver: React.Dispatch<React.SetStateAction<UserDto | undefined>>;
@@ -20,10 +20,8 @@ export function FindAllUsersByPhoneNumberForm({
       setIsLoading(() => true);
       const userDtos = await UserServices().getAllUsers({ phoneNumber: values.phoneNumber });
       if (!userDtos || userDtos.length == 0) {
-        Modal.error({
-          title: "Driver Not Found",
-          content: "Driver Not Found!",
-        });
+        setDriver(() => null);
+        setDriverAvatarUrl(() => null);
         setIsLoading(() => false);
 
         return;
@@ -55,7 +53,7 @@ export function FindAllUsersByPhoneNumberForm({
 
   return (
     <>
-      <Card className="w-[440px]" title="Find Driver">
+      <Card className="w-[470px]" title="Find Driver">
         <Form onFinish={onFinish} form={form}>
           <Form.Item
             label="Phone Number:"
@@ -75,28 +73,34 @@ export function FindAllUsersByPhoneNumberForm({
             </Button>
           </Form.Item>
         </Form>
-        <Card title="Driver Info:" loading={isLoading}>
-          <div className="flex justify-start">
-            <div className="m-4">
-              <Image
-                width={90}
-                src={driverAvatarUrl ?? "https://img.icons8.com/parakeet/96/person-male.png"}
-              />
+        {driver ? (
+          <Card title="Driver Info:" loading={isLoading}>
+            <div className="flex justify-start">
+              <div className="m-4">
+                <Image
+                  width={90}
+                  src={driverAvatarUrl ?? "https://img.icons8.com/parakeet/96/person-male.png"}
+                />
+              </div>
+              <div>
+                <p>
+                  <strong>Name:</strong>{" "}
+                  {driver ? `${driver?.firstName}, ${driver?.lastName}` : "........, .........."}
+                </p>
+                <p>
+                  <strong>Phone Number:</strong> {driver ? `${driver?.phoneNumber}` : "........."}
+                </p>
+                <p>
+                  <strong>Address:</strong> {driver ? `${driver?.address}` : "........."}
+                </p>
+              </div>
             </div>
-            <div>
-              <p>
-                <strong>Name:</strong>{" "}
-                {driver ? `${driver?.firstName}, ${driver?.lastName}` : "........, .........."}
-              </p>
-              <p>
-                <strong>Phone Number:</strong> {driver ? `${driver?.phoneNumber}` : "........."}
-              </p>
-              <p>
-                <strong>Address:</strong> {driver ? `${driver?.address}` : "........."}
-              </p>
-            </div>
+          </Card>
+        ) : (
+          <div className="text-center">
+            <Typography.Text type="danger">User not found!</Typography.Text>
           </div>
-        </Card>
+        )}
       </Card>
     </>
   );

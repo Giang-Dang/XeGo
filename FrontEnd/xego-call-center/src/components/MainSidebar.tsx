@@ -38,7 +38,7 @@ export function MainSidebar({
   collapsed,
   onCollapse,
   onBreakpoint,
-}: {
+} : {
   collapsed: boolean;
   onCollapse: () => void;
   onBreakpoint: (broken: boolean) => void;
@@ -46,8 +46,8 @@ export function MainSidebar({
   const navigate = useNavigate();
 
   const items: MenuProps["items"] = [
-    getItem("Call Center", "callCenter", <CustomerServiceOutlined />),
-    getItem("Vehicle", "vehicle", <CarOutlined />, undefined, undefined, navigate, "/vehicles"),
+    getItem("Call Center", "callCenter", <CustomerServiceOutlined />, undefined, undefined, navigate, "/call-center"),
+    getItem("Vehicles", "vehicle", <CarOutlined />, undefined, undefined, navigate, "/vehicles"),
     getItem("Drivers Management", "driverManagement", <TeamOutlined />),
     getItem("Statistics", "statistics", <BarChartOutlined />, [
       getItem("By Week", "byWeek"),
@@ -68,7 +68,8 @@ export function MainSidebar({
       breakpoint="lg"
       collapsedWidth="0"
       onBreakpoint={onBreakpoint}
-      trigger={null}
+      collapsible
+      // trigger={null}
       collapsed={collapsed}
       onCollapse={onCollapse}
     >

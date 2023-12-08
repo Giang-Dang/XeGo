@@ -75,7 +75,7 @@ class _GetARideScreenState extends State<GetARideScreen> {
       destinationLongitude: _destinationLatLng!.longitude,
       destinationAddress: _destinationAddress!,
       distanceInMeters: (_directionResponse!.distanceValue ?? 0.0).toDouble(),
-      pickupTime: _pickupDateTime ?? DateTime.now(),
+      pickupTime: _pickupDateTime?.toUtc() ?? DateTime.now().toUtc(),
       isScheduleRide: _pickupDateTime != null,
       modifiedBy: UserServices.userDto!.userId,
     );

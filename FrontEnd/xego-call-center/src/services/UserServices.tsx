@@ -4,6 +4,8 @@ import LoginRequestDto from '../models/dto/LoginRequestDto';
 import LoginResponseDto from '../models/dto/LoginResponseDto';
 import UserDto from '../models/dto/UserDto';
 import GetAllUsersResponseDto from '../models/dto/GetAllUserResponseDto';
+import RoleConstants from '../constants/RoleConstans';
+import ICreateUserResponseDto from '../models/interfaces/ICreateUserResponseDto';
 
 
 
@@ -39,36 +41,48 @@ const UserServices = () =>
       }
       return loginResponseDto;
     }
+  }
+
+  const registerNewRider = async function (requestDto: {
+    userName: string;
+    phoneNumber: string;
+    firstName: string;
+    lastName: string;
+    address: string;
+    password?: string | null | undefined;
+    role?: string | null | undefined;
+  }): Promise<UserDto | null> {
+    try {
+      const { ApiUrl, JsonHeader, defaultRiderPassword } = getAppConstants();
+      const url = `http://${ApiUrl}/api/auth/user/register`;
+
+      if (!requestDto.password) {
+        requestDto.password = defaultRiderPassword;
+      }
+      requestDto.role = RoleConstants().rider;
+
+      const response = await axios.post(url, requestDto, {
+        headers: JsonHeader,
+      });
+
+      const createdUser = response.data.data as ICreateUserResponseDto;
+      const returnedUser: UserDto = {
+        userId: createdUser.id,
+        userName: createdUser.userName,
+        email: createdUser.email,
+        phoneNumber: createdUser.phoneNumber,
+        firstName: createdUser.firstName,
+        lastName: createdUser.lastName,
+        address: createdUser.address,
+        roles: [ RoleConstants().rider ],
+      };
+      return returnedUser;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
   };
 
-    // register: async (requestDto: RegistrationRequestDto): Promise<any | null> => {
-    //     const url = `http://${Secrets.ApiUrl}/api/auth/user/register`;
-
-    //     try {
-    //         const response = await axios.post(url, requestDto, {
-    //             headers: Secrets.JsonHeader,
-    //         });
-
-    //         if (!response.data.isSuccess) {
-    //             return response.data;
-    //         }
-
-    //         UserServices.userDto = {
-    //             userId: response.data.data.id,
-    //             userName: response.data.data.userName,
-    //             email: response.data.data.email,
-    //             phoneNumber: response.data.data.phoneNumber,
-    //             firstName: response.data.data.firstName,
-    //             lastName: response.data.data.lastName,
-    //             address: response.data.data.address,
-    //         };
-
-    //         return response.data;
-    //     } catch (error) {
-    //         console.error(error);
-    //         return null;
-    //     }
-    // },
   
   async function getAllUsers(params: {
     userName?: string;
@@ -130,6 +144,7 @@ const UserServices = () =>
     getLoginInfo: getLoginInfo,
     getAllUsers: getAllUsers,
     getUserAvatar: getUserAvatar,
+    registerNewRider: registerNewRider,
   };
 };
 

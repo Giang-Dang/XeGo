@@ -53,3 +53,4 @@ FrontEnd/xego_driver/ios/Runner/AppDelegate.swift
 FrontEnd/xego_rider/android/app/src/main/AndroidManifest.xml
 FrontEnd/xego_rider/lib/settings/kSecrets.dart
 /BackEnd/XeGo-Microservices/Services/Notifications/XeGo.Services.Notifications.Functions/xego-404112-d3a460b45b76.json
+FrontEnd/xego-call-center/src/secret/SecretKeys.tsx

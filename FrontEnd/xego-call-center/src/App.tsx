@@ -9,6 +9,7 @@ import LoginPage from "./pages/Login/LoginPage";
 import SharedLayout from "./components/SharedLayout";
 import { VehiclePage } from "./pages/Vehicle/VehiclePage";
 import { ConfigProvider } from "antd";
+import { CallCenterPage } from "./pages/CallCenter/CallCenterPage";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
             }
           >
             <Route index element={<HomePage />} />
+            <Route path="call-center" element={<CallCenterPage />} />
             <Route path="vehicles" element={<VehiclePage />} />
             <Route path="ride-order" element={<RideOrderPage />} />
             <Route path="statistics" element={<StatisticsPage />} />

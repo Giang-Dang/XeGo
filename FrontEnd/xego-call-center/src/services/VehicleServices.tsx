@@ -118,6 +118,33 @@ export default function VehicleService() {
     return res;
   }
 
+  async function getEstPriceForVehicleType(
+    vehicleTypeId: number,
+    distanceInMeters: number,
+    discountId: number | null = null,
+  ): Promise<number | null> {
+    try {
+      const { ApiUrl } = getAppConstants();
+      let url = `http://${ApiUrl}/api/rides/estimated-price?vehicleTypeId=${vehicleTypeId}&distanceInMeters=${distanceInMeters}`;
+
+      if(discountId) {
+        url += `&discountId=${discountId}`;
+      }
+      const response = await axios.get(url);
+
+      if (!response.data.isSuccess) {
+        console.log(response.data);
+        return null;
+      }
+
+      return response.data.data;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+    
+  }
+
   async function assignVehicle(params: {
     vehicleId: number,
     driverId: string,
@@ -145,5 +172,6 @@ export default function VehicleService() {
     createVehicle: createVehicle,
     editVehicle: editVehicle,
     getAllVehicleType: getAllVehicleType,
+    getEstPriceForVehicleType: getEstPriceForVehicleType,
   };
 }

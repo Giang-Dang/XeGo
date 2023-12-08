@@ -7,7 +7,7 @@ import VehicleService from "../services/VehicleServices";
 import { convertUtcToVn } from "../utils/DateUtils";
 import { Button, Form, Input, Modal, Select } from "antd";
 import VehicleInfoCard from "./VehicleInfoCard";
-import { FindAllUsersByPhoneNumberForm } from "./FindAllUsersByPhoneNumberForm";
+import { FindDriverByPhoneForm } from "./FindDriverByPhoneForm";
 import UserDto from "../models/dto/UserDto";
 import UserServices from "../services/UserServices";
 import DriverInfoCard from "./DriverInfoCard";
@@ -272,7 +272,7 @@ const VehicleDataTable: React.FC = () => {
             <>
               <div className="flex justify-between">
                 <VehicleInfoCard vehicle={rowData} />
-                <FindAllUsersByPhoneNumberForm
+                <FindDriverByPhoneForm
                   key={rowData.id}
                   setSelectedDriver={setSelectedDriver}
                 />
