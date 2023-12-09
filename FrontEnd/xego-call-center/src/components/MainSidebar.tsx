@@ -1,6 +1,6 @@
 import React from "react";
 import { Layout, Menu, MenuProps } from "antd";
-import { BarChartOutlined, CustomerServiceOutlined, CarOutlined, TeamOutlined, ApiOutlined} from "@ant-design/icons";
+import { BarChartOutlined, CustomerServiceOutlined, CarOutlined, TeamOutlined, ApiOutlined, ClusterOutlined} from "@ant-design/icons";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 
 const { Sider } = Layout;
@@ -46,14 +46,15 @@ export function MainSidebar({
   const navigate = useNavigate();
 
   const items: MenuProps["items"] = [
-    getItem("Call Center", "callCenter", <CustomerServiceOutlined />, undefined, undefined, navigate, "/call-center"),
-    getItem("Vehicles", "vehicle", <CarOutlined />, undefined, undefined, navigate, "/vehicles"),
-    getItem("Drivers Management", "driverManagement", <TeamOutlined />),
-    getItem("Statistics", "statistics", <BarChartOutlined />, [
-      getItem("By Week", "byWeek"),
-      getItem("By Month", "byMonth"),
-      getItem("By Year", "byYear"),
+    getItem("Call Center", "callCenter", <CustomerServiceOutlined />, [
+      getItem("Order Ride", "orderRide", undefined, undefined, undefined, navigate, "/order-ride"),
+      getItem("Rides", "rides", undefined, undefined, undefined, navigate, "/rides"),
     ]),
+    getItem("Management", "management", <ClusterOutlined />, [
+      getItem("Vehicles", "vehicle", <CarOutlined />, undefined, undefined, navigate, "/vehicles"),
+      getItem("Drivers", "driver", <TeamOutlined />),
+    ]),
+    getItem("Statistics", "statistics", <BarChartOutlined />),
     { type: "divider" },
     getItem("System Settings", "systemSettings", <ApiOutlined />),
   ];
