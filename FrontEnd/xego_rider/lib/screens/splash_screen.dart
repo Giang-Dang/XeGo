@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:xego_rider/screens/login_screen.dart';
 import 'package:xego_rider/screens/main_tabs_screen.dart';
 import 'package:xego_rider/services/api_services.dart';
 import 'package:xego_rider/services/location_services.dart';
+import 'package:xego_rider/services/notification_services.dart';
 import 'package:xego_rider/services/user_services.dart';
 import 'package:xego_rider/settings/kColors.dart';
 
@@ -20,9 +22,10 @@ class _SplashScreenState extends State<SplashScreen>
   late AnimationController _textAnimationController;
   late Animation<double> _textAnimation;
   Timer? _loginTimer;
-  final userServices = UserServices();
-  final apiServices = ApiServices();
-  final locationServices = LocationServices();
+  final _userServices = UserServices();
+  final _apiServices = ApiServices();
+  final _locationServices = LocationServices();
+  final NotificationServices _notificationServices = NotificationServices();
 
   // logintest() async {
   //   const requestDto =
@@ -32,21 +35,21 @@ class _SplashScreenState extends State<SplashScreen>
 
   _initialize() async {
     await Future.wait<void>([
-      userServices.getUserLocation(),
+      _userServices.getUserLocation(),
       _login(),
-      locationServices.updateCurrentLocation(),
+      _locationServices.updateCurrentLocation(),
     ]);
   }
 
   _login() async {
     final updateResults = await Future.wait<bool>([
-      userServices.updateUserDtoFromStorage(),
-      userServices.updateTokensDtoFromStorage()
+      _userServices.updateUserDtoFromStorage(),
+      _userServices.updateTokensDtoFromStorage()
     ]);
 
     var refreshTokenSuccess = false;
     if (updateResults[0] && updateResults[1]) {
-      refreshTokenSuccess = await apiServices.refreshToken();
+      refreshTokenSuccess = await _apiServices.refreshToken();
     }
 
     if (!refreshTokenSuccess) {
@@ -61,7 +64,16 @@ class _SplashScreenState extends State<SplashScreen>
       return;
     }
 
-    await userServices.updateRiderType(UserServices.userDto!.userId);
+    try {
+      _notificationServices.saveFcmTokenToDb(
+        UserServices.userDto!.userId,
+        NotificationServices.fcmToken!,
+      );
+    } catch (e) {
+      log(e.toString());
+    }
+
+    await _userServices.updateRiderType(UserServices.userDto!.userId);
 
     if (context.mounted) {
       Navigator.pushReplacement(

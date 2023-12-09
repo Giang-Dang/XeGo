@@ -1,8 +1,13 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:signalr_netcore/hub_connection.dart';
+import 'package:signalr_netcore/hub_connection_builder.dart';
+import 'package:xego_driver/services/user_services.dart';
 import 'package:xego_driver/settings/app_constants.dart';
 import 'package:xego_driver/settings/kColors.dart';
+import 'package:xego_driver/settings/kSecrets.dart';
 import 'package:xego_driver/widgets/find_ride_widget.dart';
 import 'package:xego_driver/widgets/history_widget.dart';
 import 'package:xego_driver/widgets/me_widget.dart';
@@ -17,12 +22,7 @@ class MainTabsScreen extends StatefulWidget {
 class _MainTabsScreenState extends State<MainTabsScreen> {
   int _selectedPageIndex = 0;
   bool _isFindRideButtonOn = false;
-
-  final List<Widget> _pages = [
-    const FindRideWidget(),
-    const HistoryWidget(),
-    const Me(),
-  ];
+  HubConnection? _rideHubConnection;
 
   final List<bool> _isAppBarShow = [true, false, false];
 
@@ -36,6 +36,11 @@ class _MainTabsScreenState extends State<MainTabsScreen> {
   }
 
   _onFloatingActionButtonPressed() {
+    if (_isFindRideButtonOn) {
+      _disconnectRideHub();
+    } else {
+      _connectRideHub();
+    }
     if (mounted) {
       setState(() {
         _isFindRideButtonOn = !_isFindRideButtonOn;
@@ -43,8 +48,41 @@ class _MainTabsScreenState extends State<MainTabsScreen> {
     }
   }
 
+  _connectRideHub() async {
+    const subHubUrl = 'hubs/ride-hub';
+    final hubUrl = Uri.http(KSecret.kApiIp, subHubUrl);
+    _rideHubConnection =
+        HubConnectionBuilder().withUrl(hubUrl.toString()).build();
+    _rideHubConnection!.onclose((error) => log("Ride Hub Connection Closed"));
+
+    try {
+      await _rideHubConnection!.start();
+      log('Ride Hub Connection started');
+
+      var registerConnectionId = await _rideHubConnection!.invoke(
+        'RegisterConnectionId',
+        args: [UserServices.userDto!.userId],
+      );
+      log(registerConnectionId.toString());
+    } catch (e) {
+      log('Ride Hub Connection failed: $e');
+    }
+  }
+
+  _disconnectRideHub() {
+    _rideHubConnection?.stop();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final List<Widget> _pages = [
+      FindRideWidget(
+        isFindingRide: _isFindRideButtonOn,
+      ),
+      const HistoryWidget(),
+      const Me(),
+    ];
+
     AppBar? appBar = !_isAppBarShow[_selectedPageIndex]
         ? null
         : AppBar(
@@ -70,7 +108,7 @@ class _MainTabsScreenState extends State<MainTabsScreen> {
                 elevation: 10.0,
                 shape: const CircleBorder(),
                 backgroundColor:
-                    _isFindRideButtonOn ? KColors.kAppleGreen : KColors.kDanger,
+                    _isFindRideButtonOn ? KColors.kAppleGreen : KColors.kGrey,
                 foregroundColor: KColors.kWhite,
                 child: const Icon(Icons.power_settings_new),
               ),

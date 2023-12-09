@@ -46,6 +46,10 @@ dependencies:
   fluttertoast: ^8.2.4
   flutter_rating_bar: ^4.0.1
   uuid: ^4.2.1
+  signalr_netcore: ^0.1.7+2-nullsafety.3
+  google_api_availability: ^5.0.0
+  firebase_core: ^2.24.2
+  firebase_messaging: ^14.7.8
 
 dev_dependencies:
   flutter_test:

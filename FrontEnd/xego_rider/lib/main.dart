@@ -7,6 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:xego_rider/screens/choose_vehicle_type_screen.dart';
 import 'package:xego_rider/screens/ride_screen.dart';
 import 'package:xego_rider/screens/splash_screen.dart';
+import 'package:xego_rider/services/notification_services.dart';
 import 'package:xego_rider/settings/app_constants.dart';
 import 'package:xego_rider/settings/kTheme.dart';
 import 'package:xego_rider/widgets/choose_location_map_widget.dart';
@@ -34,6 +35,7 @@ void main() async {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   String? token = await messaging.getToken();
   log(token ?? "");
+  NotificationServices.fcmToken = token;
 
   NotificationSettings settings = await messaging.requestPermission(
     alert: true,

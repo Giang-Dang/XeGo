@@ -1,5 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:xego_driver/screens/main_tabs_screen.dart';
+import 'package:xego_driver/services/user_services.dart';
+import 'package:xego_driver/services/vehicle_services.dart';
 import 'package:xego_driver/settings/app_constants.dart';
 import 'package:xego_driver/settings/kColors.dart';
 
@@ -11,6 +16,20 @@ class DoNotHaveVehicleScreen extends StatefulWidget {
 }
 
 class _DoNotHaveVehicleScreenState extends State<DoNotHaveVehicleScreen> {
+  final _vehicleServices = VehicleServices();
+
+  _onRefreshTap() async {
+    final isDriverAssigned =
+        await _vehicleServices.isDriverAssigned(UserServices.userDto!.userId);
+    log(isDriverAssigned.toString());
+    if (isDriverAssigned) {
+      if (context.mounted) {
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const MainTabsScreen()));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,7 +64,7 @@ class _DoNotHaveVehicleScreenState extends State<DoNotHaveVehicleScreen> {
             ),
             const Gap(10),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: _onRefreshTap,
               child: const Text('Refresh'),
             ),
             const Gap(20),
