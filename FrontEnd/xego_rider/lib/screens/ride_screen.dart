@@ -3,7 +3,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:signalr_netcore/hub_connection.dart';
 import 'package:signalr_netcore/hub_connection_builder.dart';
@@ -48,7 +47,7 @@ class _RideScreenState extends State<RideScreen> {
         LocationServices.currentLocation!, UserServices.userDto!.userId);
 
     const subHubUrl = 'hubs/ride-hub';
-    final hubUrl = Uri.http('192.168.10.32:6100', subHubUrl);
+    final hubUrl = Uri.http(KSecret.kApiIp, subHubUrl);
     _rideHubConnection =
         HubConnectionBuilder().withUrl(hubUrl.toString()).build();
     _rideHubConnection!.onclose((error) => log("Ride Hub Connection Closed"));

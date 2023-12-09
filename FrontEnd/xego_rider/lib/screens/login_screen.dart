@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:xego_rider/models/Dto/login_request_dto.dart';
 import 'package:xego_rider/screens/main_tabs_screen.dart';
 import 'package:xego_rider/screens/rider_registration_screen.dart';
+import 'package:xego_rider/services/notification_services.dart';
 import 'package:xego_rider/services/user_services.dart';
 import 'package:xego_rider/services/vehicle_services.dart';
 import 'package:xego_rider/settings/app_constants.dart';
@@ -23,6 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final UserServices _userServices = UserServices();
   final VehicleServices _vehicleServices = VehicleServices();
+  final NotificationServices _notificationServices = NotificationServices();
 
   late bool _isPasswordObscured;
   late bool _isLogining;
@@ -45,6 +49,15 @@ class _LoginScreenState extends State<LoginScreen> {
     _setLogining(false);
 
     if (isLoginSuccess) {
+      try {
+        _notificationServices.saveFcmTokenToDb(
+          UserServices.userDto!.userId,
+          NotificationServices.fcmToken!,
+        );
+      } catch (e) {
+        log(e.toString());
+      }
+
       final isUpdateRiderTypeSuccess =
           await _userServices.updateRiderType(UserServices.userDto!.userId);
       final isDriverAssigned =

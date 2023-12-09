@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "983938356743",
+    "project_id": "xego-404112",
+    "storage_bucket": "xego-404112.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:983938356743:android:adeb02a2d42ecd38c57ca2",
+        "android_client_info": {
+          "package_name": "com.example.xego_driver"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAs83Q7Kbs-p4wxlYrx6LQUahWeA_jYgmI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:983938356743:android:9d5109cb8fe9f737c57ca2",
+        "android_client_info": {
+          "package_name": "com.example.xego_rider"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAs83Q7Kbs-p4wxlYrx6LQUahWeA_jYgmI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

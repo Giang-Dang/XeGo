@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:xego_driver/screens/do_not_have_vehicle_screen.dart';
 import 'package:xego_driver/screens/login_screen.dart';
 import 'package:xego_driver/screens/main_tabs_screen.dart';
 import 'package:xego_driver/services/api_services.dart';
+import 'package:xego_driver/services/notification_services.dart';
 import 'package:xego_driver/services/user_services.dart';
 import 'package:xego_driver/services/vehicle_services.dart';
 import 'package:xego_driver/settings/kcolors.dart';
@@ -21,23 +23,24 @@ class _SplashScreenState extends State<SplashScreen>
   late AnimationController _textAnimationController;
   late Animation<double> _textAnimation;
   Timer? _loginTimer;
-  final userServices = UserServices();
-  final apiServices = ApiServices();
-  final vehicleServices = VehicleServices();
+  final _userServices = UserServices();
+  final _apiServices = ApiServices();
+  final _vehicleServices = VehicleServices();
+  final NotificationServices _notificationServices = NotificationServices();
 
   _initialize() async {
-    await Future.wait<void>([userServices.getUserLocation(), _login()]);
+    await Future.wait<void>([_userServices.getUserLocation(), _login()]);
   }
 
   _login() async {
     final updateResults = await Future.wait<bool>([
-      userServices.updateUserDtoFromStorage(),
-      userServices.updateTokensDtoFromStorage()
+      _userServices.updateUserDtoFromStorage(),
+      _userServices.updateTokensDtoFromStorage()
     ]);
 
     var refreshTokenSuccess = false;
     if (updateResults[0] && updateResults[1]) {
-      refreshTokenSuccess = await apiServices.refreshToken();
+      refreshTokenSuccess = await _apiServices.refreshToken();
     }
 
     if (!refreshTokenSuccess) {
@@ -52,8 +55,18 @@ class _SplashScreenState extends State<SplashScreen>
       return;
     }
 
+    log(UserServices.userDto!.userId);
+    try {
+      _notificationServices.saveFcmTokenToDb(
+        UserServices.userDto!.userId,
+        NotificationServices.fcmToken!,
+      );
+    } catch (e) {
+      log(e.toString());
+    }
+
     final driverHasVehicle =
-        await vehicleServices.isDriverAssigned(UserServices.userDto!.userId);
+        await _vehicleServices.isDriverAssigned(UserServices.userDto!.userId);
 
     if (!driverHasVehicle) {
       if (context.mounted) {

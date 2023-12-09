@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:xego_driver/models/Dto/login_request_dto.dart';
 import 'package:xego_driver/screens/do_not_have_vehicle_screen.dart';
 import 'package:xego_driver/screens/main_tabs_screen.dart';
 import 'package:xego_driver/screens/driver_registration_screen.dart';
+import 'package:xego_driver/services/notification_services.dart';
 import 'package:xego_driver/services/user_services.dart';
 import 'package:xego_driver/services/vehicle_services.dart';
 import 'package:xego_driver/settings/app_constants.dart';
@@ -24,6 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final UserServices _userServices = UserServices();
   final VehicleServices _vehicleServices = VehicleServices();
+  final NotificationServices _notificationServices = NotificationServices();
 
   late bool _isPasswordObscured;
   late bool _isLogining;
@@ -42,13 +46,27 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     final isLoginSuccess = await _userServices.login(loginRequestDto);
+
+    log(UserServices.userDto!.userId);
+
     final isDriverAssigned =
         await _vehicleServices.isDriverAssigned(UserServices.userDto!.userId);
+
+    log(isDriverAssigned.toString());
 
     _setLogining(false);
 
     if (isLoginSuccess) {
       _setLoginFailed(false);
+      try {
+        _notificationServices.saveFcmTokenToDb(
+          UserServices.userDto!.userId,
+          NotificationServices.fcmToken!,
+        );
+      } catch (e) {
+        log(e.toString());
+      }
+
       _navigateToNextScreen(context, isDriverAssigned);
     } else {
       _setLoginFailed(true);
