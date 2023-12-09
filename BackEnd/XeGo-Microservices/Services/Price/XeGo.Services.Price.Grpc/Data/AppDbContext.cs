@@ -13,6 +13,7 @@ namespace XeGo.Services.Price.Grpc.Data
         public DbSet<Entities.Price> Prices { get; set; }
         public DbSet<Discount> Discounts { get; set; }
         public DbSet<VehicleTypePrice> VehicleTypePrices { get; set; }
+        public DbSet<CodeValue> CodeValues { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

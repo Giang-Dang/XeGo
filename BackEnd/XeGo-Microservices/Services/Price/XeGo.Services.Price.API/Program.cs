@@ -17,6 +17,7 @@ builder.Services.ConfigureAuthentication(builder.Configuration);
 builder.Services.AddScoped<IPriceRepository, PriceRepository>();
 builder.Services.AddScoped<IDiscountRepository, DiscountRepository>();
 builder.Services.AddScoped<IVehicleTypePriceRepository, VehicleTypePriceRepository>();
+builder.Services.AddScoped<ICodeValueRepository, CodeValueRepository>();
 
 // Add logging service
 LoggingHelpers loggingHelpers = new();

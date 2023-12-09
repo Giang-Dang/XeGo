@@ -6,7 +6,7 @@ namespace XeGo.Services.Price.API.Entities
 {
     public class Price : BaseEntity
     {
-        [Key] public int RideId { get; set; }
+        [Key][DatabaseGenerated(DatabaseGeneratedOption.None)] public int RideId { get; set; }
         public int? DiscountId { get; set; }
         [ForeignKey($"{nameof(DiscountId)}")] public virtual Discount? Discount { get; set; }
         public int VehicleTypeId { get; set; }
@@ -16,19 +16,6 @@ namespace XeGo.Services.Price.API.Entities
         public double DistanceInMeters { get; set; }
 
         public double TotalPrice { get; set; }
-
-        public void CalculateTotalPrice()
-        {
-            double discount = Discount?.Percent ?? 0;
-            if (DistanceInMeters < 500)
-            {
-                TotalPrice = VehicleTypePrice.DropCharge * (1 - discount);
-            }
-            else
-            {
-                TotalPrice = Math.Round((DistanceInMeters / 1000 * VehicleTypePrice.PricePerKm) * (1 - discount), 2);
-            }
-        }
     }
 
 }

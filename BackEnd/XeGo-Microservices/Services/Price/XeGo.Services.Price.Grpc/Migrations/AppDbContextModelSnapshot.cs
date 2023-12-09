@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using XeGo.Services.Price.API.Data;
+using XeGo.Services.Price.Grpc.Data;
 
 #nullable disable
 
-namespace XeGo.Services.Price.API.Migrations
+namespace XeGo.Services.Price.Grpc.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
@@ -22,7 +22,7 @@ namespace XeGo.Services.Price.API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("XeGo.Services.Price.API.Entities.CodeValue", b =>
+            modelBuilder.Entity("XeGo.Services.Price.Grpc.Entities.CodeValue", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -145,25 +145,9 @@ namespace XeGo.Services.Price.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CodeValues");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedBy = "",
-                            CreatedDate = new DateTime(2023, 12, 9, 2, 47, 44, 599, DateTimeKind.Utc).AddTicks(8789),
-                            EffectiveEndDate = new DateTime(9999, 12, 31, 23, 59, 59, 999, DateTimeKind.Unspecified).AddTicks(9999),
-                            EffectiveStartDate = new DateTime(2023, 12, 9, 2, 47, 44, 599, DateTimeKind.Utc).AddTicks(8790),
-                            IsActive = true,
-                            LastModifiedBy = "",
-                            LastModifiedDate = new DateTime(2023, 12, 9, 2, 47, 44, 599, DateTimeKind.Utc).AddTicks(8789),
-                            Name = "DROP_CHARGE_THRESHOLD",
-                            Value1 = "500",
-                            Value1Type = "DOUBLE"
-                        });
                 });
 
-            modelBuilder.Entity("XeGo.Services.Price.API.Entities.Discount", b =>
+            modelBuilder.Entity("XeGo.Services.Price.Grpc.Entities.Discount", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -206,7 +190,7 @@ namespace XeGo.Services.Price.API.Migrations
                     b.ToTable("Discounts");
                 });
 
-            modelBuilder.Entity("XeGo.Services.Price.API.Entities.Price", b =>
+            modelBuilder.Entity("XeGo.Services.Price.Grpc.Entities.Price", b =>
                 {
                     b.Property<int>("RideId")
                         .HasColumnType("int");
@@ -246,7 +230,7 @@ namespace XeGo.Services.Price.API.Migrations
                     b.ToTable("Prices");
                 });
 
-            modelBuilder.Entity("XeGo.Services.Price.API.Entities.VehicleTypePrice", b =>
+            modelBuilder.Entity("XeGo.Services.Price.Grpc.Entities.VehicleTypePrice", b =>
                 {
                     b.Property<int>("VehicleTypeId")
                         .ValueGeneratedOnAdd()
@@ -277,37 +261,15 @@ namespace XeGo.Services.Price.API.Migrations
                     b.HasKey("VehicleTypeId");
 
                     b.ToTable("VehicleTypePrices");
-
-                    b.HasData(
-                        new
-                        {
-                            VehicleTypeId = 1,
-                            CreatedBy = "SYSTEM",
-                            CreatedDate = new DateTime(2023, 12, 9, 2, 47, 44, 599, DateTimeKind.Utc).AddTicks(8650),
-                            DropCharge = 1.0,
-                            LastModifiedBy = "SYSTEM",
-                            LastModifiedDate = new DateTime(2023, 12, 9, 2, 47, 44, 599, DateTimeKind.Utc).AddTicks(8650),
-                            PricePerKm = 1.0
-                        },
-                        new
-                        {
-                            VehicleTypeId = 2,
-                            CreatedBy = "SYSTEM",
-                            CreatedDate = new DateTime(2023, 12, 9, 2, 47, 44, 599, DateTimeKind.Utc).AddTicks(8653),
-                            DropCharge = 1.5,
-                            LastModifiedBy = "SYSTEM",
-                            LastModifiedDate = new DateTime(2023, 12, 9, 2, 47, 44, 599, DateTimeKind.Utc).AddTicks(8653),
-                            PricePerKm = 1.5
-                        });
                 });
 
-            modelBuilder.Entity("XeGo.Services.Price.API.Entities.Price", b =>
+            modelBuilder.Entity("XeGo.Services.Price.Grpc.Entities.Price", b =>
                 {
-                    b.HasOne("XeGo.Services.Price.API.Entities.Discount", "Discount")
+                    b.HasOne("XeGo.Services.Price.Grpc.Entities.Discount", "Discount")
                         .WithMany()
                         .HasForeignKey("DiscountId");
 
-                    b.HasOne("XeGo.Services.Price.API.Entities.VehicleTypePrice", "VehicleTypePrice")
+                    b.HasOne("XeGo.Services.Price.Grpc.Entities.VehicleTypePrice", "VehicleTypePrice")
                         .WithMany()
                         .HasForeignKey("VehicleTypeId")
                         .OnDelete(DeleteBehavior.Cascade)

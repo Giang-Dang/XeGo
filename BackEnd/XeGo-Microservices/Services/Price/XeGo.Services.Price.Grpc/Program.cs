@@ -28,4 +28,28 @@ app.MapGrpcService<PriceService>();
 app.MapGrpcService<VehicleTypePriceService>();
 app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
 
+ApplyMigration();
+
 app.Run();
+
+#region Private Method
+void ApplyMigration()
+{
+    try
+    {
+        using var scope = app.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        if (db.Database.GetPendingMigrations().Any())
+        {
+            db.Database.Migrate();
+        }
+
+        scope.Dispose();
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine(e);
+    }
+}
+#endregion Private Method

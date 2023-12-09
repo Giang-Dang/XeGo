@@ -14,6 +14,7 @@ namespace XeGo.Services.Price.API.Data
         public DbSet<Entities.Price> Prices { get; set; }
         public DbSet<Discount> Discounts { get; set; }
         public DbSet<VehicleTypePrice> VehicleTypePrices { get; set; }
+        public DbSet<CodeValue> CodeValues { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -41,6 +42,17 @@ namespace XeGo.Services.Price.API.Data
                         LastModifiedBy = RoleConstants.System,
                         LastModifiedDate = DateTime.UtcNow,
                     });
+
+            modelBuilder.Entity<CodeValue>()
+                .HasData(new CodeValue()
+                {
+                    Id = 1,
+                    Name = VehicleTypePriceConstants.DropChargeThreshold,
+                    EffectiveStartDate = DateTime.UtcNow,
+                    EffectiveEndDate = DateTime.MaxValue,
+                    Value1 = VehicleTypePriceConstants.DropChargeThresholdDefaultValue,
+                    Value1Type = CodeValueTypeConstants.Double,
+                });
         }
     }
 }
