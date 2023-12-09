@@ -86,7 +86,7 @@ export default function RiderInfoCard({
   return (
     <>
       <Card
-        className="mr-10 mb-5"
+        className=""
         style={{ width: `${cardWidth}`, height: `${cardHeight}` }}
         title="Ride Information:"
       >

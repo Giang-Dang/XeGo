@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import MapWithSearchBox from "../../components/MapWithSearchBox";
 import ILatLng from "../../models/interfaces/ILatLng";
-import { Button, Card, Form, Modal } from "antd";
+import { Button, Card, DatePicker, Form, Modal, Switch } from "antd";
 import UserDto from "../../models/dto/UserDto";
 import RiderInfoCard from "../../components/RiderInfoCard";
 import IDirectionApi from "../../models/interfaces/IDirectionApi";
@@ -9,8 +9,12 @@ import RideInfoCard from "../../components/RideInfoCard";
 import DropOffMarkerIcon from "../../assets/images/destination_location_icon.png";
 import UserServices from "../../services/UserServices";
 import { createRide } from "../../services/RideServices";
+import { useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
 
-export function CallCenterPage(): React.ReactElement {
+
+export function OrderRidePage(): React.ReactElement {
+  const navigate = useNavigate();
   const [selectedPickUpLocation, setSelectedPickUpLocation] = useState<ILatLng>({
     lat: 10.7628356,
     lng: 106.6824824,
@@ -30,6 +34,9 @@ export function CallCenterPage(): React.ReactElement {
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>();
 
+  const [isVip, setIsVip] = useState<boolean>(false);
+  const [scheduleAvailable, setScheduleAvailable] = useState<boolean>(false);
+  const [selectedScheduleDateIsoString, setSelectedScheduleDateIsoString] = useState<string>(dayjs(new Date()).toISOString());
   const [riderInfoForm] = Form.useForm();
   const [vehicleTypeForm] = Form.useForm();
   const [findUserByPhoneForm] = Form.useForm();
@@ -83,8 +90,7 @@ export function CallCenterPage(): React.ReactElement {
 
       console.log(riderId);
 
-      const pickUpTime: string = (new Date()).toISOString();
-      console.log(`pickUpTime: ${pickUpTime}`);
+      const now: string = (new Date()).toISOString();
 
       const createRideResponse = await createRide({
         riderId: riderId,
@@ -96,8 +102,8 @@ export function CallCenterPage(): React.ReactElement {
         destinationLongitude: selectedDropOffLocation.lng,
         destinationAddress: selectedDropOffAddress,
         distanceInMeters: directionApi.distanceValue,
-        pickupTime: pickUpTime,
-        isScheduleRide: false,
+        pickupTime: scheduleAvailable ? selectedScheduleDateIsoString : now,
+        isScheduleRide: scheduleAvailable,
         modifiedBy: UserServices().getLoginInfo()?.data.user?.userName ?? "N/A",
       });
 
@@ -107,7 +113,10 @@ export function CallCenterPage(): React.ReactElement {
 
       Modal.success({
         title: 'Ride Created',
-        content: 'Ride has been created successfully!'
+        content: 'Ride has been created successfully!',
+        afterClose: () => {
+          navigate('/get-rider', { state: { rideId: createRideResponse.id }});
+        },
       });
 
     } catch (error) {
@@ -148,35 +157,56 @@ export function CallCenterPage(): React.ReactElement {
             </Card>
           </div>
           <div>
-            <RideInfoCard
-              pickUpLocation={selectedPickUpLocation}
-              pickUpAddress={selectedPickUpAddress}
-              dropOffLocation={selectedDropOffLocation}
-              dropOffAddress={selectedDropOffAddress}
-              cardWidth="670px"
-              cardHeight=""
-              directionApi={directionApi}
-              setDirectionApi={setDirectionApi}
-              vehicleTypeForm={vehicleTypeForm}
-              estimatedPrice={estimatedPrice}
-              setEstimatedPrice={setEstimatedPrice}
-            />
-            <div className="w-[670px] flex flex-col justify-start">
-              <RiderInfoCard 
-                rider={rider} 
-                setRider={setRider} 
-                riderInfoForm={riderInfoForm} 
+            <div className="mb-2 w-[670px] flex flex-col justify-start">
+              <RiderInfoCard
+                rider={rider}
+                setRider={setRider}
+                riderInfoForm={riderInfoForm}
                 findUserByPhoneForm={findUserByPhoneForm}
+                setIsVip={setIsVip}
               />
-              <div className="text-end">
-                <Button 
-                  type="primary"
-                  onClick={onSubmitClick}
-                  loading={isSubmitting}
-                >
-                  Submit
-                </Button>
-              </div>
+            </div>
+            <div className="w-[670px] mb-2">
+              <Card title="Scheduled ride:">
+                <DatePicker
+                  showTime
+                  disabled={!scheduleAvailable}
+                  onChange={(date) => {
+                    if (date) {
+                      setSelectedScheduleDateIsoString(() => dayjs(date).toISOString());
+                      console.log(dayjs(date).toISOString());
+                    }
+                  }}
+                  defaultValue={dayjs(new Date())}
+                />
+                <Switch
+                  disabled={!isVip}
+                  onChange={(checked: boolean) => {
+                    setScheduleAvailable(() => checked);
+                  }}
+                  className="ml-4"
+                />
+              </Card>
+            </div>
+            <div className="mb-2">
+              <RideInfoCard
+                pickUpLocation={selectedPickUpLocation}
+                pickUpAddress={selectedPickUpAddress}
+                dropOffLocation={selectedDropOffLocation}
+                dropOffAddress={selectedDropOffAddress}
+                cardWidth="670px"
+                cardHeight=""
+                directionApi={directionApi}
+                setDirectionApi={setDirectionApi}
+                vehicleTypeForm={vehicleTypeForm}
+                estimatedPrice={estimatedPrice}
+                setEstimatedPrice={setEstimatedPrice}
+              />
+            </div>
+            <div className="text-end">
+              <Button type="primary" onClick={onSubmitClick} loading={isSubmitting}>
+                Submit
+              </Button>
             </div>
           </div>
         </div>

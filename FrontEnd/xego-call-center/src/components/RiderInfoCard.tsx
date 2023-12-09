@@ -10,6 +10,7 @@ interface RiderInfoCardProps {
   setRider: React.Dispatch<React.SetStateAction<UserDto | undefined>>;
   riderInfoForm: FormInstance;
   findUserByPhoneForm: FormInstance;
+  setIsVip: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const RiderInfoCard: React.FC<RiderInfoCardProps> = ({
@@ -17,8 +18,8 @@ const RiderInfoCard: React.FC<RiderInfoCardProps> = ({
   setRider,
   riderInfoForm,
   findUserByPhoneForm,
+  setIsVip,
 }) => {
-
   useEffect(() => {
     riderInfoForm.setFieldsValue(() => ({
       firstName: rider?.firstName ?? "",
@@ -45,13 +46,19 @@ const RiderInfoCard: React.FC<RiderInfoCardProps> = ({
   }, [rider, riderInfoForm]);
 
   return (
-    <Card className="mb-5" title="Rider Infomation:">
+    <Card className="" title="Rider Infomation:">
       <FindRiderByPhoneForm
         selectedUser={rider}
         setSelectedUser={setRider}
         findUserByPhoneForm={findUserByPhoneForm}
       />
-      <Form className="mt-5" form={riderInfoForm}>
+      <Form
+        className=""
+        form={riderInfoForm}
+        onValuesChange={() => {
+          setIsVip(() => riderInfoForm.getFieldValue("userType") === RiderTypeConstants().vip);
+        }}
+      >
         <Form.Item
           label="First Name:"
           name="firstName"

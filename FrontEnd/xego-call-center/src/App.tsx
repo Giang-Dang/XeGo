@@ -3,13 +3,13 @@ import './index.css'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./pages/ProtectedRoute";
 import { HomePage } from "./pages/Home/HomePage";
-import { RideOrderPage } from "./pages/RideOrder/RideOrderPage";
+import { GetRiderPage } from "./pages/GetRider/GetRiderPage";
 import { StatisticsPage } from "./pages/Statistics/StatisticsPage";
 import LoginPage from "./pages/Login/LoginPage";
 import SharedLayout from "./components/SharedLayout";
 import { VehiclePage } from "./pages/Vehicle/VehiclePage";
 import { ConfigProvider } from "antd";
-import { CallCenterPage } from "./pages/CallCenter/CallCenterPage";
+import { OrderRidePage } from "./pages/OrderRide/OrderRidePage";
 
 function App() {
   return (
@@ -35,9 +35,9 @@ function App() {
             }
           >
             <Route index element={<HomePage />} />
-            <Route path="call-center" element={<CallCenterPage />} />
+            <Route path="order-ride" element={<OrderRidePage />} />
             <Route path="vehicles" element={<VehiclePage />} />
-            <Route path="ride-order" element={<RideOrderPage />} />
+            <Route path="get-rider" element={<GetRiderPage />} />
             <Route path="statistics" element={<StatisticsPage />} />
             <Route path="statistics" element={<StatisticsPage />} />
             <Route path="statistics/by-week" element={<StatisticsPage />} />

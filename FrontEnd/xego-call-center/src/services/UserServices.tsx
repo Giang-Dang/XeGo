@@ -4,7 +4,7 @@ import LoginRequestDto from '../models/dto/LoginRequestDto';
 import LoginResponseDto from '../models/dto/LoginResponseDto';
 import UserDto from '../models/dto/UserDto';
 import GetAllUsersResponseDto from '../models/dto/GetAllUserResponseDto';
-import RoleConstants from '../constants/RoleConstans';
+import RoleConstants from '../constants/RoleConstants';
 import ICreateUserResponseDto from '../models/interfaces/ICreateUserResponseDto';
 
 
