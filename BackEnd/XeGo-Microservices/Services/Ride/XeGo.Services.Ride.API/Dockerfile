@@ -24,3 +24,6 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "XeGo.Services.Ride.API.dll"]
+
+USER root
+RUN apt-get update && apt-get install -y curl
