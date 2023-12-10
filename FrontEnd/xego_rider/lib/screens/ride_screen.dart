@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -47,7 +48,9 @@ class _RideScreenState extends State<RideScreen> {
         LocationServices.currentLocation!, UserServices.userDto!.userId);
 
     const subHubUrl = 'hubs/ride-hub';
+    // final hubUrl = Uri.http(KSecret.kApiIp, subHubUrl);
     final hubUrl = Uri.http(KSecret.kApiIp, subHubUrl);
+
     _rideHubConnection =
         HubConnectionBuilder().withUrl(hubUrl.toString()).build();
     _rideHubConnection!.onclose((error) => log("Ride Hub Connection Closed"));
@@ -61,11 +64,21 @@ class _RideScreenState extends State<RideScreen> {
         'RegisterConnectionId',
         args: [UserServices.userDto!.userId],
       );
+
+      final directionResponseJson =
+          jsonEncode(widget.directionResponse.toJson()).toString();
+
       log(registerConnectionId.toString());
+      log(jsonEncode(widget.directionResponse.toJson()).toString());
 
       var driverId = await _rideHubConnection!.invoke(
         'FindDriver',
-        args: [UserServices.userDto!.userId, widget.rideInfo.id],
+        args: [
+          UserServices.userDto!.userId,
+          widget.rideInfo,
+          widget.totalPrice,
+          directionResponseJson,
+        ],
       );
       log(driverId.toString());
 
@@ -383,7 +396,7 @@ class _RideScreenState extends State<RideScreen> {
               width: roundedBorderContainerWidth,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
-                color: Colors.white,
+                color: KColors.kWhite,
               ),
             ),
           ),
@@ -393,10 +406,10 @@ class _RideScreenState extends State<RideScreen> {
             child: Container(
               height: circularContainerHeight,
               width: circularContainerWidth,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.blue,
-              ),
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: KColors.kWhite,
+                  border: Border.all(color: KColors.kColor4, width: 2.0)),
             ),
           ),
         ],
