@@ -15,7 +15,7 @@ namespace XeGo.Services.Notifications.Functions.BatchJobs
     {
         [Function(FuncNameConst.StartScheduleSendSms)]
         public static async Task<HttpResponseData> HttpStart(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequestData req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req,
             [DurableClient] DurableTaskClient client,
             FunctionContext executionContext)
         {

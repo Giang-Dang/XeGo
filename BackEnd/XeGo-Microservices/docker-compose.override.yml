@@ -293,7 +293,7 @@ services:
       - Serilog__MinimumLevel__Override__System=Warning 
       - ElasticConfiguration__Uri=http://elasticsearch 
     ports:
-      - "6009:8080"
+      - "6009:80"
     depends_on:
       - notificationdb
       - elasticsearch

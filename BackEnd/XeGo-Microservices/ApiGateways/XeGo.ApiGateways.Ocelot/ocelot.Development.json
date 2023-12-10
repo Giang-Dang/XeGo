@@ -406,6 +406,56 @@
       ],
       "UpstreamPathTemplate": "/api/locations/directions",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+    },
+
+    //Notifications
+    {
+      "DownstreamPathTemplate": "/api/start-schedule-send-sms",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.notifications.functions",
+          "Port": "80"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/notifications/start-schedule-send-sms",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/send-fcm-notification",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.notifications.functions",
+          "Port": "80"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/notifications/send-fcm-notification",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/send-sms",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.notifications.functions",
+          "Port": "80"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/notifications/send-sms",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/update-fcm-token",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.notifications.functions",
+          "Port": "80"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/notifications/update-fcm-token",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
     }
   ],
   // for hubs

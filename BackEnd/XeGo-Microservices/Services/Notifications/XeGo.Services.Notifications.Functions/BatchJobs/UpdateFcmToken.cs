@@ -17,7 +17,7 @@ namespace XeGo.Services.Notifications.Functions.BatchJobs
 
 
         [Function(FuncNameConst.UpdateFcmToken)]
-        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequestData req)
+        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req)
         {
             _logger.LogInformation($"{FuncNameConst.UpdateFcmToken} HTTP trigger function processed a request.");
 
