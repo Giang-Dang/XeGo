@@ -44,8 +44,13 @@ class LocationServices {
   }
 
   Future<void> updateCurrentLocation() async {
-    determinePosition().then(
-        (value) => currentLocation = LatLng(value.latitude, value.longitude));
+    determinePosition()
+        .then((value) =>
+            currentLocation = LatLng(value.latitude, value.longitude))
+        .onError((error, stackTrace) {
+      log(error.toString());
+      return const LatLng(0, 0);
+    });
   }
 
   Future<String> getAddressFromCoordinates(LatLng coordinates) async {

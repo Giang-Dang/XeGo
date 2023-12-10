@@ -1,13 +1,54 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:xego_driver/services/api_services.dart';
 import 'dart:math' as math;
 
 import 'package:xego_driver/settings/kSecrets.dart';
 
 class LocationServices {
+  final apiServices = ApiServices();
+
+  Future<bool> updateLocationToDb(
+      String userId, bool isDriver, LatLng latLng, String createdBy) async {
+    try {
+      final subApiUrl =
+          isDriver ? "api/locations/drivers" : "api/locations/riders";
+      final url = Uri.http(KSecret.kApiIp, subApiUrl);
+
+      final response = await apiServices.post(url.toString(), data: {
+        "userId": userId,
+        "latitude": latLng.latitude,
+        "longitude": latLng.longitude,
+        "createdBy": createdBy,
+        "modifiedBy": createdBy,
+      });
+
+      return response.data['isSuccess'];
+    } catch (e) {
+      log(e.toString());
+      return false;
+    }
+  }
+
+  Future<bool> deleteLocationInDb(String userId, bool isDriver) async {
+    try {
+      final subApiUrl = isDriver
+          ? "api/locations/drivers/$userId"
+          : "api/locations/riders/$userId";
+      final url = Uri.http(KSecret.kApiIp, subApiUrl);
+
+      final response = await apiServices.delete(url.toString());
+      return response.data['isSuccess'];
+    } catch (e) {
+      log(e.toString());
+      return false;
+    }
+  }
+
   Future<Position> determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
