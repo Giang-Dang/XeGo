@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 using System.Collections.Concurrent;
 using XeGo.Services.Ride.API.Data;
 using XeGo.Services.Ride.API.Entities;
-using XeGo.Services.Ride.API.Entities.Dto;
 using XeGo.Services.Ride.API.Models.Dto;
 using XeGo.Shared.GrpcConsumer.Services;
 using XeGo.Shared.Lib.Constants;
@@ -18,7 +17,11 @@ namespace XeGo.Services.Ride.API.Hubs
         LocationGrpcService locationGrpcService) : Hub
     {
         private readonly ConcurrentDictionary<string, TaskCompletionSource<bool>> _pendingRides = new();
-        public async Task<string> FindDriver(string fromUserId, Entities.Ride ride, double totalPrice, string directionResponseDtoJson)
+        private int secondsToCancelDriverRequest = 60;
+        private static Dictionary<int, string?> rideDrivers = new();
+        private static Dictionary<int, CancellationTokenSource> rideCts = new();
+
+        public async Task<string?> FindDriver(string fromUserId, Entities.Ride ride, double totalPrice, string directionResponseDtoJson)
         {
             logger.LogInformation($"{nameof(RideHub)}>{nameof(FindDriver)}: Triggered!");
             try
@@ -26,61 +29,111 @@ namespace XeGo.Services.Ride.API.Hubs
                 logger.LogInformation($"{nameof(RideHub)}>{nameof(FindDriver)} rideJson : {JsonConvert.SerializeObject(ride)}");
                 logger.LogInformation($"{nameof(RideHub)}>{nameof(FindDriver)} directionReponseDtoJson : {directionResponseDtoJson}");
 
-                var directionResponseDto = JsonConvert.DeserializeObject<DirectionReponseDto>(directionResponseDtoJson) ?? new();
-                logger.LogInformation($"{nameof(RideHub)}>{nameof(FindDriver)} directionReponseDto : {JsonConvert.SerializeObject(directionResponseDto)}");
+                rideDrivers.Add(ride.Id, null);
 
                 var cRider = await GetUserConnectionAsync(fromUserId);
 
                 var driverIdList = await GetNearbyDrivers(ride);
 
-                if (driverIdList != null)
-                {
-                    var acceptedDriverId = await AssignDriverToRide(driverIdList, ride, totalPrice, directionResponseDto!, cRider!);
-                    if (acceptedDriverId == null)
-                    {
-                        logger.LogInformation($"Driver not found! (id:{ride.Id})");
-                        return "Not Found!";
-                    }
-
-                    ride.Status = RideStatusConstants.AwaitingPickup;
-                    db.Rides.Update(ride);
-                    await db.SaveChangesAsync();
-
-                    logger.LogInformation($"Driver found! (RideId:{ride.Id}; DriverId:{acceptedDriverId})");
-
-                    return acceptedDriverId;
-                }
-                else
+                if (driverIdList == null)
                 {
                     logger.LogError($"Driver not found! (id:{ride.Id})");
-                    return "Not Found!";
+                    return null;
                 }
+
+                var rideJson = JsonConvert.SerializeObject(ride);
+                var driverConnectionsList = await GetDriverList(driverIdList);
+
+                foreach (var driver in driverConnectionsList)
+                {
+                    CancellationTokenSource cts = new CancellationTokenSource();
+                    cts.Token.ThrowIfCancellationRequested();
+                    rideCts[ride.Id] = cts;
+
+                    await Clients.Clients(driver.ConnectionId).SendAsync("receiveRide", rideJson, totalPrice, directionResponseDtoJson);
+
+                    logger.LogInformation($"{nameof(RideHub)}>{nameof(FindDriver)}: sent receiveRide to {driver.UserId}, connectionId: {driver.ConnectionId}");
+
+                    Task countDownTask = Task.Delay(TimeSpan.FromSeconds(secondsToCancelDriverRequest), cts.Token);
+
+                    try
+                    {
+                        await countDownTask;
+                        logger.LogInformation($"{nameof(RideHub)}>{nameof(FindDriver)}: countDownTask started!");
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogInformation($"{nameof(RideHub)}>{nameof(FindDriver)}: countDownTask cancelled {ex}");
+                    }
+
+                    if (rideDrivers[ride.Id] != null)
+                    {
+                        logger.LogInformation($"{nameof(RideHub)}>{nameof(FindDriver)}: Done! (Drivers Found! - id: {rideDrivers[ride.Id]})");
+                        return rideDrivers[ride.Id];
+                    }
+                }
+
+                logger.LogInformation($"{nameof(RideHub)}>{nameof(FindDriver)}: Done! (Drivers not found!)");
+                return null;
+            }
+            catch (AggregateException ae)
+            {
+                if (ae.InnerExceptions.Any(e => e is OperationCanceledException))
+                {
+                    if (rideDrivers[ride.Id] != null)
+                    {
+                        logger.LogInformation($"{nameof(RideHub)}>{nameof(FindDriver)}: Done! (Drivers Found! - id: {rideDrivers[ride.Id]})");
+                        return rideDrivers[ride.Id];
+                    }
+                }
+
+                logger.LogError($"{nameof(FindDriver)} ae: {ae.Message}");
+                return null;
             }
             catch (Exception e)
             {
-                logger.LogError($"{nameof(FindDriver)}: {e.Message}");
-                return "Not Found!";
+                logger.LogError($"{nameof(FindDriver)} e: {e.Message}");
+                return null;
             }
         }
 
-        public void AcceptRide(string driverId, int rideId)
+        public bool AcceptRide(string driverId, int rideId)
         {
             logger.LogInformation($"{nameof(RideHub)}>{nameof(AcceptRide)}: Triggered!");
 
-            if (_pendingRides.TryRemove(driverId, out var tcs))
+            rideDrivers[rideId] = driverId;
+
+            var cts = rideCts[rideId];
+            if (cts == null)
             {
-                tcs.SetResult(true);
+                logger.LogError($"{nameof(RideHub)}>{nameof(AcceptRide)}: cts null! (false)");
+                return false;
             }
+
+            cts.Cancel();
+
+            logger.LogInformation($"{nameof(RideHub)}>{nameof(AcceptRide)}: true {rideDrivers[rideId]}");
+
+            return true;
         }
 
-        public void DeclineRide(string driverId, int rideId)
+        public bool DeclineRide(string driverId, int rideId)
         {
             logger.LogInformation($"{nameof(RideHub)}>{nameof(DeclineRide)}: Triggered!");
 
-            if (_pendingRides.TryRemove(driverId, out var tcs))
+            logger.LogInformation($"{nameof(RideHub)}>{nameof(DeclineRide)} driverId: {driverId}");
+            logger.LogInformation($"{nameof(RideHub)}>{nameof(DeclineRide)} rideId: {rideId}");
+
+            var cts = rideCts[rideId];
+            if (cts == null)
             {
-                tcs.SetResult(false);
+                logger.LogError($"{nameof(RideHub)}>{nameof(DeclineRide)}: cts null! (false)");
+                return false;
             }
+
+            cts.Cancel();
+            logger.LogError($"{nameof(RideHub)}>{nameof(DeclineRide)}: true");
+            return true;
         }
 
         public async Task UpdateLocation(string fromUserId, string toUserId, PositionDto newPosition)
@@ -310,55 +363,6 @@ namespace XeGo.Services.Ride.API.Hubs
             return await db.UserConnectionIds
                 .Where(u => driverIdList.Contains(u.UserId))
                 .ToListAsync();
-        }
-
-        private async Task<bool> SendRideRequestAndWaitForResponse(UserConnectionId driver, Entities.Ride ride, double totalPrice, DirectionReponseDto directionReponseDto)
-        {
-            logger.LogInformation($"{nameof(RideHub)} > {nameof(SendRideRequestAndWaitForResponse)}: Triggered!");
-
-            var tcs = new TaskCompletionSource<bool>();
-            _pendingRides.TryAdd(driver.UserId, tcs);
-
-            var rideJson = JsonConvert.SerializeObject(ride);
-            var directionReponseDtoJson = JsonConvert.SerializeObject(directionReponseDto);
-
-            logger.LogInformation($"{nameof(RideHub)} > {nameof(SendRideRequestAndWaitForResponse)} rideJson: {rideJson}");
-            logger.LogInformation($"{nameof(RideHub)} > {nameof(SendRideRequestAndWaitForResponse)} directionReponseDtoJson: {directionReponseDtoJson}");
-
-            await Clients.Clients(driver.ConnectionId).SendAsync("receiveRide", rideJson, totalPrice, directionReponseDtoJson);
-
-            // Wait for the driver to accept the ride or for 30 seconds to pass, whichever comes first
-            var completedTask = await Task.WhenAny(tcs.Task, Task.Delay(TimeSpan.FromSeconds(30)));
-
-            // If the driver accepted the ride within 30 seconds, return true
-            return completedTask == tcs.Task && await tcs.Task;
-        }
-
-        private async Task InformRiderNoDriverFound(UserConnectionId cRider)
-        {
-            logger.LogInformation($"{nameof(RideHub)} > {nameof(InformRiderNoDriverFound)}: Triggered!");
-
-            await Clients.Clients(cRider.UserId).SendAsync("cannotFindDriver");
-        }
-
-        private async Task<string?> AssignDriverToRide(List<string> driverIdList, Entities.Ride cRide, double totalPrice, DirectionReponseDto directionReponseDto, UserConnectionId cRider)
-        {
-            logger.LogInformation($"{nameof(RideHub)} > {nameof(AssignDriverToRide)}: Triggered!");
-
-            var driverList = await GetDriverList(driverIdList);
-
-            foreach (var driver in driverList)
-            {
-                if (await SendRideRequestAndWaitForResponse(driver, cRide, totalPrice, directionReponseDto))
-                {
-                    cRide.DriverId = driver.UserId;
-                    await db.SaveChangesAsync();
-
-                    return driver.UserId;
-                }
-            }
-
-            return null;
         }
 
         #endregion
