@@ -11,6 +11,8 @@ services:
       - "1433:1433"
     volumes:
       - sqlserver-authdb:/var/opt/mssql
+    networks:
+      - elastic
 
   # codevaluedb:
   #   container_name: codevaluedb
@@ -33,6 +35,8 @@ services:
       - "1435:1433"
     volumes:
       - sqlserver-locationdb:/var/opt/mssql
+    networks:
+      - elastic
 
   vehicledb:
     container_name: vehicledb
@@ -44,6 +48,8 @@ services:
       - "1436:1433"
     volumes:
       - sqlserver-vehicledb:/var/opt/mssql
+    networks:
+      - elastic
   
   filedb:
     container_name: filedb
@@ -55,6 +61,8 @@ services:
       - "1437:1433"
     volumes:
       - sqlserver-filedb:/var/opt/mssql
+    networks:
+      - elastic
 
   ridedb:
     container_name: ridedb
@@ -66,6 +74,8 @@ services:
       - "1438:1433"
     volumes:
       - sqlserver-ridedb:/var/opt/mssql
+    networks:
+      - elastic
 
   notificationdb:
     container_name: notificationdb
@@ -77,6 +87,8 @@ services:
       - "1439:1433"
     volumes:
       - sqlserver-notificationdb:/var/opt/mssql
+    networks:
+      - elastic
 
   pricedb:
     container_name: pricedb
@@ -88,7 +100,8 @@ services:
       - "1440:1433"
     volumes:
       - sqlserver-pricedb:/var/opt/mssql
-
+    networks:
+      - elastic
   # rabbitmq:
   #   container_name: rabbitmq
   #   restart: always
@@ -108,18 +121,22 @@ services:
       - Serilog__MinimumLevel__Default=Debug
       - Serilog__MinimumLevel__Override__Microsoft=Debug
       - Serilog__MinimumLevel__Override__System=Warning
-      - ElasticConfiguration__Uri=http://elasticsearch 
+      - ElasticConfiguration__Uri=http://elasticsearch:9200 
       - GrpcSettings__DriverGrpcUrl=http://xego.services.vehicle.grpc:8080
     depends_on:
-      - authdb
-      - elasticsearch
-      - xego.services.vehicle.grpc
+      authdb:
+        condition: service_started
+      elasticsearch:
+        condition: service_healthy
+      xego.services.vehicle.grpc:
+        condition: service_started
     ports:
       - "6001:8080"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
-
+    networks:
+      - elastic
 
   # xego.services.codevalue.api:
   #   container_name: xego.services.codevalue.api
@@ -132,7 +149,7 @@ services:
   #     - Serilog__MinimumLevel__Default=Debug
   #     - Serilog__MinimumLevel__Override__Microsoft=Debug
   #     - Serilog__MinimumLevel__Override__System=Warning
-  #     - ElasticConfiguration__Uri=http://elasticsearch
+  #     - ElasticConfiguration__Uri=http://elasticsearch:9200
   #   depends_on:
   #     - codevaluedb
   #     - elasticsearch
@@ -151,7 +168,7 @@ services:
   #     - Serilog__MinimumLevel__Default=Debug
   #     - Serilog__MinimumLevel__Override__Microsoft=Debug
   #     - Serilog__MinimumLevel__Override__System=Warning
-  #     - ElasticConfiguration__Uri=http://elasticsearch
+  #     - ElasticConfiguration__Uri=http://elasticsearch:9200
   #   depends_on:
   #     - codevaluedb
   #     - elasticsearch
@@ -172,17 +189,21 @@ services:
       - ApiSettings__JwtOptions__Secret=adfh@JDFDKSAF1234sdf*%$$#feifkdmvcoaerDSJFAOEDFDFJffDSAFjkAjdfA485723AjdfAJfDjfAjdfdjferYGjASDJfEjfvdav
       - ApiSettings__JwtOptions__Issuer=xego-auth-api
       - ApiSettings__JwtOptions__Audience=xego-client
-      - ElasticConfiguration__Uri=http://elasticsearch 
+      - ElasticConfiguration__Uri=http://elasticsearch:9200 
       # - GrpcSettings__CodeValueGrpcUrl=http://xego.services.codevalue.grpc
     depends_on:
-      - locationdb
+      locationdb:
+        condition: service_started
       # - xego.services.codevalue.grpc
-      - elasticsearch
+      elasticsearch:
+        condition: service_healthy
     ports:
       - "6004:8080"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    networks:
+      - elastic
 
   xego.services.location.grpc:
     container_name: xego.services.location.grpc
@@ -192,17 +213,21 @@ services:
       - Serilog__MinimumLevel__Default=Debug
       - Serilog__MinimumLevel__Override__Microsoft=Debug
       - Serilog__MinimumLevel__Override__System=Warning
-      - ElasticConfiguration__Uri=http://elasticsearch 
+      - ElasticConfiguration__Uri=http://elasticsearch:9200 
       # - GrpcSettings__CodeValueGrpcUrl=http://xego.services.codevalue.grpc
     depends_on:
-      - locationdb
+      locationdb:
+        condition: service_started
       # - xego.services.codevalue.grpc
-      - elasticsearch
+      elasticsearch:
+        condition: service_healthy
     ports:
       - "6005:8080"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    networks:
+      - elastic
 
   xego.services.vehicle.api:
     container_name: xego.services.vehicle.api
@@ -215,17 +240,21 @@ services:
       - ApiSettings__JwtOptions__Secret=adfh@JDFDKSAF1234sdf*%$$#feifkdmvcoaerDSJFAOEDFDFJffDSAFjkAjdfA485723AjdfAJfDjfAjdfdjferYGjASDJfEjfvdav
       - ApiSettings__JwtOptions__Issuer=xego-auth-api
       - ApiSettings__JwtOptions__Audience=xego-client
-      - ElasticConfiguration__Uri=http://elasticsearch 
+      - ElasticConfiguration__Uri=http://elasticsearch:9200 
       # - GrpcSettings__CodeValueGrpcUrl=http://xego.services.codevalue.grpc
     depends_on:
-      - vehicledb
+      vehicledb:
+        condition: service_started
       # - xego.services.codevalue.grpc
-      - elasticsearch
+      elasticsearch:
+        condition: service_healthy
     ports:
       - "6006:8080"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    networks:
+      - elastic
 
   xego.services.file.api:
     container_name: xego.services.file.api
@@ -238,20 +267,24 @@ services:
     - ApiSettings__JwtOptions__Secret=adfh@JDFDKSAF1234sdf*%$$#feifkdmvcoaerDSJFAOEDFDFJffDSAFjkAjdfA485723AjdfAJfDjfAjdfdjferYGjASDJfEjfvdav
     - ApiSettings__JwtOptions__Issuer=xego-auth-api
     - ApiSettings__JwtOptions__Audience=xego-client
-    - ElasticConfiguration__Uri=http://elasticsearch 
+    - ElasticConfiguration__Uri=http://elasticsearch:9200 
     - BlobConnection=DefaultEndpointsProtocol=https;AccountName=xegomedia;AccountKey=VrFXM/Zn63So11j47jRT+f36LhLRQJyNOLY7Wl4cpt/30IYvPGxp2rkdEVHsXZcemf3Au8qBynCS+AStY/XcPw==;EndpointSuffix=core.windows.net
     # - GrpcSettings__CodeValueGrpcUrl=http://xego.services.codevalue.grpc
     secrets:
     - blob_connection
     depends_on:
-    - filedb
+      filedb:
+        condition: service_started
     # - xego.services.codevalue.grpc
-    - elasticsearch
+      elasticsearch:
+        condition: service_healthy
     ports:
     - "6007:8080"
     volumes:
     - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
     - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    networks:
+      - elastic
 
   xego.services.ride.api:
     container_name: xego.services.ride.api
@@ -264,16 +297,22 @@ services:
       - ApiSettings__JwtOptions__Secret=adfh@JDFDKSAF1234sdf*%$$#feifkdmvcoaerDSJFAOEDFDFJffDSAFjkAjdfA485723AjdfAJfDjfAjdfdjferYGjASDJfEjfvdav
       - ApiSettings__JwtOptions__Issuer=xego-auth-api
       - ApiSettings__JwtOptions__Audience=xego-client
-      - ElasticConfiguration__Uri=http://elasticsearch 
+      - ElasticConfiguration__Uri=http://elasticsearch:9200 
       - GrpcSettings__LocationGrpcUrl=http://xego.services.location.grpc:8080
       - GrpcSettings__PriceGrpcUrl=http://xego.services.price.grpc:8080
     ports:
       - "6008:8080"
     depends_on:
-      - ridedb
-      - elasticsearch
-      - xego.services.price.grpc
-      - xego.services.location.grpc
+      ridedb:
+        condition: service_started
+      elasticsearch:
+        condition: service_healthy
+      xego.services.price.grpc:
+        condition: service_started
+      xego.services.location.grpc:
+        condition: service_started
+    networks:
+      - elastic
 
   xego.services.notifications.functions:
     container_name: xego.services.notifications.functions
@@ -291,18 +330,22 @@ services:
       - Serilog__MinimumLevel__Default=Debug
       - Serilog__MinimumLevel__Override__Microsoft=Debug
       - Serilog__MinimumLevel__Override__System=Warning 
-      - ElasticConfiguration__Uri=http://elasticsearch 
+      - ElasticConfiguration__Uri=http://elasticsearch:9200 
     ports:
       - "6009:80"
     depends_on:
-      - notificationdb
-      - elasticsearch
+      notificationdb:
+        condition: service_started
+      elasticsearch:
+        condition: service_healthy
     secrets:
       - azure_web_jobs_storage
       - twilio_account_sid
       - twilio_auth_token
       - twilio_phone_number
- 
+    networks:
+      - elastic
+
   xego.services.price.api:
     container_name: xego.services.price.api
     environment:
@@ -314,12 +357,16 @@ services:
       - ApiSettings__JwtOptions__Secret=adfh@JDFDKSAF1234sdf*%$$#feifkdmvcoaerDSJFAOEDFDFJffDSAFjkAjdfA485723AjdfAJfDjfAjdfdjferYGjASDJfEjfvdav
       - ApiSettings__JwtOptions__Issuer=xego-auth-api
       - ApiSettings__JwtOptions__Audience=xego-client
-      - ElasticConfiguration__Uri=http://elasticsearch 
+      - ElasticConfiguration__Uri=http://elasticsearch:9200 
     ports:
       - "6010:8080"
     depends_on:
-      - pricedb
-      - elasticsearch
+      pricedb:
+        condition: service_started
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - elastic
 
   xego.services.price.grpc:
     container_name: xego.services.price.grpc
@@ -332,12 +379,16 @@ services:
       - ApiSettings__JwtOptions__Secret=adfh@JDFDKSAF1234sdf*%$$#feifkdmvcoaerDSJFAOEDFDFJffDSAFjkAjdfA485723AjdfAJfDjfAjdfdjferYGjASDJfEjfvdav
       - ApiSettings__JwtOptions__Issuer=xego-auth-api
       - ApiSettings__JwtOptions__Audience=xego-client
-      - ElasticConfiguration__Uri=http://elasticsearch 
+      - ElasticConfiguration__Uri=http://elasticsearch:9200 
     ports:
       - "6011:8080"
     depends_on:
-      - pricedb
-      - elasticsearch
+      pricedb:
+        condition: service_started
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - elastic
 
   xego.services.vehicle.grpc:
     container_name: xego.services.vehicle.grpc
@@ -350,9 +401,15 @@ services:
       - ApiSettings__JwtOptions__Secret=adfh@JDFDKSAF1234sdf*%$$#feifkdmvcoaerDSJFAOEDFDFJffDSAFjkAjdfA485723AjdfAJfDjfAjdfdjferYGjASDJfEjfvdav
       - ApiSettings__JwtOptions__Issuer=xego-auth-api
       - ApiSettings__JwtOptions__Audience=xego-client
-      - ElasticConfiguration__Uri=http://elasticsearch 
+      - ElasticConfiguration__Uri=http://elasticsearch:9200 
     ports:
       - "6012:8080"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - elastic
+
 
   portainer:
     container_name: portainer
@@ -363,9 +420,16 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
+    networks:
+      - elastic
 
   elasticsearch:
     container_name: elasticsearch
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://elasticsearch:9200/_cluster/health | grep -q '\"status\":\"green\"\\|\"status\":\"yellow\"' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     ports:
       - 9200:9200
     volumes:
@@ -398,17 +462,25 @@ services:
       - ApiSettings__JwtOptions__Secret=adfh@JDFDKSAF1234sdf*%$$#feifkdmvcoaerDSJFAOEDFDFJffDSAFjkAjdfA485723AjdfAJfDjfAjdfdjferYGjASDJfEjfvdav
       - ApiSettings__JwtOptions__Issuer=xego-auth-api
       - ApiSettings__JwtOptions__Audience=xego-client
-      - ElasticConfiguration__Uri=http://elasticsearch
+      - ElasticConfiguration__Uri=http://elasticsearch:9200
     ports:
       - "6100:8080"
     depends_on:
-      - elasticsearch
-      - xego.services.auth.api
+      elasticsearch:
+        condition: service_healthy
+      xego.services.auth.api:
+        condition: service_started
       # - xego.services.codevalue.api
-      - xego.services.location.api
-      - xego.services.vehicle.api
-      - xego.services.file.api
-      - xego.services.price.api
+      xego.services.location.api:
+        condition: service_started
+      xego.services.vehicle.api:
+        condition: service_started
+      xego.services.file.api:
+        condition: service_started
+      xego.services.price.api:
+        condition: service_started
+    networks:
+      - elastic
 
 networks:
   elastic:

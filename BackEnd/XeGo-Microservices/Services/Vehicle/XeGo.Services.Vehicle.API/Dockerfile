@@ -23,3 +23,6 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "XeGo.Services.Vehicle.API.dll"]
+
+USER root
+RUN apt-get update && apt-get install -y curl

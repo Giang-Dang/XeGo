@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System.Collections.Concurrent;
 using XeGo.Services.Ride.API.Data;
 using XeGo.Services.Ride.API.Entities;
+using XeGo.Services.Ride.API.Entities.Dto;
 using XeGo.Services.Ride.API.Models.Dto;
 using XeGo.Shared.GrpcConsumer.Services;
 using XeGo.Shared.Lib.Constants;
@@ -17,41 +18,41 @@ namespace XeGo.Services.Ride.API.Hubs
         LocationGrpcService locationGrpcService) : Hub
     {
         private readonly ConcurrentDictionary<string, TaskCompletionSource<bool>> _pendingRides = new();
-        public async Task<string> FindDriver(string fromUserId, int rideId)
+        public async Task<string> FindDriver(string fromUserId, Entities.Ride ride, double totalPrice, string directionResponseDtoJson)
         {
+            logger.LogInformation($"{nameof(RideHub)}>{nameof(FindDriver)}: Triggered!");
             try
             {
-                var cRide = await GetRide(rideId);
-                if (cRide == null)
-                {
-                    logger.LogError($"Ride not found! (id:{rideId})");
-                    return "Not Found!";
-                }
+                logger.LogInformation($"{nameof(RideHub)}>{nameof(FindDriver)} rideJson : {JsonConvert.SerializeObject(ride)}");
+                logger.LogInformation($"{nameof(RideHub)}>{nameof(FindDriver)} directionReponseDtoJson : {directionResponseDtoJson}");
+
+                var directionResponseDto = JsonConvert.DeserializeObject<DirectionReponseDto>(directionResponseDtoJson) ?? new();
+                logger.LogInformation($"{nameof(RideHub)}>{nameof(FindDriver)} directionReponseDto : {JsonConvert.SerializeObject(directionResponseDto)}");
 
                 var cRider = await GetUserConnectionAsync(fromUserId);
 
-                var driverIdList = await GetNearbyDrivers(cRide);
+                var driverIdList = await GetNearbyDrivers(ride);
 
                 if (driverIdList != null)
                 {
-                    var acceptedDriverId = await AssignDriverToRide(driverIdList, cRide, cRider!);
+                    var acceptedDriverId = await AssignDriverToRide(driverIdList, ride, totalPrice, directionResponseDto!, cRider!);
                     if (acceptedDriverId == null)
                     {
-                        logger.LogInformation($"Driver not found! (id:{rideId})");
+                        logger.LogInformation($"Driver not found! (id:{ride.Id})");
                         return "Not Found!";
                     }
 
-                    cRide.Status = RideStatusConstants.AwaitingPickup;
-                    db.Rides.Update(cRide);
+                    ride.Status = RideStatusConstants.AwaitingPickup;
+                    db.Rides.Update(ride);
                     await db.SaveChangesAsync();
 
-                    logger.LogInformation($"Driver found! (RideId:{rideId}; DriverId:{acceptedDriverId})");
+                    logger.LogInformation($"Driver found! (RideId:{ride.Id}; DriverId:{acceptedDriverId})");
 
                     return acceptedDriverId;
                 }
                 else
                 {
-                    logger.LogError($"Driver not found! (id:{rideId})");
+                    logger.LogError($"Driver not found! (id:{ride.Id})");
                     return "Not Found!";
                 }
             }
@@ -64,14 +65,28 @@ namespace XeGo.Services.Ride.API.Hubs
 
         public void AcceptRide(string driverId, int rideId)
         {
+            logger.LogInformation($"{nameof(RideHub)}>{nameof(AcceptRide)}: Triggered!");
+
             if (_pendingRides.TryRemove(driverId, out var tcs))
             {
                 tcs.SetResult(true);
             }
         }
 
+        public void DeclineRide(string driverId, int rideId)
+        {
+            logger.LogInformation($"{nameof(RideHub)}>{nameof(DeclineRide)}: Triggered!");
+
+            if (_pendingRides.TryRemove(driverId, out var tcs))
+            {
+                tcs.SetResult(false);
+            }
+        }
+
         public async Task UpdateLocation(string fromUserId, string toUserId, PositionDto newPosition)
         {
+            logger.LogInformation($"{nameof(RideHub)}>{nameof(UpdateLocation)}: Triggered!");
+
             try
             {
                 var userConnectionId = await db.UserConnectionIds
@@ -97,6 +112,8 @@ namespace XeGo.Services.Ride.API.Hubs
 
         public async Task UpdateRideStatus(string fromUserId, string toUserId, int rideId, string newStatus)
         {
+            logger.LogInformation($"{nameof(RideHub)}>{nameof(UpdateRideStatus)}: Triggered!");
+
             try
             {
                 var userConnectionId = await db.UserConnectionIds
@@ -221,16 +238,22 @@ namespace XeGo.Services.Ride.API.Hubs
 
         private async Task<Entities.Ride?> GetRide(int rideId)
         {
+            logger.LogInformation($"{nameof(RideHub)} > {nameof(GetRide)}: Triggered!");
+
             return await db.Rides.FirstOrDefaultAsync(r => r.Id == rideId);
         }
 
         private async Task<UserConnectionId?> GetUserConnectionAsync(string userId)
         {
+            logger.LogInformation($"{nameof(RideHub)} > {nameof(GetUserConnectionAsync)}: Triggered!");
+
             return await db.UserConnectionIds.FirstOrDefaultAsync(u => u.UserId == userId);
         }
 
         private async Task<double> GetGeoHashSquareSideInMeters()
         {
+            logger.LogInformation($"{nameof(RideHub)} > {nameof(GetGeoHashSquareSideInMeters)}: Triggered!");
+
             var cvGeoHashSquareSideInMeters = await db.CodeValues
                 .FirstOrDefaultAsync(c =>
                     c.Name == GeohashConstants.GeohashName
@@ -242,6 +265,8 @@ namespace XeGo.Services.Ride.API.Hubs
 
         private async Task<double> GetMaxRadius()
         {
+            logger.LogInformation($"{nameof(RideHub)} > {nameof(GetMaxRadius)}: Triggered!");
+
             var cvMaxRadius = await db.CodeValues
                 .FirstOrDefaultAsync(c =>
                     c.Name == GeohashConstants.GeohashName
@@ -253,6 +278,8 @@ namespace XeGo.Services.Ride.API.Hubs
 
         private async Task<List<string>?> GetNearbyDrivers(Entities.Ride cRide)
         {
+            logger.LogInformation($"{nameof(RideHub)} > {nameof(GetNearbyDrivers)}: Triggered!");
+
             var geoHashSquareSideInMeters = await GetGeoHashSquareSideInMeters();
             var maxRadius = await GetMaxRadius();
 
@@ -264,11 +291,17 @@ namespace XeGo.Services.Ride.API.Hubs
                     maxRadius: maxRadius
                 );
 
-            return JsonConvert.DeserializeObject<List<string>>(driverIdListJson.Data);
+            var driverIdList = JsonConvert.DeserializeObject<List<string>>(driverIdListJson.Data);
+
+            logger.LogInformation($"{nameof(RideHub)} > {nameof(GetNearbyDrivers)} > DriverIdList: {string.Join(',', driverIdList)}");
+
+            return driverIdList;
         }
 
         private async Task<List<UserConnectionId>> GetDriverList(List<string>? driverIdList)
         {
+            logger.LogInformation($"{nameof(RideHub)} > {nameof(GetDriverList)}: Triggered!");
+
             if (driverIdList == null)
             {
                 return new List<UserConnectionId>();
@@ -279,12 +312,20 @@ namespace XeGo.Services.Ride.API.Hubs
                 .ToListAsync();
         }
 
-        private async Task<bool> SendRideRequestAndWaitForResponse(UserConnectionId driver)
+        private async Task<bool> SendRideRequestAndWaitForResponse(UserConnectionId driver, Entities.Ride ride, double totalPrice, DirectionReponseDto directionReponseDto)
         {
+            logger.LogInformation($"{nameof(RideHub)} > {nameof(SendRideRequestAndWaitForResponse)}: Triggered!");
+
             var tcs = new TaskCompletionSource<bool>();
             _pendingRides.TryAdd(driver.UserId, tcs);
 
-            await Clients.Clients(driver.ConnectionId).SendAsync("receiveRide");
+            var rideJson = JsonConvert.SerializeObject(ride);
+            var directionReponseDtoJson = JsonConvert.SerializeObject(directionReponseDto);
+
+            logger.LogInformation($"{nameof(RideHub)} > {nameof(SendRideRequestAndWaitForResponse)} rideJson: {rideJson}");
+            logger.LogInformation($"{nameof(RideHub)} > {nameof(SendRideRequestAndWaitForResponse)} directionReponseDtoJson: {directionReponseDtoJson}");
+
+            await Clients.Clients(driver.ConnectionId).SendAsync("receiveRide", rideJson, totalPrice, directionReponseDtoJson);
 
             // Wait for the driver to accept the ride or for 30 seconds to pass, whichever comes first
             var completedTask = await Task.WhenAny(tcs.Task, Task.Delay(TimeSpan.FromSeconds(30)));
@@ -293,23 +334,22 @@ namespace XeGo.Services.Ride.API.Hubs
             return completedTask == tcs.Task && await tcs.Task;
         }
 
-        private void LogError(string message)
-        {
-            logger.LogError(message);
-        }
-
         private async Task InformRiderNoDriverFound(UserConnectionId cRider)
         {
+            logger.LogInformation($"{nameof(RideHub)} > {nameof(InformRiderNoDriverFound)}: Triggered!");
+
             await Clients.Clients(cRider.UserId).SendAsync("cannotFindDriver");
         }
 
-        private async Task<string?> AssignDriverToRide(List<string> driverIdList, Entities.Ride cRide, UserConnectionId cRider)
+        private async Task<string?> AssignDriverToRide(List<string> driverIdList, Entities.Ride cRide, double totalPrice, DirectionReponseDto directionReponseDto, UserConnectionId cRider)
         {
+            logger.LogInformation($"{nameof(RideHub)} > {nameof(AssignDriverToRide)}: Triggered!");
+
             var driverList = await GetDriverList(driverIdList);
 
             foreach (var driver in driverList)
             {
-                if (await SendRideRequestAndWaitForResponse(driver))
+                if (await SendRideRequestAndWaitForResponse(driver, cRide, totalPrice, directionReponseDto))
                 {
                     cRide.DriverId = driver.UserId;
                     await db.SaveChangesAsync();

@@ -74,10 +74,10 @@ services:
     image: portainer/portainer-ce 
 
   elasticsearch:
-    image: elasticsearch:8.10.4
+    image: elasticsearch:8.11.1
 
   kibana:
-    image: kibana:8.10.4
+    image: kibana:8.11.1
 
   xego.apigateways.ocelot:
     image: ${DOCKER_REGISTRY-}xegoapigatewaysocelot
