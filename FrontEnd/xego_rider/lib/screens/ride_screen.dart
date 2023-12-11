@@ -47,6 +47,10 @@ class _RideScreenState extends State<RideScreen> {
     await _locationServices.pushRiderLocation(
         LocationServices.currentLocation!, UserServices.userDto!.userId);
 
+    _startHub();
+  }
+
+  _startHub() async {
     const subHubUrl = 'hubs/ride-hub';
     // final hubUrl = Uri.http(KSecret.kApiIp, subHubUrl);
     final hubUrl = Uri.http(KSecret.kApiIp, subHubUrl);
@@ -71,33 +75,21 @@ class _RideScreenState extends State<RideScreen> {
       log(registerConnectionId.toString());
       log(jsonEncode(widget.directionResponse.toJson()).toString());
 
-      var driverId = await _rideHubConnection!.invoke(
+      log("UserServices.userDto!.userId: ${UserServices.userDto!.userId}");
+      log("widget.rideInfo: ${jsonEncode(widget.rideInfo.toJson())}");
+      log("widget.totalPrice: ${widget.totalPrice}");
+      log("directionResponseJson: $directionResponseJson");
+
+      final driverId = await _rideHubConnection!.invoke(
         'FindDriver',
         args: [
           UserServices.userDto!.userId,
-          widget.rideInfo,
+          widget.rideInfo.toJson(),
           widget.totalPrice,
           directionResponseJson,
         ],
       );
-      log(driverId.toString());
-
-      // Geolocator.getPositionStream().listen((Position position) async {
-      //   log(position.latitude.toString());
-      //   log(position.longitude.toString());
-      //   // Assuming you have a HubConnection instance `hubConnection`
-      //   await _rideHubConnection!.invoke(
-      //     "SendLocation",
-      //     args: [
-      //       driverId,
-      //       position.latitude,
-      //       position.longitude,
-      //     ],
-      //   );
-      // }, onError: (e) {
-      //   log('getPositionStream: ${e.toString()}');
-      //   return;
-      // });
+      log("driverId: $driverId");
     } catch (e) {
       log('Ride Hub Connection failed: $e');
     }
@@ -328,33 +320,6 @@ class _RideScreenState extends State<RideScreen> {
                       ),
                     ],
                   ),
-                  // Row(
-                  //   crossAxisAlignment: CrossAxisAlignment.start,
-                  //   children: [
-                  //     Expanded(
-                  //       flex: 2,
-                  //       child: Text(
-                  //         'Discount: ',
-                  //         style: TextStyle(
-                  //           color: KColors.kColor6,
-                  //           fontWeight: FontWeight.bold,
-                  //           fontSize: 14,
-                  //         ),
-                  //       ),
-                  //     ),
-                  //     Expanded(
-                  //       flex: 3,
-                  //       child: Text(
-                  //         'N/A',
-                  //         style: TextStyle(
-                  //           color: KColors.kTertiaryColor,
-                  //           fontWeight: FontWeight.normal,
-                  //           fontSize: 14,
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
                   const Divider(color: KColors.kTertiaryColor),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,

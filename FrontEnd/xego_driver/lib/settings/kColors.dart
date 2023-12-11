@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class KColors {
   static const kPrimaryColor = Color(0xff20c017);
   static const kSecondaryColor = Color(0xff9ce5a2);
+  static const kSuperLightSecondaryColor = Color.fromARGB(255, 225, 255, 227);
   static const kTertiaryColor = Color(0xff244e6a);
   static const kColor4 = Color(0xff58a7a5);
   static const kColor5 = Color(0xff9fcfca);
@@ -17,5 +18,6 @@ class KColors {
   static const kGrey = Color(0xff9EADBA);
   static const kWhite = Color(0xffffffff);
   static const kDanger = Color(0xffff5252);
+  static const kSuperLightDanger = Color.fromARGB(255, 255, 231, 231);
   static const kSuperLightTextColor = Color(0xffbdbdbd);
 }

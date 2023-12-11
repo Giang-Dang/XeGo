@@ -51,6 +51,7 @@ dependencies:
   firebase_core: ^2.24.2
   firebase_messaging: ^14.7.8
   circular_countdown_timer: ^0.2.3
+  flutter_polyline_points: ^2.0.0
 
 dev_dependencies:
   flutter_test:
@@ -79,6 +80,13 @@ flutter:
     - assets/images/car_loading.gif
     - assets/images/getting_location.gif
     - assets/images/task_completed.gif
+    - assets/images/pick_up_location_icon.png
+    - assets/images/destination_location_icon.png
+    - assets/images/car_location_icon.png
+    - assets/images/user_location.png
+    - assets/images/start_location.png
+    - assets/images/looking_for_driver.gif
+    - assets/images/red_car_top_view.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

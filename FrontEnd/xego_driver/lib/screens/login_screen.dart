@@ -6,6 +6,7 @@ import 'package:xego_driver/models/Dto/login_request_dto.dart';
 import 'package:xego_driver/screens/do_not_have_vehicle_screen.dart';
 import 'package:xego_driver/screens/main_tabs_screen.dart';
 import 'package:xego_driver/screens/driver_registration_screen.dart';
+import 'package:xego_driver/services/location_services.dart';
 import 'package:xego_driver/services/notification_services.dart';
 import 'package:xego_driver/services/user_services.dart';
 import 'package:xego_driver/services/vehicle_services.dart';
@@ -28,6 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final UserServices _userServices = UserServices();
   final VehicleServices _vehicleServices = VehicleServices();
   final NotificationServices _notificationServices = NotificationServices();
+  final _locationServices = LocationServices();
 
   late bool _isPasswordObscured;
   late bool _isLogining;

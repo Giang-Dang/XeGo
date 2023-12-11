@@ -83,17 +83,79 @@ class _MainTabsScreenState extends State<MainTabsScreen> {
     }
   }
 
+  _handleAcceptRide(int index) {
+    _invokerAcceptRide(index);
+
+    if (context.mounted) {
+      setState(() {
+        _receivedRidesList.removeAt(index);
+        _totalPriceList.removeAt(index);
+        _directionResponseList.removeAt(index);
+        log("removed");
+      });
+    }
+  }
+
+  _invokerAcceptRide(int index) async {
+    log("_invokerAcceptRide");
+    log(index.toString());
+    log(UserServices.userDto!.userId);
+    log(_receivedRidesList[index].id.toString());
+
+    final driverId = UserServices.userDto!.userId;
+    final rideId = _receivedRidesList[index].id;
+
+    try {
+      final response = await _rideHubConnection!
+          .invoke("AcceptRide", args: [driverId, rideId]);
+      log(response.toString());
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  _handleDeclineRide(int index) {
+    _invokerDeclineRide(index);
+
+    if (context.mounted) {
+      setState(() {
+        _receivedRidesList.removeAt(index);
+        _totalPriceList.removeAt(index);
+        _directionResponseList.removeAt(index);
+        log("removed");
+      });
+    }
+  }
+
+  _invokerDeclineRide(int index) async {
+    log("_invokerDeclineRide");
+    log(index.toString());
+    log(UserServices.userDto!.userId);
+    log(_receivedRidesList[index].id.toString());
+
+    final driverId = UserServices.userDto!.userId;
+    final rideId = _receivedRidesList[index].id;
+
+    try {
+      final response = await _rideHubConnection!
+          .invoke("DeclineRide", args: [driverId, rideId]);
+      log(response.toString());
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
   _handleReceiveRide(List<dynamic>? jsons) {
     log("receive $jsons");
     if (jsons == null) {
       log("_handleReceiveRide > jsons null!");
     }
     log(jsons![0]);
-    final cRide = Ride.fromHubJson(jsonDecode(jsons![0]));
+    final cRide = Ride.fromHubJson(jsonDecode(jsons[0]));
     double cTotalPrice = jsons[1];
-    log(jsons[2]);
+    // log(jsons[2]);
     final cDirectionResponse =
-        DirectionGoogleApiResponseDto.fromHubJson(jsonDecode(jsons[2]));
+        DirectionGoogleApiResponseDto.fromJson(jsonDecode(jsons[2]));
 
     if (!_receivedRidesList.contains(cRide)) {
       if (context.mounted) {
@@ -111,7 +173,10 @@ class _MainTabsScreenState extends State<MainTabsScreen> {
     final hubUrl = Uri.http(KSecret.kApiIp, subHubUrl);
     _rideHubConnection =
         HubConnectionBuilder().withUrl(hubUrl.toString()).build();
-    _rideHubConnection!.onclose((error) => log("Ride Hub Connection Closed"));
+    _rideHubConnection!.onclose((error) {
+      log(error.toString());
+      log("Ride Hub Connection Closed");
+    });
     _rideHubConnection!.on("receiveRide", _handleReceiveRide);
     try {
       await _rideHubConnection!.start();
@@ -139,6 +204,8 @@ class _MainTabsScreenState extends State<MainTabsScreen> {
         receivedRidesList: _receivedRidesList,
         totalPriceList: _totalPriceList,
         directionResponseList: _directionResponseList,
+        onRemoveItemInList: _handleDeclineRide,
+        onAcceptRide: _handleAcceptRide,
       ),
       const HistoryWidget(),
       const Me(),
