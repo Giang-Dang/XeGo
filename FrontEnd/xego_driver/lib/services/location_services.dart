@@ -1,16 +1,21 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:ui';
 
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:xego_driver/models/Dto/direction_google_api_response_dto.dart';
 import 'package:xego_driver/services/api_services.dart';
+import 'package:xego_driver/settings/kColors.dart';
 import 'dart:math' as math;
 
 import 'package:xego_driver/settings/kSecrets.dart';
 
 class LocationServices {
-  final apiServices = ApiServices();
+  final _apiServices = ApiServices();
+  static LatLng? currentLocation;
 
   Future<bool> updateLocationToDb(
       String userId, bool isDriver, LatLng latLng, String createdBy) async {
@@ -19,7 +24,7 @@ class LocationServices {
           isDriver ? "api/locations/drivers" : "api/locations/riders";
       final url = Uri.http(KSecret.kApiIp, subApiUrl);
 
-      final response = await apiServices.post(url.toString(), data: {
+      final response = await _apiServices.post(url.toString(), data: {
         "userId": userId,
         "latitude": latLng.latitude,
         "longitude": latLng.longitude,
@@ -34,6 +39,15 @@ class LocationServices {
     }
   }
 
+  Future<void> updateCurrentLocation() async {
+    determinePosition().then((value) {
+      log('updateCurrentLocation completed');
+      currentLocation = LatLng(value.latitude, value.longitude);
+    }).onError((error, stackTrace) {
+      log(error.toString());
+    });
+  }
+
   Future<bool> deleteLocationInDb(String userId, bool isDriver) async {
     try {
       final subApiUrl = isDriver
@@ -41,7 +55,7 @@ class LocationServices {
           : "api/locations/riders/$userId";
       final url = Uri.http(KSecret.kApiIp, subApiUrl);
 
-      final response = await apiServices.delete(url.toString());
+      final response = await _apiServices.delete(url.toString());
       return response.data['isSuccess'];
     } catch (e) {
       log(e.toString());
@@ -125,5 +139,55 @@ class LocationServices {
 
   double _toRadians(double degree) {
     return degree * (math.pi / 180);
+  }
+
+  Future<DirectionGoogleApiResponseDto?> getPlaceDirectionDetails(
+      LatLng startPosition, LatLng destinationPosition) async {
+    String directionUrl =
+        'https://maps.googleapis.com/maps/api/directions/json?destination=${destinationPosition.latitude},${destinationPosition.longitude}&origin=${startPosition.latitude},${startPosition.longitude}&key=${KSecret.kMapsAPIKey}';
+
+    var res = await _apiServices.get(directionUrl);
+
+    log(res.toString());
+
+    if (res.data['status'].toString().toUpperCase() != 'OK') {
+      return null;
+    }
+
+    DirectionGoogleApiResponseDto directionResponse =
+        DirectionGoogleApiResponseDto();
+
+    directionResponse.encodedPoints =
+        res.data['routes'][0]['overview_polyline']['points'];
+    directionResponse.distanceText =
+        res.data['routes'][0]['legs'][0]['distance']['text'];
+    directionResponse.distanceValue =
+        res.data['routes'][0]['legs'][0]['distance']['value'];
+    directionResponse.durationText =
+        res.data['routes'][0]['legs'][0]['duration']['text'];
+    directionResponse.durationValue =
+        res.data['routes'][0]['legs'][0]['duration']['value'];
+
+    return directionResponse;
+  }
+
+  Future<Set<Polyline>> getDirectionPolylines(
+      DirectionGoogleApiResponseDto directionResponse,
+      {Color directionColor = KColors.kBlue}) async {
+    Set<Polyline> polylines = {};
+
+    PolylinePoints polylinePoints = PolylinePoints();
+    List<PointLatLng> decodedPolylinePoints =
+        polylinePoints.decodePolyline(directionResponse.encodedPoints!);
+    polylines.add(Polyline(
+      polylineId: PolylineId('direction'),
+      points: decodedPolylinePoints
+          .map((point) => LatLng(point.latitude, point.longitude))
+          .toList(),
+      color: directionColor,
+      width: 3,
+    ));
+
+    return polylines;
   }
 }

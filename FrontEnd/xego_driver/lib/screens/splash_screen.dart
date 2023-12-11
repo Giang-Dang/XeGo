@@ -6,6 +6,7 @@ import 'package:xego_driver/screens/do_not_have_vehicle_screen.dart';
 import 'package:xego_driver/screens/login_screen.dart';
 import 'package:xego_driver/screens/main_tabs_screen.dart';
 import 'package:xego_driver/services/api_services.dart';
+import 'package:xego_driver/services/location_services.dart';
 import 'package:xego_driver/services/notification_services.dart';
 import 'package:xego_driver/services/user_services.dart';
 import 'package:xego_driver/services/vehicle_services.dart';
@@ -27,12 +28,15 @@ class _SplashScreenState extends State<SplashScreen>
   final _apiServices = ApiServices();
   final _vehicleServices = VehicleServices();
   final NotificationServices _notificationServices = NotificationServices();
+  final _locationServices = LocationServices();
 
   _initialize() async {
-    await Future.wait<void>([_userServices.getUserLocation(), _login()]);
+    await _login();
   }
 
   _login() async {
+    await _locationServices.updateCurrentLocation();
+
     final updateResults = await Future.wait<bool>([
       _userServices.updateUserDtoFromStorage(),
       _userServices.updateTokensDtoFromStorage()

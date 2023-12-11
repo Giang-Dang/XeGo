@@ -18,8 +18,6 @@ import 'package:xego_driver/settings/kSecrets.dart';
 class UserServices {
   static bool isAuthorized = false;
   static UserDto? userDto;
-  static double currentLongitude = 0.0;
-  static double currentLatitude = 0.0;
   final apiServices = ApiServices();
 
   Future<bool> login(LoginRequestDto requestDto) async {
@@ -96,24 +94,24 @@ class UserServices {
     return response;
   }
 
-  Future<void> getUserLocation() async {
-    final locationServices = LocationServices();
-    const maxAttempts = 10;
-    const desiredAccuracy = 100.0;
+  // Future<void> getUserLocation() async {
+  //   final locationServices = LocationServices();
+  //   const maxAttempts = 10;
+  //   const desiredAccuracy = 100.0;
 
-    Position locationData = await locationServices.determinePosition();
+  //   Position locationData = await locationServices.determinePosition();
 
-    for (int attempts = 1; attempts < maxAttempts; attempts++) {
-      log(locationData.accuracy.toString());
-      if (locationData.accuracy <= desiredAccuracy) {
-        break;
-      }
-      locationData = await locationServices.determinePosition();
-    }
+  //   for (int attempts = 1; attempts < maxAttempts; attempts++) {
+  //     log(locationData.accuracy.toString());
+  //     if (locationData.accuracy <= desiredAccuracy) {
+  //       break;
+  //     }
+  //     locationData = await locationServices.determinePosition();
+  //   }
 
-    currentLatitude = locationData.latitude;
-    currentLongitude = locationData.longitude;
-  }
+  //   currentLatitude = locationData.latitude;
+  //   currentLongitude = locationData.longitude;
+  // }
 
   bool isValidEmail(String? email) {
     RegExp validRegex = RegExp(
