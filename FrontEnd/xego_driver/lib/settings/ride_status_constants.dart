@@ -6,4 +6,5 @@ class RideStatusConstants {
   static const String inProgress = "IN PROGRESS";
   static const String completed = "COMPLETED";
   static const String cancelled = "CANCELLED";
+  static const int maxStepCount = 5;
 }

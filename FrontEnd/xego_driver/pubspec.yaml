@@ -52,6 +52,8 @@ dependencies:
   firebase_messaging: ^14.7.8
   circular_countdown_timer: ^0.2.3
   flutter_polyline_points: ^2.0.0
+  sqflite: ^2.3.0
+  path: ^1.8.3
 
 dev_dependencies:
   flutter_test:
