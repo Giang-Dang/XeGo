@@ -44,17 +44,25 @@ class _ChooseVehicleTypeScreenState extends State<ChooseVehicleTypeScreen> {
     log(widget.directionResponse.toString());
     log(widget.vehicleTypePriceInfoList.toString());
 
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
         body: Stack(children: [
-      MapWidget(
-        pickUpLocation: widget.pickupLatLng,
-        destinationLocation: widget.destinationLatLng,
-        riderLocation: widget.currentRiderLatLng,
-        directionGoogleApiDto: widget.directionResponse,
+      Container(),
+      Container(
+        height: screenHeight * (1 - 0.10),
+        child: MapWidget(
+          pickUpLocation: widget.pickupLatLng,
+          destinationLocation: widget.destinationLatLng,
+          riderLocation: widget.currentRiderLatLng,
+          directionGoogleApiDto: widget.directionResponse,
+          markerOutterPadding: 170,
+        ),
       ),
       ChooseVehicleTypeSheetWidget(
         vehicleTypePriceList: widget.vehicleTypePriceInfoList,
         setVehicleTypeId: widget.setVehicleTypeId,
+        minChildSize: 0.15,
       ),
     ]));
   }

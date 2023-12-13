@@ -9,10 +9,12 @@ class ChooseVehicleTypeSheetWidget extends StatefulWidget {
     super.key,
     required this.vehicleTypePriceList,
     required this.setVehicleTypeId,
+    this.minChildSize,
   });
 
   final List<VehicleTypeCalculatedPriceInfoDto> vehicleTypePriceList;
   final Function(int, String, double) setVehicleTypeId;
+  final double? minChildSize;
 
   @override
   State<ChooseVehicleTypeSheetWidget> createState() =>
@@ -25,7 +27,7 @@ class _ChooseVehicleTypeSheetWidgetState
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
       initialChildSize: 0.15,
-      minChildSize: 0.15,
+      minChildSize: widget.minChildSize ?? 0.15,
       maxChildSize: 0.3,
       builder: (BuildContext context, ScrollController scrollController) {
         return Container(

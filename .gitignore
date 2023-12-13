@@ -1,7 +1,7 @@
 ﻿################################################################################
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
-
+/.VSCodeCounter/
 /BackEnd/XeGo-Microservices/.vs/
 /BackEnd/XeGo-Microservices/obj/
 /BackEnd/XeGo-Microservices/bin/

@@ -8,7 +8,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:signalr_netcore/hub_connection.dart';
 import 'package:signalr_netcore/hub_connection_builder.dart';
 import 'package:xego_rider/models/Dto/direction_google_api_response_dto.dart';
+import 'package:xego_rider/models/Entities/driver.dart';
 import 'package:xego_rider/models/Entities/ride.dart';
+import 'package:xego_rider/models/Entities/vehicle.dart';
 import 'package:xego_rider/services/location_services.dart';
 import 'package:xego_rider/services/user_services.dart';
 import 'package:xego_rider/settings/kColors.dart';
@@ -38,6 +40,9 @@ class _RideScreenState extends State<RideScreen> {
   HubConnection? _rideHubConnection;
   final _locationServices = LocationServices();
   List<LatLng> _driverLocationList = [];
+  Driver? _acceptedDriver;
+  Vehicle? _acceptedVehicle;
+  String? _driverAvatarUrl;
 
 //   // Assuming you have a HubConnection instance `hubConnection`
 // hubConnection.on("ReceiveLocation", _handleLocationUpdate);
@@ -359,10 +364,97 @@ class _RideScreenState extends State<RideScreen> {
             child: Container(
               height: roundedBorderContainerHeight,
               width: roundedBorderContainerWidth,
+              padding: EdgeInsets.fromLTRB(10, 5, 5, 5),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
                 color: KColors.kWhite,
               ),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'Name: ',
+                            style:
+                                Theme.of(context).textTheme.bodySmall!.copyWith(
+                                      color: KColors.kColor6,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                          ),
+                          TextSpan(
+                            text: "Driver, One",
+                            style:
+                                Theme.of(context).textTheme.bodySmall!.copyWith(
+                                      color: KColors.kTertiaryColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'Tel.: ',
+                            style:
+                                Theme.of(context).textTheme.bodySmall!.copyWith(
+                                      color: KColors.kColor6,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                          ),
+                          TextSpan(
+                            text: "0365627222",
+                            style:
+                                Theme.of(context).textTheme.bodySmall!.copyWith(
+                                      color: KColors.kTertiaryColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'Plate Number: ',
+                            style:
+                                Theme.of(context).textTheme.bodySmall!.copyWith(
+                                      color: KColors.kColor6,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                          ),
+                          TextSpan(
+                            text: "53F4 - 55.212",
+                            style:
+                                Theme.of(context).textTheme.bodySmall!.copyWith(
+                                      color: KColors.kTertiaryColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: "Waiting for rider...",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(
+                                  color: KColors.kPrimaryColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ]),
             ),
           ),
           Positioned(
@@ -375,6 +467,12 @@ class _RideScreenState extends State<RideScreen> {
                   shape: BoxShape.circle,
                   color: KColors.kWhite,
                   border: Border.all(color: KColors.kColor4, width: 2.0)),
+              child: Image.asset(
+                _driverAvatarUrl ?? 'assets/images/person_male.png',
+                fit: _driverAvatarUrl == null
+                    ? null
+                    : BoxFit.fill, // replace with your image path
+              ),
             ),
           ),
         ],
