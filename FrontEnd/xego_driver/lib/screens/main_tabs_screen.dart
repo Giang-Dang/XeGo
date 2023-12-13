@@ -84,7 +84,7 @@ class _MainTabsScreenState extends State<MainTabsScreen> {
   }
 
   _handleAcceptRide(int index) {
-    _invokerAcceptRide(index);
+    _invokeAcceptRide(index);
 
     if (context.mounted) {
       setState(() {
@@ -96,19 +96,29 @@ class _MainTabsScreenState extends State<MainTabsScreen> {
     }
   }
 
-  _invokerAcceptRide(int index) async {
-    log("_invokerAcceptRide");
+  _invokeAcceptRide(int index) async {
+    log("_invokeAcceptRide");
     log(index.toString());
     log(UserServices.userDto!.userId);
     log(_receivedRidesList[index].id.toString());
 
     final driverId = UserServices.userDto!.userId;
     final rideId = _receivedRidesList[index].id;
+    final riderId = _receivedRidesList[index].riderId;
 
     try {
-      final response = await _rideHubConnection!
+      final acceptRideResponse = await _rideHubConnection!
           .invoke("AcceptRide", args: [driverId, rideId]);
-      log(response.toString());
+      log("AcceptRide invoked");
+      log(acceptRideResponse.toString());
+
+      final updateLocationResponse =
+          await _rideHubConnection!.invoke("UpdateLocation", args: [
+        driverId,
+        riderId,
+        LocationServices.currentLocation!.latitude,
+        LocationServices.currentLocation!.longitude,
+      ]);
     } catch (e) {
       log(e.toString());
     }

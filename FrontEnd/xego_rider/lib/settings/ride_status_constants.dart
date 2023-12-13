@@ -1,8 +1,8 @@
 class RideStatusConstants {
-  static const String FindingDriver = "FINDING DRIVER";
-  static const String DriverAccepted = "DRIVER ACCEPTED";
-  static const String AwaitingPickup = "AWAITING PICKUP";
-  static const String InProgress = "IN PROGRESS";
-  static const String Completed = "COMPLETED";
-  static const String Cancelled = "CANCELLED";
+  static const String findingDriver = "FINDING DRIVER";
+  static const String driverAccepted = "DRIVER ACCEPTED";
+  static const String awaitingPickup = "AWAITING PICKUP";
+  static const String inProgress = "IN PROGRESS";
+  static const String completed = "COMPLETED";
+  static const String cancelled = "CANCELLED";
 }

@@ -67,7 +67,7 @@ class _GetARideScreenState extends State<GetARideScreen> {
     final requestDto = CreateRideRequestDto(
       riderId: UserServices.userDto!.userId,
       vehicleTypeId: _vehicleTypeId!,
-      status: RideStatusConstants.FindingDriver,
+      status: RideStatusConstants.findingDriver,
       startLatitude: _startLatLng!.latitude,
       startLongitude: _startLatLng!.longitude,
       startAddress: _startAddress!,
