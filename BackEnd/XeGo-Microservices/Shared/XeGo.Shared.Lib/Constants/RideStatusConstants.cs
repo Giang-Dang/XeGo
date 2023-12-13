@@ -4,6 +4,7 @@
     {
         public const string FindingDriver = "FINDING DRIVER";
         public const string DriverAccepted = "DRIVER ACCEPTED";
+        public const string Scheduled = "SCHEDULED";
         public const string AwaitingPickup = "AWAITING PICKUP";
         public const string InProgress = "IN PROGRESS";
         public const string Completed = "COMPLETED";

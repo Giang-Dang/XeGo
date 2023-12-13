@@ -232,6 +232,18 @@
       "UpstreamHttpMethod": [ "GET" ]
     },
     {
+      "DownstreamPathTemplate": "/api/drivers/{userId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.vehicle.api",
+          "Port": "8080"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/drivers/{userId}",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
       "DownstreamPathTemplate": "/api/drivers/{driverId}/assigned-vehicle",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -410,7 +422,7 @@
 
     //Notifications
     {
-      "DownstreamPathTemplate": "/api/start-schedule-send-sms",
+      "DownstreamPathTemplate": "/api/store-scheduled-sms-sending-task",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -418,7 +430,7 @@
           "Port": "80"
         }
       ],
-      "UpstreamPathTemplate": "/api/notifications/start-schedule-send-sms",
+      "UpstreamPathTemplate": "/api/notifications/store-scheduled-sms-sending-task",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
     },
     {

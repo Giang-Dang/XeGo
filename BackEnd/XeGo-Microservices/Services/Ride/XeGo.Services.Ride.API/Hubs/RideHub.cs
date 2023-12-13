@@ -21,7 +21,7 @@ namespace XeGo.Services.Ride.API.Hubs
         private static Dictionary<int, string?> rideDrivers = new();
         private static Dictionary<int, CancellationTokenSource> rideCts = new();
 
-        public async Task<string?> FindDriver(string fromUserId, Entities.Ride ride, double totalPrice, string directionResponseDtoJson)
+        public async Task<string> FindDriver(string fromUserId, Entities.Ride ride, double totalPrice, string directionResponseDtoJson)
         {
             logger.LogInformation($"{nameof(RideHub)}>{nameof(FindDriver)}: Triggered!");
             try
@@ -38,7 +38,7 @@ namespace XeGo.Services.Ride.API.Hubs
                 if (driverIdList == null)
                 {
                     logger.LogError($"Driver not found! (id:{ride.Id})");
-                    return null;
+                    return "";
                 }
 
                 var rideJson = JsonConvert.SerializeObject(ride);
@@ -69,12 +69,12 @@ namespace XeGo.Services.Ride.API.Hubs
                     if (rideDrivers[ride.Id] != null)
                     {
                         logger.LogInformation($"{nameof(RideHub)}>{nameof(FindDriver)}: Done! (Drivers Found! - id: {rideDrivers[ride.Id]})");
-                        return rideDrivers[ride.Id];
+                        return rideDrivers[ride.Id] ?? "";
                     }
                 }
 
                 logger.LogInformation($"{nameof(RideHub)}>{nameof(FindDriver)}: Done! (Drivers not found!)");
-                return null;
+                return "";
             }
             catch (AggregateException ae)
             {
@@ -83,17 +83,25 @@ namespace XeGo.Services.Ride.API.Hubs
                     if (rideDrivers[ride.Id] != null)
                     {
                         logger.LogInformation($"{nameof(RideHub)}>{nameof(FindDriver)}: Done! (Drivers Found! - id: {rideDrivers[ride.Id]})");
-                        return rideDrivers[ride.Id];
+
+                        ride.DriverId = rideDrivers[ride.Id];
+                        ride.Status = ride.IsScheduleRide ? RideStatusConstants.Scheduled : RideStatusConstants.DriverAccepted;
+                        ride.LastModifiedBy = RoleConstants.System;
+                        ride.LastModifiedDate = DateTime.UtcNow;
+                        db.Rides.Update(ride);
+                        await db.SaveChangesAsync();
+
+                        return rideDrivers[ride.Id] ?? "";
                     }
                 }
 
                 logger.LogError($"{nameof(FindDriver)} ae: {ae.Message}");
-                return null;
+                return "";
             }
             catch (Exception e)
             {
                 logger.LogError($"{nameof(FindDriver)} e: {e.Message}");
-                return null;
+                return "";
             }
         }
 
@@ -136,29 +144,37 @@ namespace XeGo.Services.Ride.API.Hubs
             return true;
         }
 
-        public async Task UpdateLocation(string fromUserId, string toUserId, PositionDto newPosition)
+        public async Task<bool> UpdateLocation(string fromUserId, string toUserId, double lat, double lng)
         {
             logger.LogInformation($"{nameof(RideHub)}>{nameof(UpdateLocation)}: Triggered!");
 
             try
             {
+                var newPosition = new PositionDto()
+                {
+                    Latitude = lat,
+                    Longitude = lng
+                };
+
                 var userConnectionId = await db.UserConnectionIds
                     .FirstOrDefaultAsync(u => u.UserId == toUserId);
                 if (userConnectionId == null)
                 {
                     logger.LogError("Destination Connection Id not found!");
-                    return;
+                    return false;
                 }
 
                 var toUserConnectionId = userConnectionId.ConnectionId;
 
-                await Clients.Clients(toUserConnectionId).SendAsync("updateLocation", newPosition);
+                await Clients.Clients(toUserConnectionId).SendAsync("receiveLocation", fromUserId, newPosition.Latitude, newPosition.Longitude);
                 logger.LogInformation($"{nameof(UpdateLocation)}: " +
                                       $"{fromUserId}'s location sent to {toUserId}");
+                return true;
             }
             catch (Exception e)
             {
                 logger.LogError($"{nameof(UpdateLocation)}: {e.Message}");
+                return false;
             }
 
         }
@@ -186,6 +202,8 @@ namespace XeGo.Services.Ride.API.Hubs
                     return;
                 }
                 cRide.Status = newStatus;
+                cRide.LastModifiedBy = $"SYSTEM (request from userId:{fromUserId})";
+                cRide.LastModifiedDate = DateTime.UtcNow;
                 await db.SaveChangesAsync();
                 logger.LogInformation($"Ride status (id:{rideId}) has been updated to {newStatus}");
 
