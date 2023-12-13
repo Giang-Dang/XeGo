@@ -139,6 +139,20 @@ class _MapWidgetState extends State<MapWidget> {
       myLocationEnabled: widget.mapMyLocationEnabled ?? true,
       zoomControlsEnabled: widget.mapZoomControllerEnabled ?? true,
       markers: <Marker>{
+        for (var i = 0; i < widget.driverLocationsList.length; i++)
+          Marker(
+              markerId: MarkerId('driverLocation$i'),
+              position: widget.driverLocationsList[i],
+              infoWindow: const InfoWindow(title: 'Driver Location'),
+              icon: _driverIcon ?? BitmapDescriptor.defaultMarker,
+              zIndex: 2.0),
+        if (widget.riderLocation != null)
+          Marker(
+              markerId: const MarkerId('riderLocation'),
+              position: widget.riderLocation!,
+              infoWindow: const InfoWindow(title: 'Rider Location'),
+              icon: _riderIcon ?? BitmapDescriptor.defaultMarker,
+              zIndex: 1.0),
         Marker(
           markerId: const MarkerId('pickupLocation'),
           position: widget.pickUpLocation,
@@ -151,20 +165,6 @@ class _MapWidgetState extends State<MapWidget> {
           infoWindow: const InfoWindow(title: 'Destination Location'),
           icon: _destinationIcon ?? BitmapDescriptor.defaultMarker,
         ),
-        for (var i = 0; i < widget.driverLocationsList.length; i++)
-          Marker(
-            markerId: MarkerId('driverLocation$i'),
-            position: widget.driverLocationsList[i],
-            infoWindow: const InfoWindow(title: 'Driver Location'),
-            icon: _driverIcon ?? BitmapDescriptor.defaultMarker,
-          ),
-        if (widget.riderLocation != null)
-          Marker(
-            markerId: const MarkerId('riderLocation'),
-            position: widget.riderLocation!,
-            infoWindow: const InfoWindow(title: 'Rider Location'),
-            icon: _riderIcon ?? BitmapDescriptor.defaultMarker,
-          ),
       },
       polylines: _polylines,
       onMapCreated: (GoogleMapController controller) async {

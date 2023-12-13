@@ -5,6 +5,7 @@ import 'package:xego_rider/models/Dto/vehicle_type_dto.dart';
 import 'package:xego_rider/models/Dto/vehicle_type_calculated_price_info_dto.dart';
 import 'package:xego_rider/models/Entities/vehicle.dart';
 import 'package:xego_rider/services/api_services.dart';
+import 'package:xego_rider/services/driver_services.dart';
 import 'package:xego_rider/settings/kSecrets.dart';
 
 class VehicleServices {
@@ -14,8 +15,8 @@ class VehicleServices {
     int? id,
     String? plateNumber,
     String? type,
-    String? driverId,
     bool? isActive,
+    bool? isAssigned,
     String? createdBy,
     DateTime? createdStartDate,
     DateTime? createdEndDate,
@@ -32,8 +33,8 @@ class VehicleServices {
         'id': id,
         'plateNumber': plateNumber,
         'type': type,
-        'driverId': driverId,
         'isActive': isActive,
+        'isAssigned': isAssigned,
         'createdBy': createdBy,
         'createdStartDate': createdStartDate?.toIso8601String(),
         'createdEndDate': createdEndDate?.toIso8601String(),
@@ -57,6 +58,7 @@ class VehicleServices {
       if (!vehicleResponseDto.isSuccess) {
         return [];
       }
+      log("getAllVehicles done!");
       return vehicleResponseDto.vehicles;
     } catch (e) {
       return [];
@@ -136,7 +138,17 @@ class VehicleServices {
   }
 
   Future<bool> isDriverAssigned(String driverId) async {
-    var vehicleList = await getAllVehicles(driverId: driverId);
-    return vehicleList.isNotEmpty;
+    try {
+      final driverServices = DriverServices();
+      final driver = await driverServices.getDriver(driverId);
+      if (driver == null) {
+        return false;
+      }
+      return driver.isAssigned;
+    } catch (e) {
+      log("isDriverAssigned Error:");
+      log(e.toString());
+      return false;
+    }
   }
 }

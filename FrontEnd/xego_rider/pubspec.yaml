@@ -85,6 +85,9 @@ flutter:
     - assets/images/user_location.png
     - assets/images/start_location.png
     - assets/images/looking_for_driver.gif
+    - assets/images/searching_icon.gif
+    - assets/images/not_found.png
+    - assets/images/person_male.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

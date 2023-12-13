@@ -18,7 +18,7 @@ import 'package:xego_driver/settings/kSecrets.dart';
 class UserServices {
   static bool isAuthorized = false;
   static UserDto? userDto;
-  final apiServices = ApiServices();
+  final _apiServices = ApiServices();
 
   Future<bool> login(LoginRequestDto requestDto) async {
     const subApiUrl = 'api/auth/user/login';
@@ -26,7 +26,7 @@ class UserServices {
 
     final jsonData = requestDto.toJson();
 
-    final response = await apiServices.post(url.toString(),
+    final response = await _apiServices.post(url.toString(),
         headers: AppConstants.kJsonHeader, data: jsonData);
 
     if (!response.data['isSuccess']) {
@@ -51,7 +51,7 @@ class UserServices {
 
     final jsonData = requestDto.toJson();
 
-    final response = await apiServices.post(url.toString(),
+    final response = await _apiServices.post(url.toString(),
         headers: AppConstants.kJsonHeader, data: jsonData);
 
     if (!response.data['isSuccess']) {
@@ -71,6 +71,24 @@ class UserServices {
     return response;
   }
 
+  Future<UserDto?> getUserById(String userId) async {
+    try {
+      final subApiUrl = 'api/auth/user/$userId';
+      final url = Uri.http(KSecret.kApiIp, subApiUrl);
+
+      final response = await _apiServices.get(url.toString());
+
+      if (response.data['isSuccess']) {
+        final userDto = UserDto.fromJson(response.data['data']);
+        return userDto;
+      }
+    } catch (e) {
+      log('getUserById Error:');
+      log(e.toString());
+    }
+    return null;
+  }
+
   Future<Response> uploadAvatar(File image, String userId) async {
     const subApiUrl = 'api/images/avatar';
     final url = Uri.http(KSecret.kApiIp, subApiUrl, {
@@ -84,7 +102,7 @@ class UserServices {
       "imageFile": await MultipartFile.fromFile(image.path, filename: fileName),
     });
 
-    final response = await apiServices.post(url.toString(), data: formData);
+    final response = await _apiServices.post(url.toString(), data: formData);
 
     if (!response.data['isSuccess']) {
       log(response.data['message']);
@@ -93,25 +111,6 @@ class UserServices {
 
     return response;
   }
-
-  // Future<void> getUserLocation() async {
-  //   final locationServices = LocationServices();
-  //   const maxAttempts = 10;
-  //   const desiredAccuracy = 100.0;
-
-  //   Position locationData = await locationServices.determinePosition();
-
-  //   for (int attempts = 1; attempts < maxAttempts; attempts++) {
-  //     log(locationData.accuracy.toString());
-  //     if (locationData.accuracy <= desiredAccuracy) {
-  //       break;
-  //     }
-  //     locationData = await locationServices.determinePosition();
-  //   }
-
-  //   currentLatitude = locationData.latitude;
-  //   currentLongitude = locationData.longitude;
-  // }
 
   bool isValidEmail(String? email) {
     RegExp validRegex = RegExp(
@@ -208,8 +207,6 @@ class UserServices {
     );
     return nameRegExp.hasMatch(name);
   }
-
-  _saveLoginInfo() async {}
 
   Future<void> _saveTokensDto(
     TokensDto tokens,

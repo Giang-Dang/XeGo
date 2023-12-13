@@ -8,6 +8,7 @@ import 'package:xego_driver/firebase_options.dart';
 import 'package:xego_driver/screens/login_screen.dart';
 import 'package:xego_driver/screens/main_tabs_screen.dart';
 import 'package:xego_driver/screens/pick_location_screen.dart';
+import 'package:xego_driver/screens/ride_screen.dart';
 import 'package:xego_driver/screens/splash_screen.dart';
 import 'package:xego_driver/screens/driver_registration_screen.dart';
 import 'package:xego_driver/screens/do_not_have_vehicle_screen.dart';
@@ -62,6 +63,7 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         body: SplashScreen(),
         // body: const MainTabsScreen(),
+        // body: const RideScreen(),
       ),
     );
   }

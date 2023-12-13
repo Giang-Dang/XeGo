@@ -19,7 +19,7 @@ class UserServices {
   static String? riderType;
   static double currentLongitude = 0.0;
   static double currentLatitude = 0.0;
-  final apiServices = ApiServices();
+  final _apiServices = ApiServices();
 
   Future<bool> login(LoginRequestDto requestDto) async {
     const subApiUrl = 'api/auth/user/login';
@@ -27,7 +27,7 @@ class UserServices {
 
     final jsonData = requestDto.toJson();
 
-    final response = await apiServices.post(url.toString(),
+    final response = await _apiServices.post(url.toString(),
         headers: AppConstants.kJsonHeader, data: jsonData);
 
     if (!response.data['isSuccess']) {
@@ -52,7 +52,7 @@ class UserServices {
 
     final jsonData = requestDto.toJson();
 
-    final response = await apiServices.post(url.toString(),
+    final response = await _apiServices.post(url.toString(),
         headers: AppConstants.kJsonHeader, data: jsonData);
 
     if (!response.data['isSuccess']) {
@@ -72,11 +72,27 @@ class UserServices {
     return response;
   }
 
+  Future<String?> getAvatarUrl(String userId, String imageSize) async {
+    const subApiUrl = "api/images/avatar";
+    final url = Uri.http(KSecret.kApiIp, subApiUrl, {
+      "userId": userId,
+      "imageSize": imageSize,
+    });
+
+    final response = await _apiServices.get(url.toString());
+
+    if (response.data['isSuccess']) {
+      return response.data['data'];
+    }
+
+    return null;
+  }
+
   Future<bool> updateRiderType(String userId) async {
     const subApiUrl = 'api/auth/user/rider-type';
     final url = Uri.http(KSecret.kApiIp, subApiUrl, {"id": userId});
 
-    final response = await apiServices.get(url.toString());
+    final response = await _apiServices.get(url.toString());
 
     log(response.data.toString());
 

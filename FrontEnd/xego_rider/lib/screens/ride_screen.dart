@@ -8,12 +8,20 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:signalr_netcore/hub_connection.dart';
 import 'package:signalr_netcore/hub_connection_builder.dart';
 import 'package:xego_rider/models/Dto/direction_google_api_response_dto.dart';
+import 'package:xego_rider/models/Entities/driver.dart';
 import 'package:xego_rider/models/Entities/ride.dart';
+import 'package:xego_rider/models/Entities/vehicle.dart';
+import 'package:xego_rider/services/driver_services.dart';
 import 'package:xego_rider/services/location_services.dart';
 import 'package:xego_rider/services/user_services.dart';
+import 'package:xego_rider/services/vehicle_services.dart';
+import 'package:xego_rider/settings/image_size_constants.dart';
 import 'package:xego_rider/settings/kColors.dart';
 import 'package:xego_rider/settings/kSecrets.dart';
+import 'package:xego_rider/settings/ride_status_constants.dart';
+import 'package:xego_rider/widgets/driver_info_and_ride_status.dart';
 import 'package:xego_rider/widgets/map_widget.dart';
+import 'package:xego_rider/widgets/ride_info.dart';
 
 class RideScreen extends StatefulWidget {
   const RideScreen({
@@ -36,18 +44,82 @@ class RideScreen extends StatefulWidget {
 class _RideScreenState extends State<RideScreen> {
   Timer? _initialTimer;
   HubConnection? _rideHubConnection;
+
   final _locationServices = LocationServices();
+  final _userServices = UserServices();
+  final _driverServices = DriverServices();
+  final _vehicleServices = VehicleServices();
+
+  final _notFoundImageUrl = 'assets/images/not_found.png';
+  final _findingImageUrl = 'assets/images/searching_icon.gif';
+  final _defaultAvatarUrl = 'assets/images/person_male.png';
+
+  Ride? _ride;
   List<LatLng> _driverLocationList = [];
+  Driver? _acceptedDriver;
+  Vehicle? _acceptedVehicle;
+  String? _driverAvatarUrl;
+  bool _isFindingDriver = true;
+  String _showingImageUrl = 'assets/images/searching_icon.gif';
+
+  // bool _isDriverNotFound = false;
 
 //   // Assuming you have a HubConnection instance `hubConnection`
 // hubConnection.on("ReceiveLocation", _handleLocationUpdate);
 
   _initialize() async {
+    _showingImageUrl = _findingImageUrl;
+
     await _locationServices.updateCurrentLocation();
     await _locationServices.pushRiderLocation(
         LocationServices.currentLocation!, UserServices.userDto!.userId);
 
     _startHub();
+  }
+
+  bool _isDriverNotFound() {
+    return _isFindingDriver || _acceptedDriver != null;
+  }
+
+  _setIsFindingDriverState(bool state) {
+    if (mounted) {
+      setState(() {
+        _showingImageUrl =
+            state ? _findingImageUrl : (_driverAvatarUrl ?? _defaultAvatarUrl);
+        _isFindingDriver = state;
+      });
+    }
+  }
+
+  _handleUpdateRideStatus(List<dynamic>? parameters) {
+    if (parameters == null) {
+      log("_handleUpdateRideStatus Error: parameters is null");
+    }
+    String newStatus = parameters![0];
+    if (mounted) {
+      setState(() {
+        _ride = Ride(
+          id: _ride?.id ?? widget.rideInfo.id,
+          riderId: _ride?.riderId ?? widget.rideInfo.riderId,
+          driverId: _ride?.driverId ?? widget.rideInfo.driverId,
+          vehicleTypeId: _ride?.vehicleTypeId ?? widget.rideInfo.vehicleTypeId,
+          status: newStatus,
+          startLatitude: _ride?.startLatitude ?? widget.rideInfo.startLatitude,
+          startLongitude:
+              _ride?.startLongitude ?? widget.rideInfo.startLongitude,
+          startAddress: _ride?.startAddress ?? widget.rideInfo.startAddress,
+          destinationLatitude:
+              _ride?.destinationLatitude ?? widget.rideInfo.destinationLatitude,
+          destinationLongitude: _ride?.destinationLongitude ??
+              widget.rideInfo.destinationLongitude,
+          destinationAddress:
+              _ride?.destinationAddress ?? widget.rideInfo.destinationAddress,
+          pickupTime: _ride?.pickupTime ?? widget.rideInfo.pickupTime,
+          isScheduleRide:
+              _ride?.isScheduleRide ?? widget.rideInfo.isScheduleRide,
+        );
+      });
+    }
   }
 
   _startHub() async {
@@ -58,7 +130,8 @@ class _RideScreenState extends State<RideScreen> {
     _rideHubConnection =
         HubConnectionBuilder().withUrl(hubUrl.toString()).build();
     _rideHubConnection!.onclose((error) => log("Ride Hub Connection Closed"));
-    _rideHubConnection!.on("ReceiveLocation", _handleDriverLocationUpdate);
+    _rideHubConnection!.on("receiveLocation", _handleReceiveLocation);
+    _rideHubConnection!.on("updateRideStatus", _handleUpdateRideStatus);
 
     try {
       await _rideHubConnection!.start();
@@ -80,6 +153,8 @@ class _RideScreenState extends State<RideScreen> {
       log("widget.totalPrice: ${widget.totalPrice}");
       log("directionResponseJson: $directionResponseJson");
 
+      _setIsFindingDriverState(true);
+
       final driverId = await _rideHubConnection!.invoke(
         'FindDriver',
         args: [
@@ -88,24 +163,55 @@ class _RideScreenState extends State<RideScreen> {
           widget.totalPrice,
           directionResponseJson,
         ],
-      );
+      ) as String;
       log("driverId: $driverId");
+
+      if (driverId != "") {
+        final driverAvatarUrl = await _userServices.getAvatarUrl(
+            driverId, ImageSizeConstants.origin);
+        final acceptedDriver = await _driverServices.getDriver(driverId);
+        final vehicle = await _driverServices.getAssignedVehicle(driverId);
+        if (mounted) {
+          setState(() {
+            _driverAvatarUrl = driverAvatarUrl;
+            _acceptedDriver = acceptedDriver;
+            _acceptedVehicle = vehicle;
+            _ride = Ride(
+                id: widget.rideInfo.id,
+                riderId: widget.rideInfo.riderId,
+                driverId: driverId,
+                vehicleTypeId: widget.rideInfo.vehicleTypeId,
+                status: RideStatusConstants.driverAccepted,
+                startLatitude: widget.rideInfo.startLatitude,
+                startLongitude: widget.rideInfo.startLongitude,
+                startAddress: widget.rideInfo.startAddress,
+                destinationLatitude: widget.rideInfo.destinationLatitude,
+                destinationLongitude: widget.rideInfo.destinationLongitude,
+                destinationAddress: widget.rideInfo.destinationAddress,
+                pickupTime: widget.rideInfo.pickupTime,
+                isScheduleRide: widget.rideInfo.isScheduleRide);
+          });
+        }
+      }
+      _setIsFindingDriverState(false);
     } catch (e) {
       log('Ride Hub Connection failed: $e');
     }
   }
 
-  void _handleDriverLocationUpdate(List<dynamic>? parameters) {
+  void _handleReceiveLocation(List<dynamic>? parameters) {
     if (parameters == null) {
       log("_handleDriverLocationUpdate: parameters are null!");
       return;
     }
 
     LatLng newDriverLocation =
-        LatLng(parameters[0] as double, parameters[1] as double);
-    setState(() {
-      _driverLocationList = [newDriverLocation];
-    });
+        LatLng(parameters[1] as double, parameters[2] as double);
+    if (mounted) {
+      setState(() {
+        _driverLocationList = [newDriverLocation];
+      });
+    }
   }
 
   @override
@@ -136,8 +242,16 @@ class _RideScreenState extends State<RideScreen> {
     const bottomContainerHeight = 310.0;
     const circularContainerHeight = 120.0;
     const circularContainerWidth = 120.0;
-    const roundedBorderContainerHeight = 80.0;
+    const roundedBorderContainerHeight = 100.0;
     const roundedBorderContainerWidth = 250.0;
+    ImageProvider showingImageProvider =
+        const AssetImage('assets/images/person_male.png');
+
+    if (_showingImageUrl.startsWith('http')) {
+      showingImageProvider = NetworkImage(_showingImageUrl);
+    } else {
+      showingImageProvider = AssetImage(_showingImageUrl);
+    }
 
     var pickUpLocation = LatLng(
       widget.rideInfo.startLatitude,
@@ -167,204 +281,27 @@ class _RideScreenState extends State<RideScreen> {
             ),
           ),
           Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: bottomContainerHeight,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: KColors.kSecondaryColor,
-                borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(8.0),
-                    topRight: Radius.circular(8.0)),
-                border: Border.all(color: KColors.kColor4, width: 1.0),
-              ),
-              padding: const EdgeInsets.fromLTRB(20, 70, 20, 30),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Expanded(
-                        flex: 2,
-                        child: Text(
-                          'Pick Up Location: ',
-                          style: TextStyle(
-                            color: KColors.kColor6,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: Text(
-                          widget.rideInfo.startAddress,
-                          style: const TextStyle(
-                            color: KColors.kTertiaryColor,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Gap(5),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Expanded(
-                        flex: 2,
-                        child: Text(
-                          'Drop Off Location: ',
-                          style: TextStyle(
-                            color: KColors.kColor6,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: Text(
-                          widget.rideInfo.destinationAddress,
-                          style: const TextStyle(
-                            color: KColors.kTertiaryColor,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      const Expanded(flex: 8, child: Text('')),
-                      Expanded(
-                        flex: 7,
-                        child: RichText(
-                          text: TextSpan(
-                            style: const TextStyle(
-                              color: KColors.kTextColor,
-                              fontSize: 12,
-                            ),
-                            children: <TextSpan>[
-                              const TextSpan(
-                                  text: 'Distance: ',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: KColors.kColor6)),
-                              TextSpan(
-                                text: widget.directionResponse.distanceText,
-                                style: const TextStyle(
-                                  color: KColors.kTertiaryColor,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 5,
-                        child: RichText(
-                          text: TextSpan(
-                            style: const TextStyle(
-                              color: KColors.kTextColor,
-                              fontSize: 12,
-                            ),
-                            children: <TextSpan>[
-                              const TextSpan(
-                                  text: 'ETA: ',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: KColors.kColor6)),
-                              TextSpan(
-                                text: widget.directionResponse.durationText,
-                                style: const TextStyle(
-                                  color: KColors.kTertiaryColor,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Gap(7),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Expanded(
-                        flex: 2,
-                        child: Text(
-                          'Vehicle Type: ',
-                          style: TextStyle(
-                            color: KColors.kColor6,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: Text(
-                          widget.vehicleTypeName,
-                          style: const TextStyle(
-                            color: KColors.kTertiaryColor,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Divider(color: KColors.kTertiaryColor),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Expanded(
-                        flex: 2,
-                        child: Text(
-                          'Total Price: ',
-                          style: TextStyle(
-                            color: KColors.kColor6,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: Text(
-                          '\$${widget.totalPrice}',
-                          style: const TextStyle(
-                            color: KColors.kTertiaryColor,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
-                          textAlign: TextAlign.end,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: RideInfo(
+                height: bottomContainerHeight,
+                width: double.infinity,
+                ride: _ride ?? widget.rideInfo,
+                totalPrice: widget.totalPrice,
+                directionResponse: widget.directionResponse,
+                vehicleTypeName: widget.vehicleTypeName,
+              )),
           Positioned(
-            bottom: bottomContainerHeight - 40,
-            right: 20 + circularContainerWidth / 2,
-            child: Container(
-              height: roundedBorderContainerHeight,
-              width: roundedBorderContainerWidth,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: KColors.kWhite,
-              ),
-            ),
-          ),
+              bottom: bottomContainerHeight - roundedBorderContainerHeight / 2,
+              right: 20 + circularContainerWidth / 2,
+              child: DriverInfoAndRideStatus(
+                height: roundedBorderContainerHeight,
+                width: roundedBorderContainerWidth,
+                driver: _acceptedDriver,
+                ride: _ride ?? widget.rideInfo,
+                vehicle: _acceptedVehicle,
+              )),
           Positioned(
             bottom: bottomContainerHeight - circularContainerHeight / 2,
             right: 20,
@@ -375,6 +312,14 @@ class _RideScreenState extends State<RideScreen> {
                   shape: BoxShape.circle,
                   color: KColors.kWhite,
                   border: Border.all(color: KColors.kColor4, width: 2.0)),
+              child: ClipOval(
+                child: Image(
+                  image: showingImageProvider,
+                  fit: _showingImageUrl.startsWith('http')
+                      ? BoxFit.cover
+                      : null, // or BoxFit.contain
+                ),
+              ),
             ),
           ),
         ],

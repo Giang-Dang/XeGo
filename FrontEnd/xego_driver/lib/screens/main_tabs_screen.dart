@@ -8,7 +8,9 @@ import 'package:signalr_netcore/hub_connection.dart';
 import 'package:signalr_netcore/hub_connection_builder.dart';
 import 'package:xego_driver/models/Dto/direction_google_api_response_dto.dart';
 import 'package:xego_driver/models/Entities/ride.dart';
+import 'package:xego_driver/screens/ride_screen.dart';
 import 'package:xego_driver/services/location_services.dart';
+import 'package:xego_driver/services/stored_scheduled_ride_services.dart';
 import 'package:xego_driver/services/user_services.dart';
 import 'package:xego_driver/settings/app_constants.dart';
 import 'package:xego_driver/settings/kColors.dart';
@@ -35,6 +37,7 @@ class _MainTabsScreenState extends State<MainTabsScreen> {
   HubConnection? _rideHubConnection;
 
   final _locationServices = LocationServices();
+  final _storedScheduledRideServices = StoredScheduledRideServices();
 
   final List<bool> _isAppBarShow = [true, false, false];
 
@@ -84,38 +87,55 @@ class _MainTabsScreenState extends State<MainTabsScreen> {
   }
 
   _handleAcceptRide(int index) {
-    _invokerAcceptRide(index);
-
-    if (context.mounted) {
-      setState(() {
-        _receivedRidesList.removeAt(index);
-        _totalPriceList.removeAt(index);
-        _directionResponseList.removeAt(index);
-        log("removed");
-      });
-    }
+    _invokeAcceptRide(index);
   }
 
-  _invokerAcceptRide(int index) async {
-    log("_invokerAcceptRide");
+  _invokeAcceptRide(int index) async {
+    log("_invokeAcceptRide");
     log(index.toString());
     log(UserServices.userDto!.userId);
     log(_receivedRidesList[index].id.toString());
 
     final driverId = UserServices.userDto!.userId;
-    final rideId = _receivedRidesList[index].id;
+    final cRide = _receivedRidesList[index];
+    final cDirectionResponse = _directionResponseList[index];
+    final cTotalPrice = _totalPriceList[index];
 
     try {
-      final response = await _rideHubConnection!
-          .invoke("AcceptRide", args: [driverId, rideId]);
-      log(response.toString());
+      final acceptRideResponse = await _rideHubConnection!
+          .invoke("AcceptRide", args: [driverId, cRide.id]);
+      log("AcceptRide invoked");
+      log(acceptRideResponse.toString());
+
+      final updateLocationResponse =
+          await _rideHubConnection!.invoke("UpdateLocation", args: [
+        driverId,
+        cRide.riderId,
+        LocationServices.currentLocation!.latitude,
+        LocationServices.currentLocation!.longitude,
+      ]);
+
+      if (cRide.isScheduleRide) {
+        //TODO: implement
+        _storedScheduledRideServices.insert(
+            driverId, cRide.id, cRide.pickupTime.toIso8601String());
+        return;
+      }
+
+      if (mounted) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => RideScreen(
+                ride: cRide,
+                directionResponse: cDirectionResponse,
+                totalPrice: cTotalPrice),
+          ),
+        );
+      }
+      return;
     } catch (e) {
       log(e.toString());
     }
-  }
-
-  _handleDeclineRide(int index) {
-    _invokerDeclineRide(index);
 
     if (context.mounted) {
       setState(() {
@@ -127,7 +147,11 @@ class _MainTabsScreenState extends State<MainTabsScreen> {
     }
   }
 
-  _invokerDeclineRide(int index) async {
+  _handleDeclineRide(int index) {
+    _invokeDeclineRide(index);
+  }
+
+  _invokeDeclineRide(int index) async {
     log("_invokerDeclineRide");
     log(index.toString());
     log(UserServices.userDto!.userId);
@@ -142,6 +166,15 @@ class _MainTabsScreenState extends State<MainTabsScreen> {
       log(response.toString());
     } catch (e) {
       log(e.toString());
+    }
+
+    if (context.mounted) {
+      setState(() {
+        _receivedRidesList.removeAt(index);
+        _totalPriceList.removeAt(index);
+        _directionResponseList.removeAt(index);
+        log("removed");
+      });
     }
   }
 
