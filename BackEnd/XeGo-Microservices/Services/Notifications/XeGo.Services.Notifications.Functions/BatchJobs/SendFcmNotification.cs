@@ -19,10 +19,10 @@ namespace XeGo.Services.Notifications.Functions.BatchJobs
         private readonly ILogger _logger = loggerFactory.CreateLogger<SendFcmNotification>();
         private static readonly HttpClient Client = new();
 
-        [Function(FuncNameConst.SendFcmNotification)]
+        [Function(FuncConst.SendFcmNotification)]
         public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req)
         {
-            _logger.LogInformation($"{FuncNameConst.SendFcmNotification} HTTP trigger function processed a request.");
+            _logger.LogInformation($"{FuncConst.SendFcmNotification} HTTP trigger function processed a request.");
 
             try
             {
@@ -76,7 +76,7 @@ namespace XeGo.Services.Notifications.Functions.BatchJobs
             }
             catch (Exception e)
             {
-                _logger.LogError($"{FuncNameConst.SendFcmNotification}: {e.Message}");
+                _logger.LogError($"{FuncConst.SendFcmNotification}: {e.Message}");
                 return new InternalServerErrorResult();
             }
 

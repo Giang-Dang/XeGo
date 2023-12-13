@@ -1,10 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System.Reflection;
-using XeGo.Services.Location.API.Services;
 using XeGo.Services.Location.API.Services.IServices;
 using XeGo.Services.Location.Grpc.Data;
 using XeGo.Services.Location.Grpc.Services;
+using XeGo.Services.Vehicle.Grpc.Protos;
+using XeGo.Shared.GrpcConsumer.Services;
 using XeGo.Shared.Lib.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +28,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddSingleton<IGeoHashService, GeoHashService>();
 
 builder.Services.AddGrpc();
+
+//Add LocationGrpc service
+builder.Services.AddGrpcClient<VehicleProtoService.VehicleProtoServiceClient>(o =>
+    o.Address = new Uri(builder.Configuration["GrpcSettings:VehicleGrpcUrl"])
+);
+builder.Services.AddScoped<VehicleGrpcService>();
 
 var app = builder.Build();
 

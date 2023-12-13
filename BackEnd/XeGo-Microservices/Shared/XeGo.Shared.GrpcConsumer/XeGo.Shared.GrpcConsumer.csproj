@@ -32,6 +32,9 @@
     <Protobuf Include="..\..\Services\Vehicle\XeGo.Services.Vehicle.Grpc\Protos\driver.proto" GrpcServices="Client">
       <Link>Protos\driver.proto</Link>
     </Protobuf>
+    <Protobuf Include="..\..\Services\Vehicle\XeGo.Services.Vehicle.Grpc\Protos\vehicle.proto" GrpcServices="Client">
+      <Link>Protos\vehicle.proto</Link>
+    </Protobuf>
   </ItemGroup>
 
 </Project>

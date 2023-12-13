@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <None Remove="Protos\driver.proto" />
+    <None Remove="Protos\vehicle.proto" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,6 +32,7 @@
 
   <ItemGroup>
     <Protobuf Include="Protos\driver.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\vehicle.proto" GrpcServices="Server" />
   </ItemGroup>
 
 </Project>
