@@ -341,7 +341,8 @@ namespace XeGo.Services.Ride.API.Hubs
                     latitude: cRide.StartLatitude,
                     longitude: cRide.StartLongitude,
                     geoHashSquareSideInMeters: geoHashSquareSideInMeters,
-                    maxRadius: maxRadius
+                    maxRadius: maxRadius,
+                    vehicleTypeId: cRide.VehicleTypeId
                 );
 
             var driverIdList = JsonConvert.DeserializeObject<List<string>>(driverIdListJson.Data);

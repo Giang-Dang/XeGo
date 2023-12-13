@@ -68,7 +68,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XeGo.Services.Price.API", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XeGo.Services.Price.Grpc", "Services\Price\XeGo.Services.Price.Grpc\XeGo.Services.Price.Grpc.csproj", "{3B02DA84-97CC-4510-A16D-DE16F9893DD1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XeGo.Services.Vehicle.Grpc", "Services\Vehicle\XeGo.Services.Vehicle.Grpc\XeGo.Services.Vehicle.Grpc.csproj", "{B3953591-3395-403B-BA4B-B98FD1F273E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XeGo.Services.Vehicle.Grpc", "Services\Vehicle\XeGo.Services.Vehicle.Grpc\XeGo.Services.Vehicle.Grpc.csproj", "{B3953591-3395-403B-BA4B-B98FD1F273E6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

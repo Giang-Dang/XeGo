@@ -20,10 +20,10 @@ namespace XeGo.Services.Notifications.Functions.BatchJobs
             _logger = loggerFactory.CreateLogger<SendSms>();
         }
 
-        [Function(FuncNameConst.SendSms)]
+        [Function(FuncConst.SendSms)]
         public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req)
         {
-            _logger.LogInformation($"Executing Function {FuncNameConst.SendSms} ...");
+            _logger.LogInformation($"Executing Function {FuncConst.SendSms} ...");
 
             try
             {
@@ -53,7 +53,7 @@ namespace XeGo.Services.Notifications.Functions.BatchJobs
             }
             catch (Exception e)
             {
-                _logger.LogError($"{FuncNameConst.SendSms}: {e.Message}");
+                _logger.LogError($"{FuncConst.SendSms}: {e.Message}");
                 return new InternalServerErrorResult();
             }
 

@@ -11,5 +11,6 @@ namespace XeGo.Services.Notifications.Functions.Data
         }
 
         public DbSet<UserConnectionInfo> UserConnectionInfos { get; set; }
+        public DbSet<ScheduledTask> ScheduledTasks { get; set; }
     }
 }

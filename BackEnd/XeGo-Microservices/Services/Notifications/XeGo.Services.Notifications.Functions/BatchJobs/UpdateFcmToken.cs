@@ -16,10 +16,10 @@ namespace XeGo.Services.Notifications.Functions.BatchJobs
         private readonly ILogger<UpdateFcmToken> _logger = loggerFactory.CreateLogger<UpdateFcmToken>();
 
 
-        [Function(FuncNameConst.UpdateFcmToken)]
+        [Function(FuncConst.UpdateFcmToken)]
         public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req)
         {
-            _logger.LogInformation($"{FuncNameConst.UpdateFcmToken} HTTP trigger function processed a request.");
+            _logger.LogInformation($"{FuncConst.UpdateFcmToken} HTTP trigger function processed a request.");
 
             try
             {
@@ -59,7 +59,7 @@ namespace XeGo.Services.Notifications.Functions.BatchJobs
             }
             catch (Exception e)
             {
-                _logger.LogError($"{FuncNameConst.UpdateFcmToken}: {e.Message}");
+                _logger.LogError($"{FuncConst.UpdateFcmToken}: {e.Message}");
                 return new InternalServerErrorResult();
             }
         }

@@ -214,6 +214,7 @@ services:
       - Serilog__MinimumLevel__Override__Microsoft=Debug
       - Serilog__MinimumLevel__Override__System=Warning
       - ElasticConfiguration__Uri=http://elasticsearch:9200 
+      - GrpcSettings__VehicleGrpcUrl=http://xego.services.vehicle.grpc:8080
       # - GrpcSettings__CodeValueGrpcUrl=http://xego.services.codevalue.grpc
     depends_on:
       locationdb:
