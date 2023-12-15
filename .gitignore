@@ -58,3 +58,4 @@ FrontEnd/xego_rider/lib/settings/kSecrets.dart
 /BackEnd/XeGo-Microservices/Services/Location/XeGo.Services.Location.API/Secrets
 /BackEnd/XeGo-Microservices/Services/Ride/XeGo.Services.Ride.API/Secrets
 FrontEnd/xego-call-center/src/secret/SecretKeys.tsx
+/BackEnd/XeGo-Microservices/Services/Notifications/XeGo.Services.Notifications.Functions/Secrets/TwilioApiKeys.cs
