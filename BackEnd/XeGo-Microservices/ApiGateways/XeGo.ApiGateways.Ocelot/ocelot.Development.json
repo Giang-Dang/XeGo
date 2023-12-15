@@ -468,6 +468,31 @@
       ],
       "UpstreamPathTemplate": "/api/notifications/update-fcm-token",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+    },
+    //Rating
+    {
+      "DownstreamPathTemplate": "/api/average-rating",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.rating.api",
+          "Port": "8080"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/average-rating",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/rating",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.rating.api",
+          "Port": "8080"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/rating",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
     }
   ],
   // for hubs

@@ -71,6 +71,8 @@ namespace XeGo.Services.Ride.API.Hubs
                         logger.LogInformation($"{nameof(RideHub)}>{nameof(FindDriver)}: Done! (Drivers Found! - id: {rideDrivers[ride.Id]})");
 
                         ride.DriverId = rideDrivers[ride.Id];
+                        ride.CreatedBy = fromUserId;
+                        ride.LastModifiedBy = "SYSTEM > FindDriver: Driver Accepted";
                         db.Rides.Update(ride);
                         await db.SaveChangesAsync();
                         logger.LogInformation($"{nameof(RideHub)}>{nameof(FindDriver)}: Added driverId to db (DriverId: {rideDrivers[ride.Id]})");
@@ -208,8 +210,9 @@ namespace XeGo.Services.Ride.API.Hubs
                     return false;
                 }
                 cRide.Status = newStatus;
-                cRide.LastModifiedBy = $"SYSTEM (request from userId:{fromUserId})";
+                cRide.LastModifiedBy = $"SYSTEM > UpdateRideStatus (from userId:{fromUserId})";
                 cRide.LastModifiedDate = DateTime.UtcNow;
+                db.Rides.Update(cRide);
                 await db.SaveChangesAsync();
                 logger.LogInformation($"Ride status (id:{rideId}) has been updated to {newStatus}");
 

@@ -14,16 +14,18 @@ namespace XeGo.Services.Rating.API.Controllers
         private ResponseDto ResponseDto { get; set; } = new();
 
         [HttpPost]
-        public async Task<ResponseDto> CreateRating(CreateRatingRequestDto requestDto)
+        public async Task<ResponseDto> CreateRating([FromBody] CreateRatingRequestDto requestDto)
         {
             logger.LogInformation($"Executing {nameof(UserRatingController)}>{nameof(CreateRating)}...");
             try
             {
                 var cExistingRating = await userRatingRepo
-                    .GetAllAsync(r =>
+                    .GetAsync(r =>
                         r.RideId == requestDto.RideId &&
                         r.FromUserId == requestDto.FromUserId &&
-                        r.ToUserId == requestDto.ToUserId);
+                        r.FromUserRole == requestDto.FromUserRole &&
+                        r.ToUserId == requestDto.ToUserId &&
+                        r.ToUserRole == requestDto.ToUserRole);
 
                 if (cExistingRating != null)
                 {

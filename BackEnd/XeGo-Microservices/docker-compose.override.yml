@@ -110,7 +110,7 @@ services:
         ACCEPT_EULA: "Y"
     restart: always
     ports:
-      - "1440:1433"
+      - "1441:1433"
     volumes:
       - sqlserver-ratingdb:/var/opt/mssql
     networks:
@@ -429,7 +429,7 @@ services:
   xego.services.rating.api:
     container_name: xego.services.rating.api
     environment:
-      - ConnectionStrings__DefaultConnection=Server=ratingdb;Database=XeGoVehicle;User Id=sa;Password=admin1234@A;TrustServerCertificate=True
+      - ConnectionStrings__DefaultConnection=Server=ratingdb;Database=XeGoRating;User Id=sa;Password=admin1234@A;TrustServerCertificate=True
       - ASPNETCORE_ENVIRONMENT=Development
       - Serilog__MinimumLevel__Default=Debug
       - Serilog__MinimumLevel__Override__Microsoft=Debug
@@ -444,7 +444,9 @@ services:
       ratingdb:
         condition: service_started
     ports:
-      - "8080"
+      - "6013:8080"
+    networks:
+      - elastic
 
 
   portainer:

@@ -30,8 +30,10 @@ namespace XeGo.Services.Location.Grpc.Services
                 var checkingUsersIdList = new List<string>();
                 foreach (var geohash in neighborsGeohash)
                 {
-                    var users = await dbContext.DriverLocations.AsNoTracking().Where(u => u.Geohash == geohash).Select(u => u.UserId).ToListAsync();
-                    checkingUsersIdList.AddRange(users);
+                    var drivers = await dbContext.DriverLocations.AsNoTracking().Where(u => u.Geohash == geohash).ToListAsync();
+                    SortDriversByDistance(drivers, request.Latitude, request.Longitude);
+                    var driverIds = drivers.Select(d => d.UserId).ToList();
+                    checkingUsersIdList.AddRange(driverIds);
                 }
 
                 var returnedUsersIdList = new List<string>();
@@ -78,5 +80,30 @@ namespace XeGo.Services.Location.Grpc.Services
             }
 
         }
+
+        #region Private Methods
+        public double CalculateDistance(double startLat, double startLng, double endLat, double endLng)
+        {
+            var dLat = (endLat - startLat) * Math.PI / 180.0;
+            var dLng = (endLng - startLng) * Math.PI / 180.0;
+
+            var a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
+                    Math.Cos(startLat * Math.PI / 180.0) * Math.Cos(endLat * Math.PI / 180.0) *
+                    Math.Sin(dLng / 2) * Math.Sin(dLng / 2);
+            var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+            const double radius = 6371;
+            return radius * c;
+        }
+        public void SortDriversByDistance(List<DriverLocation> drivers, double riderLat, double riderLng)
+        {
+            drivers.Sort((driver1, driver2) =>
+            {
+                var distanceToDriver1 = CalculateDistance(riderLat, riderLng, driver1.Latitude, driver1.Longitude);
+                var distanceToDriver2 = CalculateDistance(riderLat, riderLng, driver2.Latitude, driver2.Longitude);
+                return distanceToDriver1.CompareTo(distanceToDriver2);
+            });
+        }
+
+        #endregion
     }
 }

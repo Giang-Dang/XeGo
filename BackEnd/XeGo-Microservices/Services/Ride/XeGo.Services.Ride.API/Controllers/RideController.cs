@@ -6,6 +6,7 @@ using XeGo.Services.Ride.API.Models.Dto;
 using XeGo.Services.Ride.API.Repository.IRepository;
 using XeGo.Services.Ride.API.Secrets;
 using XeGo.Shared.GrpcConsumer.Services;
+using XeGo.Shared.Lib.Constants;
 using XeGo.Shared.Lib.Helpers;
 using XeGo.Shared.Lib.Models;
 
@@ -28,6 +29,7 @@ namespace XeGo.Services.Ride.API.Controllers
             string? driverId,
             int? couponId,
             string? status,
+            bool? rideFinished,
             string? startAddress,
             string? destinationAddress,
             DateTime? pickupTimeStart,
@@ -84,6 +86,28 @@ namespace XeGo.Services.Ride.API.Controllers
                          (r.LastModifiedBy.ToLower().Contains(searchString.ToLower())));
 
                     filters = filters.AndAlso(searchFilter);
+                }
+
+                if (rideFinished.HasValue)
+                {
+                    var FinishStatuses = new List<string>() {
+                        RideStatusConstants.Completed,
+                        RideStatusConstants.Cancelled,
+                    };
+
+                    if (rideFinished.Value)
+                    {
+                        Expression<Func<Entities.Ride, bool>> rideFinishedFilter = r =>
+                            FinishStatuses.Contains(r.Status);
+                        filters = filters.AndAlso(rideFinishedFilter);
+                    }
+                    else
+                    {
+                        Expression<Func<Entities.Ride, bool>> rideNotFinishedFilter = r =>
+                            !FinishStatuses.Contains(r.Status);
+                        filters = filters.AndAlso(rideNotFinishedFilter);
+                    }
+
                 }
 
                 var rides = await rideRepo.GetAllAsync(
