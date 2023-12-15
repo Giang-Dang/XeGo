@@ -13,6 +13,8 @@ class DriverInfoAndRideStatus extends StatelessWidget {
     this.driver,
     required this.ride,
     this.vehicle,
+    this.isDriverNotFound,
+    required this.onTryAgainTap,
   });
 
   final double height;
@@ -20,6 +22,8 @@ class DriverInfoAndRideStatus extends StatelessWidget {
   final Driver? driver;
   final Ride ride;
   final Vehicle? vehicle;
+  final bool? isDriverNotFound;
+  final void Function() onTryAgainTap;
 
   final _rideServices = RideServices();
 
@@ -33,89 +37,110 @@ class DriverInfoAndRideStatus extends StatelessWidget {
           borderRadius: BorderRadius.circular(15),
           color: KColors.kWhite,
           border: Border.all(color: KColors.kTertiaryColor)),
-      child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: (driver == null)
-              ? MainAxisAlignment.center
-              : MainAxisAlignment.start,
-          children: [
-            if (driver != null)
-              RichText(
-                text: TextSpan(
-                  children: [
-                    TextSpan(
-                      text: 'Name: ',
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                            color: KColors.kColor6,
-                            fontWeight: FontWeight.bold,
-                          ),
-                    ),
-                    TextSpan(
-                      text: "${driver!.firstName}, ${driver!.firstName}",
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                            color: KColors.kTertiaryColor,
-                            fontWeight: FontWeight.bold,
-                          ),
-                    ),
-                  ],
+      child: isDriverNotFound == true
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: (driver == null)
+                  ? MainAxisAlignment.center
+                  : MainAxisAlignment.start,
+              children: [
+                Text("Driver is not found!"),
+                ElevatedButton(
+                  onPressed: onTryAgainTap,
+                  child: Text("Try again!"),
                 ),
-              ),
-            if (driver != null)
-              RichText(
-                text: TextSpan(
-                  children: [
-                    TextSpan(
-                      text: 'Tel.: ',
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                            color: KColors.kColor6,
-                            fontWeight: FontWeight.bold,
+              ],
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: (driver == null)
+                  ? MainAxisAlignment.center
+                  : MainAxisAlignment.start,
+              children: [
+                  if (driver != null)
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'Name: ',
+                            style:
+                                Theme.of(context).textTheme.bodySmall!.copyWith(
+                                      color: KColors.kColor6,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                           ),
-                    ),
-                    TextSpan(
-                      text: driver!.phoneNumber,
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                            color: KColors.kTertiaryColor,
-                            fontWeight: FontWeight.bold,
+                          TextSpan(
+                            text: "${driver!.firstName}, ${driver!.lastName}",
+                            style:
+                                Theme.of(context).textTheme.bodySmall!.copyWith(
+                                      color: KColors.kTertiaryColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                           ),
+                        ],
+                      ),
                     ),
-                  ],
-                ),
-              ),
-            if (vehicle != null)
-              RichText(
-                text: TextSpan(
-                  children: [
-                    TextSpan(
-                      text: 'Plate Number: ',
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                            color: KColors.kColor6,
-                            fontWeight: FontWeight.bold,
+                  if (driver != null)
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'Tel.: ',
+                            style:
+                                Theme.of(context).textTheme.bodySmall!.copyWith(
+                                      color: KColors.kColor6,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                           ),
-                    ),
-                    TextSpan(
-                      text: vehicle!.plateNumber,
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                            color: KColors.kTertiaryColor,
-                            fontWeight: FontWeight.bold,
+                          TextSpan(
+                            text: driver!.phoneNumber,
+                            style:
+                                Theme.of(context).textTheme.bodySmall!.copyWith(
+                                      color: KColors.kTertiaryColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                           ),
+                        ],
+                      ),
                     ),
-                  ],
-                ),
-              ),
-            RichText(
-              text: TextSpan(
-                children: [
-                  TextSpan(
-                    text: _rideServices.getShowingRideStatus(ride.status),
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          color: KColors.kPrimaryColor,
-                          fontWeight: FontWeight.bold,
+                  if (vehicle != null)
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'Plate Number: ',
+                            style:
+                                Theme.of(context).textTheme.bodySmall!.copyWith(
+                                      color: KColors.kColor6,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                          ),
+                          TextSpan(
+                            text: vehicle!.plateNumber,
+                            style:
+                                Theme.of(context).textTheme.bodySmall!.copyWith(
+                                      color: KColors.kTertiaryColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: _rideServices.getShowingRideStatus(ride.status),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                    color: KColors.kPrimaryColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                         ),
+                      ],
+                    ),
                   ),
-                ],
-              ),
-            ),
-          ]),
+                ]),
     );
   }
 }
