@@ -51,6 +51,7 @@ dependencies:
   omni_datetime_picker: ^1.0.9
   intl: ^0.18.1
   signalr_netcore: ^0.1.7+2-nullsafety.3
+  flutter_rating_bar: ^4.0.1
 
 dev_dependencies:
   flutter_test:

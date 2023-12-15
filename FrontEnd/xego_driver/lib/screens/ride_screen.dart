@@ -10,8 +10,10 @@ import 'package:xego_driver/models/Dto/direction_google_api_response_dto.dart';
 import 'package:xego_driver/models/Dto/user_dto.dart';
 import 'package:xego_driver/models/Entities/ride.dart';
 import 'package:xego_driver/screens/main_tabs_screen.dart';
+import 'package:xego_driver/screens/rating_user_screen.dart';
 import 'package:xego_driver/services/ride_services.dart';
 import 'package:xego_driver/services/user_services.dart';
+import 'package:xego_driver/settings/image_size_constants.dart';
 import 'package:xego_driver/settings/kColors.dart';
 import 'package:xego_driver/settings/kSecrets.dart';
 import 'package:xego_driver/settings/ride_status_constants.dart';
@@ -56,7 +58,7 @@ class _RideScreenState extends State<RideScreen> {
   HubConnection? _rideHubConnection;
 
   String _showingImageUrl = 'assets/images/person_male.png';
-
+  String? _riderAvatarUrl;
   Ride? _ride;
   int _currentStep = 0;
   UserDto? _rider;
@@ -78,6 +80,7 @@ class _RideScreenState extends State<RideScreen> {
   }
 
   _updateNextStatus(Ride ride) async {
+    log('_updateNextStatus:');
     try {
       final updatingStep = _currentStep + 1;
       final driverId = UserServices.userDto!.userId;
@@ -93,14 +96,32 @@ class _RideScreenState extends State<RideScreen> {
             final updateRideStatusResponse = await _rideHubConnection!.invoke(
                 "UpdateRideStatus",
                 args: [driverId, ride.riderId, ride.id, updatingStatus]);
+            final driverDto = await _userServices.getUserById(driverId);
+            final riderDto = await _userServices.getUserById(ride.riderId);
+
             log("updatingStatus: $updatingStatus");
             if (mounted) {
               Navigator.of(context).pop();
+              if (driverDto == null || riderDto == null) {
+                log('driverDto == null || riderDto == null');
+                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => const MainTabsScreen()));
+                return;
+              }
               Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => const MainTabsScreen()));
+                  builder: (context) => RatingUserScreen(
+                        rideId: ride.id,
+                        fromUserDto: driverDto,
+                        toUserDto: riderDto,
+                      )));
+              return;
             }
           },
-          onCancelPressed: () {},
+          onCancelPressed: () {
+            if (mounted) {
+              Navigator.of(context).pop();
+            }
+          },
         );
       }
 
@@ -159,6 +180,13 @@ class _RideScreenState extends State<RideScreen> {
       ]);
       log("_onCancelRide:");
       log("updateRideStatusResponse: $updateRideStatusResponse");
+
+      if (updateRideStatusResponse == true) {
+        if (mounted) {
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => const MainTabsScreen()));
+        }
+      }
     } catch (e) {
       log("_onCancelRide error: ${e.toString()}");
     }
@@ -178,15 +206,15 @@ class _RideScreenState extends State<RideScreen> {
           content: Text(message),
           actions: [
             TextButton(
-              child: const Text('Create'),
+              child: const Text('Cancel'),
               onPressed: () {
-                onOkPressed();
+                onCancelPressed();
               },
             ),
             TextButton(
-              child: const Text('I wanna edit something.'),
+              child: const Text('Ok'),
               onPressed: () {
-                onCancelPressed();
+                onOkPressed();
               },
             ),
           ],
@@ -211,10 +239,14 @@ class _RideScreenState extends State<RideScreen> {
       return;
     }
 
+    final riderAvatarUrl = await _userServices.getAvatarUrl(
+        rider.userId, ImageSizeConstants.origin);
+
     setState(() {
       _rider = rider;
       _currentStep =
           _getRideCurrentStep(widget.ride.status, widget.ride.isScheduleRide);
+      _riderAvatarUrl = riderAvatarUrl;
     });
 
     final driverId = UserServices.userDto!.userId;
@@ -355,12 +387,15 @@ class _RideScreenState extends State<RideScreen> {
                                     color: KColors.kWhite,
                                     border: Border.all(
                                         color: KColors.kColor4, width: 2.0)),
-                                child: ClipOval(
-                                  child: Image(
-                                    image: showingImageProvider,
-                                    fit: _showingImageUrl.startsWith('http')
-                                        ? BoxFit.cover
-                                        : null, // or BoxFit.contain
+                                child: Container(
+                                  width: 180,
+                                  height: 180,
+                                  decoration: BoxDecoration(
+                                    color: KColors.kWhite,
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(
+                                        image: showingImageProvider,
+                                        fit: BoxFit.contain),
                                   ),
                                 ),
                               ),

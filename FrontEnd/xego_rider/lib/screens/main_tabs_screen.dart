@@ -22,7 +22,7 @@ class _MainTabsScreenState extends State<MainTabsScreen> {
     const Me(),
   ];
 
-  final List<bool> _isAppBarShow = [true, false, false];
+  final List<bool> _isAppBarShow = [true, true, false];
 
   final List<bool> _isFloatingButtonShow = [false, false, false];
   void _selectPage(int index) async {

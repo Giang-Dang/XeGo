@@ -1,7 +1,7 @@
 import 'dart:developer';
 
-import 'package:xego_driver/services/api_services.dart';
-import 'package:xego_driver/settings/kSecrets.dart';
+import 'package:xego_rider/services/api_services.dart';
+import 'package:xego_rider/settings/kSecrets.dart';
 
 class UserRatingServices {
   final _apiServices = ApiServices();

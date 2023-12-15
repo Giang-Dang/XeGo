@@ -54,8 +54,8 @@ class _DateTimePickerWidgetState extends State<DateTimePickerWidget> {
                   widget.setPickUpTime(pickedDateTime);
                   setState(() {
                     _pickedDateTime = pickedDateTime;
-                    _formattedDateTime =
-                        DateFormat('HH:mm dd MMM yyyy').format(pickedDateTime);
+                    _formattedDateTime = DateFormat('dd MMM yyyy   HH:mm')
+                        .format(pickedDateTime);
                   });
                 }
               },

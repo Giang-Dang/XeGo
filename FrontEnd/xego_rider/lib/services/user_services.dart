@@ -39,7 +39,7 @@ class UserServices {
     userDto = loginResponseDto.userDto;
     ApiServices.tokensDto = loginResponseDto.tokensDto;
 
-    await _deleteAllStoredLoginInfo();
+    await deleteAllStoredLoginInfo();
     await _saveTokensDto(loginResponseDto.tokensDto);
     await _saveUserDto(loginResponseDto.userDto);
 
@@ -70,6 +70,24 @@ class UserServices {
     );
 
     return response;
+  }
+
+  Future<UserDto?> getUserById(String userId) async {
+    try {
+      final subApiUrl = 'api/auth/user/$userId';
+      final url = Uri.http(KSecret.kApiIp, subApiUrl);
+
+      final response = await _apiServices.get(url.toString());
+
+      if (response.data['isSuccess']) {
+        final userDto = UserDto.fromJson(response.data['data']);
+        return userDto;
+      }
+    } catch (e) {
+      log('getUserById Error:');
+      log(e.toString());
+    }
+    return null;
   }
 
   Future<String?> getAvatarUrl(String userId, String imageSize) async {
@@ -247,7 +265,7 @@ class UserServices {
     await storage.write(key: AppConstants.kAddressKeyName, value: user.address);
   }
 
-  Future<void> _deleteAllStoredLoginInfo() async {
+  Future<void> deleteAllStoredLoginInfo() async {
     final storage = _getSecureStorage();
     await storage.delete(key: AppConstants.kAccessTokenKeyName);
     await storage.delete(key: AppConstants.kRefreshTokenKeyName);

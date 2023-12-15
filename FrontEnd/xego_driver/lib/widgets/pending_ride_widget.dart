@@ -65,7 +65,7 @@ class _PendingRideWidgetState extends State<PendingRideWidget> {
               widget.ride.isScheduleRide ? 'Scheduled Ride' : 'Normal Ride',
               style: Theme.of(context).textTheme.titleMedium!.copyWith(
                   color: widget.ride.isScheduleRide
-                      ? KColors.kTertiaryColor
+                      ? KColors.kDanger
                       : KColors.kColor4,
                   fontWeight: FontWeight.bold),
             ),

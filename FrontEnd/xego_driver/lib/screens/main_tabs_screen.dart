@@ -18,6 +18,7 @@ import 'package:xego_driver/settings/kSecrets.dart';
 import 'package:xego_driver/widgets/find_ride_widget.dart';
 import 'package:xego_driver/widgets/history_widget.dart';
 import 'package:xego_driver/widgets/me_widget.dart';
+import 'package:xego_driver/widgets/scheduled_rides.dart';
 
 class MainTabsScreen extends StatefulWidget {
   const MainTabsScreen({super.key});
@@ -39,9 +40,9 @@ class _MainTabsScreenState extends State<MainTabsScreen> {
   final _locationServices = LocationServices();
   final _storedScheduledRideServices = StoredScheduledRideServices();
 
-  final List<bool> _isAppBarShow = [true, false, false];
+  final List<bool> _isAppBarShow = [true, true, true, false];
 
-  final List<bool> _isFloatingButtonShow = [true, false, false];
+  final List<bool> _isFloatingButtonShow = [true, false, false, false];
   void _selectPage(int index) async {
     if (mounted) {
       setState(() {
@@ -117,8 +118,17 @@ class _MainTabsScreenState extends State<MainTabsScreen> {
 
       if (cRide.isScheduleRide) {
         //TODO: implement
-        _storedScheduledRideServices.insert(
+        await _storedScheduledRideServices.insert(
             driverId, cRide.id, cRide.pickupTime.toIso8601String());
+
+        if (context.mounted) {
+          setState(() {
+            _receivedRidesList.removeAt(index);
+            _totalPriceList.removeAt(index);
+            _directionResponseList.removeAt(index);
+            log("removed");
+          });
+        }
         return;
       }
 
@@ -240,6 +250,7 @@ class _MainTabsScreenState extends State<MainTabsScreen> {
         onRemoveItemInList: _handleDeclineRide,
         onAcceptRide: _handleAcceptRide,
       ),
+      const ScheduledRidesWidget(),
       const HistoryWidget(),
       const Me(),
     ];
@@ -294,6 +305,18 @@ class _MainTabsScreenState extends State<MainTabsScreen> {
             label: 'Find Ride',
             activeIcon: Icon(
               Icons.drive_eta,
+              color: KColors.kPrimaryColor,
+            ),
+            backgroundColor: KColors.kOnBackgroundColor,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.schedule_outlined,
+              color: KColors.kLightTextColor,
+            ),
+            label: 'Scheduled Rides',
+            activeIcon: Icon(
+              Icons.schedule,
               color: KColors.kPrimaryColor,
             ),
             backgroundColor: KColors.kOnBackgroundColor,
