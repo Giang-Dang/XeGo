@@ -89,6 +89,22 @@ class UserServices {
     return null;
   }
 
+  Future<String?> getAvatarUrl(String userId, String imageSize) async {
+    const subApiUrl = "api/images/avatar";
+    final url = Uri.http(KSecret.kApiIp, subApiUrl, {
+      "userId": userId,
+      "imageSize": imageSize,
+    });
+
+    final response = await _apiServices.get(url.toString());
+
+    if (response.data['isSuccess']) {
+      return response.data['data'];
+    }
+
+    return null;
+  }
+
   Future<Response> uploadAvatar(File image, String userId) async {
     const subApiUrl = 'api/images/avatar';
     final url = Uri.http(KSecret.kApiIp, subApiUrl, {

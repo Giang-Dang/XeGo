@@ -1,8 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:xego_driver/models/Dto/user_dto.dart';
 import 'package:xego_driver/services/user_rating_services.dart';
+import 'package:xego_driver/settings/kColors.dart';
+import 'package:xego_driver/settings/role_constants.dart';
 
 class RatingUserScreen extends StatefulWidget {
   const RatingUserScreen({
@@ -46,57 +49,18 @@ class _RatingUserScreenState extends State<RatingUserScreen> {
     );
   }
 
-  _onRatePressed({
-    required Order order,
-    required UserType fromUserType,
-    required UserType toUserType,
-    required double rating,
-  }) async {
-    final queryResult = await _userRatingServices.getAll(
-      fromUserId: _getId(order, fromUserType),
-      fromUserType: fromUserType.name,
-      toUserId: _getId(order, toUserType),
-      toUserType: toUserType.name,
-      orderId: order.id,
+  _onRatePressed() async {
+    final response = await _userRatingServices.createRating(
+      widget.rideId,
+      widget.fromUserDto.userId,
+      RoleConstants.driver,
+      widget.toUserDto.userId,
+      RoleConstants.rider,
+      _rating,
+      widget.fromUserDto.userId,
     );
 
-    if (queryResult == null) {
-      log('_RatingUserScreenState._onRatePressed() queryResult == null');
-      return;
-    }
-
-    bool isExist = queryResult.isNotEmpty;
-
-    bool isSuccess = false;
-
-    if (isExist) {
-      final updateDTO = UserRatingUpdateDTO(
-          id: queryResult.first.id,
-          fromUserId: queryResult.first.fromUserId,
-          fromUserType: queryResult.first.fromUserType,
-          toUserId: queryResult.first.toUserId,
-          toUserType: queryResult.first.toUserType,
-          orderId: queryResult.first.orderId,
-          rating: rating);
-
-      isSuccess =
-          await _userRatingServices.update(queryResult.first.id, updateDTO);
-    } else {
-      final createDTO = UserRatingCreateDTO(
-          id: 0,
-          fromUserId: _getId(order, fromUserType),
-          fromUserType: fromUserType.name,
-          toUserId: _getId(order, toUserType),
-          toUserType: toUserType.name,
-          orderId: order.id,
-          rating: rating);
-
-      final response = await _userRatingServices.create(createDTO);
-
-      isSuccess = (response != null);
-    }
-
-    if (isSuccess) {
+    if (response) {
       _showAlertDialog('Rating Successed', 'Thank you for rating', () {
         if (context.mounted) {
           Navigator.of(context).pop();
@@ -114,76 +78,11 @@ class _RatingUserScreenState extends State<RatingUserScreen> {
     }
   }
 
-  int _getId(Order order, UserType userType) {
-    if (userType == UserType.Customer) {
-      return order.customer.customerId;
-    }
-    if (userType == UserType.Shipper) {
-      if (order.shipper == null) {
-        log('_getId order.shipper == null');
-        return 0;
-      }
-      return order.shipper!.userId;
-    }
-    if (userType == UserType.Merchant) {
-      return order.merchant.userId; //must be a user Id for UserRating Table
-    }
-    return 0;
-  }
-
-  String _getName(Order order, UserType userType) {
-    if (userType == UserType.Customer) {
-      return '${order.customer.lastName} ${order.customer.middleName} ${order.customer.firstName}';
-    }
-    if (userType == UserType.Shipper) {
-      if (order.shipper == null) {
-        log('_getName order.shipper == null');
-        return '';
-      }
-      return '${order.shipper!.lastName} ${order.shipper!.middleName} ${order.shipper!.firstName}';
-    }
-    if (userType == UserType.Merchant) {
-      return order.merchant.name;
-    }
-
-    return '';
-  }
-
-  _initLoading(
-    Order order,
-    UserType fromUserType,
-    UserType toUserType,
-  ) async {
-    final queryResult = await _userRatingServices.getAll(
-      fromUserId: _getId(order, fromUserType),
-      fromUserType: fromUserType.name,
-      toUserId: _getId(order, toUserType),
-      toUserType: toUserType.name,
-      orderId: order.id,
-    );
-
-    if (queryResult == null) {
-      log('_RatingUserScreenState._initLoading() queryResult == null');
-      return;
-    }
-
-    if (queryResult.isEmpty) {
-      return;
-    }
-
-    if (mounted) {
-      setState(() {
-        _rating = queryResult.first.rating;
-      });
-    }
-  }
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _initTimer = Timer.periodic(const Duration(milliseconds: 300), (timer) {
-      _initLoading(widget.order, widget.fromUserType, widget.toUserType);
       _initTimer?.cancel();
     });
   }
@@ -199,9 +98,9 @@ class _RatingUserScreenState extends State<RatingUserScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Rating ${widget.toUserType.name}',
-          style: const TextStyle(color: KColors.kPrimaryColor),
+        title: const Text(
+          'Rating Rider',
+          style: TextStyle(color: KColors.kPrimaryColor),
         ),
         centerTitle: true,
       ),
@@ -210,11 +109,7 @@ class _RatingUserScreenState extends State<RatingUserScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              _getName(widget.order, widget.toUserType),
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge!
-                  .copyWith(color: KColors.kPrimaryColor, fontSize: 30),
+              '${widget.toUserDto.firstName}, ${widget.toUserDto.lastName}',
             ),
             const SizedBox(height: 30.0),
             RatingBar.builder(
@@ -239,14 +134,8 @@ class _RatingUserScreenState extends State<RatingUserScreen> {
             Text('Your rating: $_rating'),
             const SizedBox(height: 50.0),
             ElevatedButton(
+              onPressed: _onRatePressed,
               child: const Text('Rate'),
-              onPressed: () {
-                _onRatePressed(
-                    order: widget.order,
-                    fromUserType: widget.fromUserType,
-                    toUserType: widget.toUserType,
-                    rating: _rating);
-              },
             ),
             const SizedBox(height: 50.0),
           ],
