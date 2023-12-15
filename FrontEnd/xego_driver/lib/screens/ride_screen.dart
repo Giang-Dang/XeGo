@@ -180,6 +180,13 @@ class _RideScreenState extends State<RideScreen> {
       ]);
       log("_onCancelRide:");
       log("updateRideStatusResponse: $updateRideStatusResponse");
+
+      if (updateRideStatusResponse == true) {
+        if (mounted) {
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => const MainTabsScreen()));
+        }
+      }
     } catch (e) {
       log("_onCancelRide error: ${e.toString()}");
     }
@@ -199,15 +206,15 @@ class _RideScreenState extends State<RideScreen> {
           content: Text(message),
           actions: [
             TextButton(
-              child: const Text('Create'),
+              child: const Text('Cancel'),
               onPressed: () {
-                onOkPressed();
+                onCancelPressed();
               },
             ),
             TextButton(
-              child: const Text('I wanna edit something.'),
+              child: const Text('Ok'),
               onPressed: () {
-                onCancelPressed();
+                onOkPressed();
               },
             ),
           ],
@@ -380,12 +387,15 @@ class _RideScreenState extends State<RideScreen> {
                                     color: KColors.kWhite,
                                     border: Border.all(
                                         color: KColors.kColor4, width: 2.0)),
-                                child: ClipOval(
-                                  child: Image(
-                                    image: showingImageProvider,
-                                    fit: _showingImageUrl.startsWith('http')
-                                        ? BoxFit.cover
-                                        : null, // or BoxFit.contain
+                                child: Container(
+                                  width: 180,
+                                  height: 180,
+                                  decoration: BoxDecoration(
+                                    color: KColors.kWhite,
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(
+                                        image: showingImageProvider,
+                                        fit: BoxFit.contain),
                                   ),
                                 ),
                               ),

@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:xego_driver/models/Dto/user_dto.dart';
-import 'package:xego_driver/screens/main_tabs_screen.dart';
-import 'package:xego_driver/services/user_rating_services.dart';
-import 'package:xego_driver/settings/kColors.dart';
-import 'package:xego_driver/settings/role_constants.dart';
+import 'package:xego_rider/models/Dto/user_dto.dart';
+import 'package:xego_rider/screens/main_tabs_screen.dart';
+import 'package:xego_rider/services/user_rating_services.dart';
+import 'package:xego_rider/settings/kColors.dart';
+import 'package:xego_rider/settings/role_constants.dart';
 
 class RatingUserScreen extends StatefulWidget {
   const RatingUserScreen({
@@ -54,9 +54,9 @@ class _RatingUserScreenState extends State<RatingUserScreen> {
     final response = await _userRatingServices.createRating(
       widget.rideId,
       widget.fromUserDto.userId,
-      RoleConstants.driver,
-      widget.toUserDto.userId,
       RoleConstants.rider,
+      widget.toUserDto.userId,
+      RoleConstants.driver,
       _rating,
       widget.fromUserDto.userId,
     );
@@ -101,7 +101,7 @@ class _RatingUserScreenState extends State<RatingUserScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Rating Rider',
+          'Rating Driver',
           style: TextStyle(color: KColors.kPrimaryColor),
         ),
         centerTitle: true,

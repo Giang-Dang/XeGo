@@ -60,6 +60,7 @@ class _ReceivedRidesWidgetState extends State<ReceivedRidesWidget> {
         _pickUpLocation = null;
         _dropOffLocation = null;
         _directionResponse = null;
+        _selectedIndex = null;
       });
     }
 
@@ -74,6 +75,13 @@ class _ReceivedRidesWidgetState extends State<ReceivedRidesWidget> {
 
   _onDeclineRide(int index) {
     widget.onRemoveItemInList(index);
+    if (mounted) {
+      setState(() {
+        _pickUpLocation = null;
+        _dropOffLocation = null;
+        _directionResponse = null;
+      });
+    }
   }
 
   @override
@@ -90,7 +98,7 @@ class _ReceivedRidesWidgetState extends State<ReceivedRidesWidget> {
         color: Colors.amber,
       ),
       SizedBox(
-        height: screenHeight * (1 - minDraggableSheetChildSize),
+        height: screenHeight * (1 - minDraggableSheetChildSize) - 115,
         child: MapWidget(
           key: Key(_selectedIndex.toString()),
           pickUpLocation: _pickUpLocation,
@@ -98,7 +106,7 @@ class _ReceivedRidesWidgetState extends State<ReceivedRidesWidget> {
           directionGoogleApiDto: _directionResponse,
           myCarLocation: LocationServices.currentLocation!,
           mapMyLocationEnabled: false,
-          mapZoomControllerEnabled: false,
+          mapZoomControllerEnabled: true,
           markerOutterPadding: 100,
         ),
       ),

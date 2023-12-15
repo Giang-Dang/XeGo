@@ -38,7 +38,7 @@ class UserServices {
     userDto = loginResponseDto.userDto;
     ApiServices.tokensDto = loginResponseDto.tokensDto;
 
-    await _deleteAllStoredLoginInfo();
+    await deleteAllStoredLoginInfo();
     await _saveTokensDto(loginResponseDto.tokensDto);
     await _saveUserDto(loginResponseDto.userDto);
 
@@ -249,7 +249,7 @@ class UserServices {
     await storage.write(key: AppConstants.kAddressKeyName, value: user.address);
   }
 
-  Future<void> _deleteAllStoredLoginInfo() async {
+  Future<void> deleteAllStoredLoginInfo() async {
     final storage = _getSecureStorage();
     await storage.delete(key: AppConstants.kAccessTokenKeyName);
     await storage.delete(key: AppConstants.kRefreshTokenKeyName);

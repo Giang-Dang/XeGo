@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:xego_driver/models/Dto/vehicle_response_dto.dart';
+import 'package:xego_driver/models/Dto/vehicle_type_dto.dart';
 import 'package:xego_driver/models/Entities/vehicle.dart';
 import 'package:xego_driver/services/api_services.dart';
 import 'package:xego_driver/settings/kSecrets.dart';
@@ -57,6 +58,28 @@ class VehicleServices {
         return [];
       }
       return vehicleResponseDto.vehicles;
+    } catch (e) {
+      log(e.toString());
+      return [];
+    }
+  }
+
+  Future<List<VehicleTypeDto>> getAllActiveVehicleTypes() async {
+    try {
+      const subApiUrl = 'api/vehicles/types';
+      final url = Uri.http(KSecret.kApiIp, subApiUrl);
+
+      final response = await apiServices.get(url.toString());
+
+      if (response.statusCode != 200) {
+        return [];
+      }
+
+      final vehicleTypeList = (response.data['data'] as List)
+          .map((json) => VehicleTypeDto.fromJson(json))
+          .toList();
+
+      return vehicleTypeList;
     } catch (e) {
       log(e.toString());
       return [];

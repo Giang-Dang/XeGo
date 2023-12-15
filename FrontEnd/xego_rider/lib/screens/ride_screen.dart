@@ -11,6 +11,7 @@ import 'package:xego_rider/models/Dto/direction_google_api_response_dto.dart';
 import 'package:xego_rider/models/Entities/driver.dart';
 import 'package:xego_rider/models/Entities/ride.dart';
 import 'package:xego_rider/models/Entities/vehicle.dart';
+import 'package:xego_rider/screens/rating_user_screen.dart';
 import 'package:xego_rider/services/driver_services.dart';
 import 'package:xego_rider/services/location_services.dart';
 import 'package:xego_rider/services/user_services.dart';
@@ -106,6 +107,27 @@ class _RideScreenState extends State<RideScreen> {
     }
   }
 
+  _onCompleteRide() async {
+    final driverId = _acceptedDriver!.userId;
+    final riderId = UserServices.userDto!.userId;
+
+    final driver = await _userServices.getUserById(driverId);
+    final rider = await _userServices.getUserById(riderId);
+
+    if (driver == null || rider == null) {
+      log('_onCompleteRide: driver == null || rider == null');
+      return;
+    }
+
+    if (mounted) {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => RatingUserScreen(
+              rideId: widget.rideInfo.id,
+              fromUserDto: rider,
+              toUserDto: driver)));
+    }
+  }
+
   _handleUpdateRideStatus(List<dynamic>? parameters) {
     log("_handleUpdateRideStatus begin");
     if (parameters == null) {
@@ -114,6 +136,12 @@ class _RideScreenState extends State<RideScreen> {
     }
 
     String newStatus = parameters[0];
+
+    if (newStatus == RideStatusConstants.completed) {
+      _onCompleteRide();
+      return;
+    }
+
     if (mounted) {
       setState(() {
         _ride = Ride(
@@ -182,7 +210,8 @@ class _RideScreenState extends State<RideScreen> {
 
       _setIsFindingDriverState(true);
 
-      final driverId = await _rideHubConnection!.invoke(
+      String? driverId = widget.rideInfo.driverId;
+      driverId ??= await _rideHubConnection!.invoke(
         'FindDriver',
         args: [
           UserServices.userDto!.userId,
@@ -191,6 +220,7 @@ class _RideScreenState extends State<RideScreen> {
           directionResponseJson,
         ],
       ) as String;
+
       log("driverId: $driverId");
 
       if (driverId != "") {
