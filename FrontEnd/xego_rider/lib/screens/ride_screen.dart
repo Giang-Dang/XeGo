@@ -61,6 +61,7 @@ class _RideScreenState extends State<RideScreen> {
   String? _driverAvatarUrl;
   bool _isFindingDriver = true;
   String _showingImageUrl = 'assets/images/searching_icon.gif';
+  bool _isDriverNotFound = false;
 
   // bool _isDriverNotFound = false;
 
@@ -77,10 +78,6 @@ class _RideScreenState extends State<RideScreen> {
     _startHub();
   }
 
-  bool _isDriverNotFound() {
-    return _isFindingDriver || _acceptedDriver != null;
-  }
-
   _setIsFindingDriverState(bool state) {
     if (mounted) {
       setState(() {
@@ -91,11 +88,32 @@ class _RideScreenState extends State<RideScreen> {
     }
   }
 
+  _setDriverNotFoundState(bool state) {
+    if (state) {
+      if (mounted) {
+        setState(() {
+          _showingImageUrl = _notFoundImageUrl;
+          _isDriverNotFound = true;
+        });
+      }
+      return;
+    } else {
+      if (mounted) {
+        setState(() {
+          _isDriverNotFound = false;
+        });
+      }
+    }
+  }
+
   _handleUpdateRideStatus(List<dynamic>? parameters) {
+    log("_handleUpdateRideStatus begin");
     if (parameters == null) {
       log("_handleUpdateRideStatus Error: parameters is null");
+      return;
     }
-    String newStatus = parameters![0];
+
+    String newStatus = parameters[0];
     if (mounted) {
       setState(() {
         _ride = Ride(
@@ -122,6 +140,12 @@ class _RideScreenState extends State<RideScreen> {
     }
   }
 
+  _onTryAgainTap() {
+    _startHub();
+
+    _setDriverNotFoundState(false);
+  }
+
   _startHub() async {
     const subHubUrl = 'hubs/ride-hub';
     // final hubUrl = Uri.http(KSecret.kApiIp, subHubUrl);
@@ -129,7 +153,10 @@ class _RideScreenState extends State<RideScreen> {
 
     _rideHubConnection =
         HubConnectionBuilder().withUrl(hubUrl.toString()).build();
-    _rideHubConnection!.onclose((error) => log("Ride Hub Connection Closed"));
+    _rideHubConnection!.onclose((error) {
+      log(error.toString());
+      log("Ride Hub Connection Closed");
+    });
     _rideHubConnection!.on("receiveLocation", _handleReceiveLocation);
     _rideHubConnection!.on("updateRideStatus", _handleUpdateRideStatus);
 
@@ -192,8 +219,12 @@ class _RideScreenState extends State<RideScreen> {
                 isScheduleRide: widget.rideInfo.isScheduleRide);
           });
         }
+
+        _setIsFindingDriverState(false);
+        return;
       }
       _setIsFindingDriverState(false);
+      _setDriverNotFoundState(true);
     } catch (e) {
       log('Ride Hub Connection failed: $e');
     }
@@ -301,6 +332,8 @@ class _RideScreenState extends State<RideScreen> {
                 driver: _acceptedDriver,
                 ride: _ride ?? widget.rideInfo,
                 vehicle: _acceptedVehicle,
+                isDriverNotFound: _isDriverNotFound,
+                onTryAgainTap: _onTryAgainTap,
               )),
           Positioned(
             bottom: bottomContainerHeight - circularContainerHeight / 2,
