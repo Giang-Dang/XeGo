@@ -29,7 +29,7 @@ namespace XeGo.Services.Ride.API.Hubs
                 logger.LogInformation($"{nameof(RideHub)}>{nameof(FindDriver)} rideJson : {JsonConvert.SerializeObject(ride)}");
                 logger.LogInformation($"{nameof(RideHub)}>{nameof(FindDriver)} directionReponseDtoJson : {directionResponseDtoJson}");
 
-                rideDrivers.Add(ride.Id, null);
+                rideDrivers[ride.Id] = null;
 
                 var cRider = await GetUserConnectionAsync(fromUserId);
 
@@ -69,6 +69,12 @@ namespace XeGo.Services.Ride.API.Hubs
                     if (rideDrivers[ride.Id] != null)
                     {
                         logger.LogInformation($"{nameof(RideHub)}>{nameof(FindDriver)}: Done! (Drivers Found! - id: {rideDrivers[ride.Id]})");
+
+                        ride.DriverId = rideDrivers[ride.Id];
+                        db.Rides.Update(ride);
+                        await db.SaveChangesAsync();
+                        logger.LogInformation($"{nameof(RideHub)}>{nameof(FindDriver)}: Added driverId to db (DriverId: {rideDrivers[ride.Id]})");
+
                         return rideDrivers[ride.Id] ?? "";
                     }
                 }
@@ -179,7 +185,7 @@ namespace XeGo.Services.Ride.API.Hubs
 
         }
 
-        public async Task UpdateRideStatus(string fromUserId, string toUserId, int rideId, string newStatus)
+        public async Task<bool> UpdateRideStatus(string fromUserId, string toUserId, int rideId, string newStatus)
         {
             logger.LogInformation($"{nameof(RideHub)}>{nameof(UpdateRideStatus)}: Triggered!");
 
@@ -190,7 +196,7 @@ namespace XeGo.Services.Ride.API.Hubs
                 if (userConnectionId == null)
                 {
                     logger.LogError($"Destination Connection Id not found! (userId: {toUserId})");
-                    return;
+                    return false;
                 }
 
                 var toUserConnectionId = userConnectionId.ConnectionId;
@@ -199,7 +205,7 @@ namespace XeGo.Services.Ride.API.Hubs
                 if (cRide == null)
                 {
                     logger.LogError($"Ride (id:{rideId}) not found!");
-                    return;
+                    return false;
                 }
                 cRide.Status = newStatus;
                 cRide.LastModifiedBy = $"SYSTEM (request from userId:{fromUserId})";
@@ -210,10 +216,13 @@ namespace XeGo.Services.Ride.API.Hubs
                 await Clients.Clients(toUserConnectionId).SendAsync("updateRideStatus", newStatus);
                 logger.LogInformation($"New ride status ({newStatus}-id:{rideId}) has " +
                                       $"been sent to {toUserConnectionId}");
+
+                return true;
             }
             catch (Exception e)
             {
                 logger.LogError($"{nameof(UpdateRideStatus)}: {e.Message}");
+                return false;
             }
 
         }

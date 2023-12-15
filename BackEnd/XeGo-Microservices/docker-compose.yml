@@ -25,6 +25,9 @@ services:
   pricedb:
     image: mcr.microsoft.com/mssql/server:2022-latest
 
+  ratingdb:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+
   xego.services.auth.api:
     image: ${DOCKER_REGISTRY-}xegoservicesauthapi
     build:
@@ -115,9 +118,16 @@ services:
       context: .
       dockerfile: Services/Vehicle/XeGo.Services.Vehicle.Grpc/Dockerfile
 
+  xego.services.rating.api:
+    image: ${DOCKER_REGISTRY-}xegoservicesratingapi
+    build:
+      context: .
+      dockerfile: Services/Rating/XeGo.Services.Rating.API/Dockerfile
+
 volumes:
   portainer_data:
   elasticsearch-data:
+
 
 
 

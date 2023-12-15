@@ -16,7 +16,8 @@
         "xego.services.ride.api": "StartDebugging",
         "xego.services.price.api": "StartDebugging",
         "xego.services.price.grpc": "StartDebugging",
-        "xego.services.vehicle.grpc": "StartDebugging"
+        "xego.services.vehicle.grpc": "StartDebugging",
+        "xego.services.rating.api": "StartDebugging"
       }
     }
   }

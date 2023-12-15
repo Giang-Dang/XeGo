@@ -102,6 +102,19 @@ services:
       - sqlserver-pricedb:/var/opt/mssql
     networks:
       - elastic
+
+  ratingdb:
+    container_name: ratingdb
+    environment:
+        SA_PASSWORD: "admin1234@A"
+        ACCEPT_EULA: "Y"
+    restart: always
+    ports:
+      - "1440:1433"
+    volumes:
+      - sqlserver-ratingdb:/var/opt/mssql
+    networks:
+      - elastic
   # rabbitmq:
   #   container_name: rabbitmq
   #   restart: always
@@ -408,8 +421,30 @@ services:
     depends_on:
       elasticsearch:
         condition: service_healthy
+      vehicledb:
+        condition: service_started
     networks:
       - elastic
+
+  xego.services.rating.api:
+    container_name: xego.services.rating.api
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=ratingdb;Database=XeGoVehicle;User Id=sa;Password=admin1234@A;TrustServerCertificate=True
+      - ASPNETCORE_ENVIRONMENT=Development
+      - Serilog__MinimumLevel__Default=Debug
+      - Serilog__MinimumLevel__Override__Microsoft=Debug
+      - Serilog__MinimumLevel__Override__System=Warning
+      - ApiSettings__JwtOptions__Secret=adfh@JDFDKSAF1234sdf*%$$#feifkdmvcoaerDSJFAOEDFDFJffDSAFjkAjdfA485723AjdfAJfDjfAjdfdjferYGjASDJfEjfvdav
+      - ApiSettings__JwtOptions__Issuer=xego-auth-api
+      - ApiSettings__JwtOptions__Audience=xego-client
+      - ElasticConfiguration__Uri=http://elasticsearch:9200 
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      ratingdb:
+        condition: service_started
+    ports:
+      - "8080"
 
 
   portainer:
@@ -509,8 +544,10 @@ volumes:
   sqlserver-ridedb:
   sqlserver-notificationdb:
   sqlserver-pricedb:
+  sqlserver-ratingdb:
   portainer_data:  
   elasticsearch-data:
+
 
 
 
