@@ -39,6 +39,8 @@
 /BackEnd/XeGo-Microservices/Services/Price/XeGo.Services.Price.Grpc/obj/
 /BackEnd/XeGo-Microservices/Services/Rating/XeGo.Services.Rating.API/bin/
 /BackEnd/XeGo-Microservices/Services/Rating/XeGo.Services.Rating.API/obj/
+/BackEnd/XeGo-Microservices/Services/Report/XeGo.Services.Report.Functions/bin/
+/BackEnd/XeGo-Microservices/Services/Report/XeGo.Services.Report.Functions/obj/
 /BackEnd/XeGo-Microservices/Shared/XeGo.Shared.Lib/bin/
 /BackEnd/XeGo-Microservices/Shared/XeGo.Shared.Lib/obj/
 /BackEnd/XeGo-Microservices/Shared/XeGo.Shared.GrpcConsumer/bin/

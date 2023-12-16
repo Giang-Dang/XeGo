@@ -26,6 +26,26 @@ namespace XeGo.Services.Location.API.Controllers
         private ResponseDto ResponseDto { get; set; } = new();
 
         [HttpGet]
+        public async Task<ResponseDto> GetAllDriverLocations()
+        {
+            try
+            {
+                var driverLocations = await _dbContext.DriverLocations.ToListAsync();
+                ResponseDto.IsSuccess = true;
+                ResponseDto.Data = driverLocations;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"{nameof(DriverLocationController)}>{nameof(GetAllDriverLocations)}: {e.Message}");
+                ResponseDto.IsSuccess = false;
+                ResponseDto.Data = null;
+                ResponseDto.Message = e.Message;
+            }
+
+            return ResponseDto;
+        }
+
+        [HttpGet("{userId}")]
         public async Task<ResponseDto> GetLocationByUserId(string userId)
         {
             try

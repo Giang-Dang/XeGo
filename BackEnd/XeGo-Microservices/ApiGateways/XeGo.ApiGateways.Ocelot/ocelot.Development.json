@@ -232,6 +232,18 @@
       "UpstreamHttpMethod": [ "GET" ]
     },
     {
+      "DownstreamPathTemplate": "/api/drivers/by-vehicle-type/{vehicleTypeId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.vehicle.api",
+          "Port": "8080"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/drivers/by-vehicle-type/{vehicleTypeId}",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
       "DownstreamPathTemplate": "/api/drivers/{userId}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -281,7 +293,30 @@
       "UpstreamPathTemplate": "/api/images/avatar",
       "UpstreamHttpMethod": [ "GET", "POST" ]
     },
-
+    {
+      "DownstreamPathTemplate": "/api/files/uri",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.file.api",
+          "Port": "8080"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/files/uri",
+      "UpstreamHttpMethod": [ "GET", "POST" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/files",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.file.api",
+          "Port": "8080"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/files",
+      "UpstreamHttpMethod": [ "GET", "POST" ]
+    },
     //Ride
     {
       "DownstreamPathTemplate": "/api/rides",
@@ -408,6 +443,18 @@
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
     },
     {
+      "DownstreamPathTemplate": "/api/locations/drivers/{userId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.location.api",
+          "Port": "8080"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/locations/drivers/{userId}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+    },
+    {
       "DownstreamPathTemplate": "/api/locations/directions",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -467,6 +514,19 @@
         }
       ],
       "UpstreamPathTemplate": "/api/notifications/update-fcm-token",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+    },
+    //Report
+    {
+      "DownstreamPathTemplate": "/api/generate-report",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "xego.services.report.functions",
+          "Port": "80"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/reports/generate-report",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
     },
     //Rating

@@ -68,7 +68,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XeGo.Services.Price.Grpc", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XeGo.Services.Vehicle.Grpc", "Services\Vehicle\XeGo.Services.Vehicle.Grpc\XeGo.Services.Vehicle.Grpc.csproj", "{B3953591-3395-403B-BA4B-B98FD1F273E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XeGo.Services.Rating.API", "Services\Rating\XeGo.Services.Rating.API\XeGo.Services.Rating.API.csproj", "{1E173E82-ABBA-48EB-ABF3-169A746D141F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XeGo.Services.Rating.API", "Services\Rating\XeGo.Services.Rating.API\XeGo.Services.Rating.API.csproj", "{1E173E82-ABBA-48EB-ABF3-169A746D141F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Report", "Report", "{C36362EF-2D52-47B3-80B5-AA2D33CDB5A6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XeGo.Services.Report.Functions", "Services\Report\XeGo.Services.Report.Functions\XeGo.Services.Report.Functions.csproj", "{9CF35AC3-D7CD-46F8-A224-7A57D911EF76}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -136,6 +140,10 @@ Global
 		{1E173E82-ABBA-48EB-ABF3-169A746D141F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E173E82-ABBA-48EB-ABF3-169A746D141F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E173E82-ABBA-48EB-ABF3-169A746D141F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CF35AC3-D7CD-46F8-A224-7A57D911EF76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CF35AC3-D7CD-46F8-A224-7A57D911EF76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CF35AC3-D7CD-46F8-A224-7A57D911EF76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CF35AC3-D7CD-46F8-A224-7A57D911EF76}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -166,6 +174,8 @@ Global
 		{3B02DA84-97CC-4510-A16D-DE16F9893DD1} = {7D442CC5-3178-4FA4-B026-5EC682128A26}
 		{B3953591-3395-403B-BA4B-B98FD1F273E6} = {4A53D027-5429-401B-896A-5DBA6F2D4402}
 		{1E173E82-ABBA-48EB-ABF3-169A746D141F} = {FF357E99-FBCF-4065-AE6C-7BD11AB13EC9}
+		{C36362EF-2D52-47B3-80B5-AA2D33CDB5A6} = {0222190D-254D-4891-AC10-4023DC400561}
+		{9CF35AC3-D7CD-46F8-A224-7A57D911EF76} = {C36362EF-2D52-47B3-80B5-AA2D33CDB5A6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {837CBB2D-FE62-4B52-A8A4-D37FE9935AA9}
