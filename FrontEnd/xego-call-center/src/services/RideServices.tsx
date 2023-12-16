@@ -39,3 +39,49 @@ export async function createRide(requestDto: {
     return null;
   }
 }
+
+export async function editRide(requestDto: {
+  id : number;
+  driverId: string | null;
+  modifiedBy: string;
+}) : Promise<IRide | null> {
+  try {
+    const { ApiUrl, JsonHeader } = getAppConstants();
+    const url = `http://${ApiUrl}/api/rides`;
+
+    const response = await axios.put(url, requestDto, {
+      headers: JsonHeader,
+    });
+
+    if (!response.data.isSuccess) {
+      return null;
+    }
+    console.log(response.data);
+
+    return response.data.data as IRide;
+
+  } catch (error) {
+    console.error(error);
+    return null;
+  
+  }
+}
+
+export async function getAllRides() : Promise<IRide[]> {
+  try {
+    const { ApiUrl } = getAppConstants();
+    const url = `http://${ApiUrl}/api/rides`;
+
+    const response = await axios.get(url);
+    if (response.data.isSuccess) {
+      console.log(response.data.data);
+      return response.data.data as IRide[];
+    } else {
+      console.error(response.data.message);
+      return [];
+    }
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}

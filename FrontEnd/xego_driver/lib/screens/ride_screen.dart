@@ -123,13 +123,13 @@ class _RideScreenState extends State<RideScreen> {
             }
           },
         );
+      } else {
+        final updateRideStatusResponse = await _rideHubConnection!.invoke(
+            "UpdateRideStatus",
+            args: [driverId, ride.riderId, ride.id, updatingStatus]);
+        log("updatingStatus: $updatingStatus");
+        log("updateRideStatusResponse: $updateRideStatusResponse");
       }
-
-      final updateRideStatusResponse = await _rideHubConnection!.invoke(
-          "UpdateRideStatus",
-          args: [driverId, ride.riderId, ride.id, updatingStatus]);
-      log("updatingStatus: $updatingStatus");
-      log("updateRideStatusResponse: $updateRideStatusResponse");
 
       if (mounted) {
         setState(() {
@@ -242,11 +242,15 @@ class _RideScreenState extends State<RideScreen> {
     final riderAvatarUrl = await _userServices.getAvatarUrl(
         rider.userId, ImageSizeConstants.origin);
 
+    log("riderAvatarUrl:");
+    log(riderAvatarUrl ?? "null");
+
     setState(() {
       _rider = rider;
       _currentStep =
           _getRideCurrentStep(widget.ride.status, widget.ride.isScheduleRide);
       _riderAvatarUrl = riderAvatarUrl;
+      _showingImageUrl = riderAvatarUrl ?? _showingImageUrl;
     });
 
     final driverId = UserServices.userDto!.userId;

@@ -1,6 +1,16 @@
 import React from "react";
 import { Layout, Menu, MenuProps } from "antd";
-import { BarChartOutlined, CustomerServiceOutlined, CarOutlined, TeamOutlined, ApiOutlined, ClusterOutlined} from "@ant-design/icons";
+import {
+  BarChartOutlined,
+  CustomerServiceOutlined,
+  CarOutlined,
+  TeamOutlined,
+  ApiOutlined,
+  ClusterOutlined,
+  FileTextOutlined,
+  FormOutlined,
+  FileSearchOutlined,
+} from "@ant-design/icons";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 
 const { Sider } = Layout;
@@ -54,7 +64,11 @@ export function MainSidebar({
       getItem("Vehicles", "vehicle", <CarOutlined />, undefined, undefined, navigate, "/vehicles"),
       getItem("Drivers", "driver", <TeamOutlined />),
     ]),
-    getItem("Statistics", "statistics", <BarChartOutlined />),
+    getItem("Reports", "reports", <FileTextOutlined />, [
+      getItem("Run Reports", "runMyReport", <FormOutlined />, undefined, undefined, navigate, "/run-my-report"),
+      getItem("View Reports", "viewReport", <FileSearchOutlined />, undefined, undefined, navigate, "/view-my-report"),
+    ]),
+    getItem("Statistics", "statistics", <BarChartOutlined />, undefined, undefined, navigate, "/statistics"),
     { type: "divider" },
     getItem("System Settings", "systemSettings", <ApiOutlined />),
   ];
