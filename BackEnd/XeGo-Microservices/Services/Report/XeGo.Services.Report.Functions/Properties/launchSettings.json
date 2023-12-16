@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "XeGo.Services.Report.Functions": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7147"
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "httpPort": 31213,
+      "useSSL": false
+    }
+  }
+}

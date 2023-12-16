@@ -154,7 +154,7 @@ namespace XeGo.Services.File.API.Controllers
                         LastModifiedDate = DateTime.UtcNow,
                     };
 
-                    await _db.AddAsync(userImage);
+                    await _db.UserImages.AddAsync(userImage);
                     await _db.SaveChangesAsync();
 
                     ResponseDto.IsSuccess = true;

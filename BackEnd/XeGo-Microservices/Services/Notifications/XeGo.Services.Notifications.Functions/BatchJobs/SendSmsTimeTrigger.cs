@@ -7,6 +7,7 @@ using Twilio.Rest.Api.V2010.Account;
 using XeGo.Services.Notifications.Functions.Constants;
 using XeGo.Services.Notifications.Functions.Data;
 using XeGo.Services.Notifications.Functions.Models;
+using XeGo.Services.Notifications.Functions.Secrets;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace XeGo.Services.Notifications.Functions.BatchJobs
@@ -70,9 +71,9 @@ namespace XeGo.Services.Notifications.Functions.BatchJobs
         {
             try
             {
-                var accountSid = Environment.GetEnvironmentVariable("TwilioAccountSid");
-                var authToken = Environment.GetEnvironmentVariable("TwilioAuthToken");
-                var twilioPhoneNumber = Environment.GetEnvironmentVariable("TwilioPhoneNumber");
+                var accountSid = TwilioApiKeys.TwilioAccountSid;
+                var authToken = TwilioApiKeys.TwilioAuthToken;
+                var twilioPhoneNumber = TwilioApiKeys.TwilioPhoneNumber;
 
                 TwilioClient.Init(accountSid, authToken);
 

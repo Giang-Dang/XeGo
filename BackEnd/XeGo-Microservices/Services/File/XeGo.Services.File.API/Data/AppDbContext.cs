@@ -11,6 +11,7 @@ namespace XeGo.Services.File.API.Data
         }
 
         public DbSet<UserImage> UserImages { get; set; }
+        public DbSet<UserFiles> UserFiles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

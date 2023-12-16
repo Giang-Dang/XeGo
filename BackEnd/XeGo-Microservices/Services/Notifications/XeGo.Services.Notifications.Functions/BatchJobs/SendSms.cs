@@ -8,6 +8,7 @@ using Twilio;
 using Twilio.Rest.Api.V2010.Account;
 using XeGo.Services.Notifications.Functions.Constants;
 using XeGo.Services.Notifications.Functions.Models;
+using XeGo.Services.Notifications.Functions.Secrets;
 
 namespace XeGo.Services.Notifications.Functions.BatchJobs
 {
@@ -35,9 +36,9 @@ namespace XeGo.Services.Notifications.Functions.BatchJobs
                     return new BadRequestObjectResult("Please pass a phoneNumber and text in the request body");
                 }
 
-                var accountSid = Environment.GetEnvironmentVariable("TwilioAccountSid");
-                var authToken = Environment.GetEnvironmentVariable("TwilioAuthToken");
-                var twilioPhoneNumber = Environment.GetEnvironmentVariable("TwilioPhoneNumber");
+                var accountSid = TwilioApiKeys.TwilioAccountSid;
+                var authToken = TwilioApiKeys.TwilioAuthToken;
+                var twilioPhoneNumber = TwilioApiKeys.TwilioPhoneNumber;
 
                 TwilioClient.Init(accountSid, authToken);
 

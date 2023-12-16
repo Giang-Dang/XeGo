@@ -17,6 +17,32 @@ namespace XeGo.Services.Vehicle.API.Controllers
     {
         private ResponseDto ResponseDto { get; set; } = new();
 
+        [HttpGet("by-vehicle-type/{vehicleTypeId}")]
+        public async Task<ResponseDto> GetAllDriversByVehicleType(int vehicleTypeId)
+        {
+            logger.LogInformation("{class}>{function}: Received", nameof(DriverController), nameof(GetAllDriversByVehicleType));
+
+            try
+            {
+                var driverQuery = from d in db.Drivers
+                                  join dv in db.DriverVehicles on d.UserId equals dv.DriverId
+                                  join v in db.Vehicles on dv.VehicleId equals v.Id
+                                  where v.TypeId == vehicleTypeId
+                                  select d;
+
+                ResponseDto.Data = await driverQuery.ToListAsync();
+                ResponseDto.IsSuccess = true;
+            }
+            catch (Exception e)
+            {
+                logger.LogError($"{nameof(DriverController)}>{nameof(GetAllDriversByVehicleType)}: {e.Message}");
+                ResponseDto.IsSuccess = false;
+                ResponseDto.Data = null;
+                ResponseDto.Message = e.Message;
+            }
+            return ResponseDto;
+        }
+
         [HttpGet]
         public async Task<ResponseDto> GetAllDrivers(
             string? userName,

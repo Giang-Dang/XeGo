@@ -39,6 +39,8 @@
 /BackEnd/XeGo-Microservices/Services/Price/XeGo.Services.Price.Grpc/obj/
 /BackEnd/XeGo-Microservices/Services/Rating/XeGo.Services.Rating.API/bin/
 /BackEnd/XeGo-Microservices/Services/Rating/XeGo.Services.Rating.API/obj/
+/BackEnd/XeGo-Microservices/Services/Report/XeGo.Services.Report.Functions/bin/
+/BackEnd/XeGo-Microservices/Services/Report/XeGo.Services.Report.Functions/obj/
 /BackEnd/XeGo-Microservices/Shared/XeGo.Shared.Lib/bin/
 /BackEnd/XeGo-Microservices/Shared/XeGo.Shared.Lib/obj/
 /BackEnd/XeGo-Microservices/Shared/XeGo.Shared.GrpcConsumer/bin/
@@ -58,3 +60,4 @@ FrontEnd/xego_rider/lib/settings/kSecrets.dart
 /BackEnd/XeGo-Microservices/Services/Location/XeGo.Services.Location.API/Secrets
 /BackEnd/XeGo-Microservices/Services/Ride/XeGo.Services.Ride.API/Secrets
 FrontEnd/xego-call-center/src/secret/SecretKeys.tsx
+/BackEnd/XeGo-Microservices/Services/Notifications/XeGo.Services.Notifications.Functions/Secrets/TwilioApiKeys.cs

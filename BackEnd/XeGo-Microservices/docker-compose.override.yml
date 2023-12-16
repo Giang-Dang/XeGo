@@ -122,6 +122,19 @@ services:
   #     - "5672:5672"
   #     - "15672:15672"
 
+  reportdb:
+    container_name: reportdb
+    environment:
+        SA_PASSWORD: "admin1234@A"
+        ACCEPT_EULA: "Y"
+    restart: always
+    ports:
+      - "1442:1433"
+    volumes:
+      - sqlserver-reportdb:/var/opt/mssql
+    networks:
+      - elastic
+
   xego.services.auth.api:
     container_name: xego.services.auth.api
     environment:
@@ -334,9 +347,6 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - AzureWebJobsStorage=DefaultEndpointsProtocol=https;AccountName=xegoazurewebjobsstorage;AccountKey=ZUU0wCqXsxnAU3OknEtQg9G+kzSQdv7PiSi95Qq+hE6fTGHQoDWfuqMKKmIo1OcgS+JOLJHL15lN+ASt5cmGzA==;EndpointSuffix=core.windows.net
       - FUNCTIONS_WORKER_RUNTIME=dotnet-isolated
-      - TwilioAccountSid=AC37acf87c41f3c6e35391e6220530c380
-      - TwilioAuthToken=2f9df0e12cf21ec1e4c1580d906af3bb
-      - TwilioPhoneNumber=+17472221843
       - SqlDbConnection=Server=notificationdb;Database=XeGoNotification;User Id=sa;Password=admin1234@A;TrustServerCertificate=True
       - ApiSettings__JwtOptions__Secret=adfh@JDFDKSAF1234sdf*%$#feifkdmvcoaerDSJFAOEDFDFJffDSAFjkAjdfA485723AjdfAJfDjfAjdfdjferYGjASDJfEjfvdav
       - ApiSettings__JwtOptions__Issuer=xego-auth-api
@@ -448,6 +458,29 @@ services:
     networks:
       - elastic
 
+  xego.services.report.functions:
+    container_name: xego.services.report.functions
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - AzureWebJobsStorage=DefaultEndpointsProtocol=https;AccountName=xegoazurewebjobsstorage;AccountKey=ZUU0wCqXsxnAU3OknEtQg9G+kzSQdv7PiSi95Qq+hE6fTGHQoDWfuqMKKmIo1OcgS+JOLJHL15lN+ASt5cmGzA==;EndpointSuffix=core.windows.net
+      - FUNCTIONS_WORKER_RUNTIME=dotnet-isolated
+      - SqlDbConnection=Server=reportdb;Database=XeGoReport;User Id=sa;Password=admin1234@A;TrustServerCertificate=True
+      - ApiSettings__JwtOptions__Secret=adfh@JDFDKSAF1234sdf*%$#feifkdmvcoaerDSJFAOEDFDFJffDSAFjkAjdfA485723AjdfAJfDjfAjdfdjferYGjASDJfEjfvdav
+      - ApiSettings__JwtOptions__Issuer=xego-auth-api
+      - ApiSettings__JwtOptions__Audience=xego-client
+      - Serilog__MinimumLevel__Default=Debug
+      - Serilog__MinimumLevel__Override__Microsoft=Debug
+      - Serilog__MinimumLevel__Override__System=Warning 
+      - ElasticConfiguration__Uri=http://elasticsearch:9200 
+    ports:
+      - "6014:8080"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      reportdb:
+        condition: service_started
+    networks:
+      - elastic
 
   portainer:
     container_name: portainer
@@ -547,8 +580,10 @@ volumes:
   sqlserver-notificationdb:
   sqlserver-pricedb:
   sqlserver-ratingdb:
+  sqlserver-reportdb:
   portainer_data:  
   elasticsearch-data:
+
 
 
 
