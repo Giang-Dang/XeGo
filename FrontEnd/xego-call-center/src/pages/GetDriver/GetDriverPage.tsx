@@ -6,8 +6,9 @@ import { Button, Modal } from "antd";
 import DriverService from "../../services/DriverServices";
 import IVehicle from "../../models/interfaces/IVehicle";
 import { editRide } from "../../services/RideServices";
-import { sendFcmNotification, sendSms } from "../../services/NotificationServices";
+import { sendFcmNotification, sendScheduledSms, sendSms } from "../../services/NotificationServices";
 import UserServices from "../../services/UserServices";
+import RideStatusConstants from "../../constants/RideStatusConstants";
 
 export default function GetDriverPage() : React.ReactElement {
   const location = useLocation();
@@ -69,38 +70,93 @@ export default function GetDriverPage() : React.ReactElement {
       id: pageState.ride.id,
       driverId: driver.userId,
       modifiedBy: user!.userId,
+      status: RideStatusConstants().scheduled,
     });
 
     if(response) {
       const rider = pageState.rider;
       const ride = pageState.ride;
       const rideId = ride.id;
-      const formattedPhoneNumber = "+84" + driver.phoneNumber.substring(1);
+      const formattedDriverPhoneNumber = "+84" + driver.phoneNumber.substring(1);
+      const formattedRiderPhoneNumber = "+84" + rider.phoneNumber.substring(1);
       
-      //driver
-      sendFcmNotification({
-        userId: driver.userId,
-        title: `Ride ${rideId} Booked`,
-        message: `Ride Id: ${rideId}. Rider Name: ${rider.firstName}, ${rider.lastName}`,
-      });
-      sendSms({
-        phoneNumber: formattedPhoneNumber,
-        message: `Ride Id: ${rideId}. Rider Name: ${rider.firstName}, ${rider.lastName}`,
-      });
-      
+      const assignedVehicle = await DriverService().getAssignedVehicle(driver.userId);
 
-      //rider
-      sendFcmNotification({
-        userId: ride.riderId,
-        title: `Ride ${rideId} Booked`,
-        message: `Ride Id: ${rideId}. Driver Name: ${driver.firstName}, ${driver.lastName}. Plate Number: ${currentVehicle?.plateNumber ?? "N/A"}`,
-      });
-      sendSms({
-        phoneNumber: formattedPhoneNumber,
-        message: `Ride Id: ${rideId}. Driver Name: ${driver.firstName}, ${
-          driver.lastName
-        }. Plate Number: ${currentVehicle?.plateNumber ?? "N/A"}`,
-      });
+      if(ride.isScheduleRide) {
+        const pickupTime = new Date(ride.pickupTime);
+        const sendSmsTime = new Date();
+        console.log(pickupTime.getMinutes().toString());
+        sendSmsTime.setMinutes(pickupTime.getMinutes() - 60);
+        //driver
+        sendFcmNotification({
+          userId: driver.userId,
+          title: `Ride ${rideId} Booked`,
+          message: `Ride Id: ${rideId}. Rider Name: ${rider.firstName}, ${
+            rider.lastName
+          } at ${pickupTime.toLocaleDateString()} ${pickupTime.toLocaleTimeString()}`,
+        });
+        sendSms({
+          phoneNumber: formattedDriverPhoneNumber,
+          message: `Ride Id: ${rideId}. Rider Name: ${rider.firstName}, ${
+            rider.lastName
+          }. Plate Number: ${
+            assignedVehicle?.plateNumber ?? "N/A"
+          } at ${pickupTime.toLocaleDateString()} ${pickupTime.toLocaleTimeString()}`,
+        });
+        sendScheduledSms({
+          phoneNumber: formattedDriverPhoneNumber,
+          message: `Reminder: You have Ride Id: ${rideId}. Rider Name: ${rider.firstName}, ${
+            rider.lastName
+          } at ${pickupTime.toLocaleDateString()} ${sendSmsTime.toLocaleTimeString()}`,
+          sendTime: sendSmsTime.toISOString(),
+        });
+
+        //rider
+        sendFcmNotification({
+          userId: ride.riderId,
+          title: `Ride ${rideId} Booked`,
+          message: `Ride Id: ${rideId}. Driver Name: ${driver.firstName}, ${
+            driver.lastName
+          }. Plate Number: ${
+            assignedVehicle?.plateNumber ?? "N/A"
+          } at ${pickupTime.toLocaleDateString()} ${pickupTime.toLocaleTimeString()}`,
+        });
+        sendSms({
+          phoneNumber: formattedRiderPhoneNumber,
+          message: `Ride Id: ${rideId}. Driver Name: ${driver.firstName}, ${
+            driver.lastName
+          }. Plate Number: ${
+            assignedVehicle?.plateNumber ?? "N/A"
+          } at ${pickupTime.toLocaleDateString()} ${pickupTime.toLocaleTimeString()}`,
+        });
+      } else {
+        //driver
+        sendFcmNotification({
+          userId: driver.userId,
+          title: `Ride ${rideId} Booked`,
+          message: `Ride Id: ${rideId}. Rider Name: ${rider.firstName}, ${rider.lastName}`,
+        });
+        sendSms({
+          phoneNumber: formattedDriverPhoneNumber,
+          message: `Ride Id: ${rideId}. Rider Name: ${rider.firstName}, ${rider.lastName}`,
+        });
+
+        //rider
+        sendFcmNotification({
+          userId: ride.riderId,
+          title: `Ride ${rideId} Booked`,
+          message: `Ride Id: ${rideId}. Driver Name: ${driver.firstName}, ${
+            driver.lastName
+          }. Plate Number: ${assignedVehicle?.plateNumber ?? "N/A"}`,
+        });
+        sendSms({
+          phoneNumber: formattedRiderPhoneNumber,
+          message: `Ride Id: ${rideId}. Driver Name: ${driver.firstName}, ${
+            driver.lastName
+          }. Plate Number: ${assignedVehicle?.plateNumber ?? "N/A"}`,
+        });
+      }
+      
 
       Modal.success({
         title: "Driver Assigned",

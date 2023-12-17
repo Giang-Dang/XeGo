@@ -120,9 +120,9 @@ export function OrderRidePage(): React.ReactElement {
             title: `Ride ${rideId} Booked`,
             message: `Ride ${rideId} has been booked successfully!`,
           });
-          const formattedPhoneNumber = "+84" + findUserByPhoneFormValues.phoneNumber.substring(1);
+          const formattedRiderPhoneNumber = "+84" + findUserByPhoneFormValues.phoneNumber.substring(1);
           sendSms({
-            phoneNumber: formattedPhoneNumber,
+            phoneNumber: formattedRiderPhoneNumber,
             message: `Ride ${rideId} has been booked successfully!`,
           });
         } else {

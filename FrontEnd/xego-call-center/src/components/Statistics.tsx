@@ -443,29 +443,29 @@ export default function Statistics(): React.ReactElement {
   return (
     <>
       <div className="flex justify-between">
-        <div className="w-1/3 h-[500px] px-3 flex items-center justify-center">
+        <div className="w-1/3 h-5/12 px-3 flex items-center justify-center">
           <Card title="Ride Statuses:" className="m-3 h-full w-full">
             <Doughnut key={rides.toString()} data={rideStatusData} />
           </Card>
         </div>
-        <div className="w-1/3 h-[500px] px-3 flex items-center justify-center">
+        <div className="w-1/3 h-5/12 px-3 flex items-center justify-center">
           <Card title="Normal/Scheduled Ride:" className="m-3 h-full w-full">
             <Doughnut key={rides.toString()} data={ScheduledNormalRideStatusData} />
           </Card>
         </div>
-        <div className="w-1/3 h-[500px] px-3 flex items-center justify-center">
+        <div className="w-1/3 h-5/12 px-3 flex items-center justify-center">
           <Card title="Ongoing Ride:" className="m-3 h-full w-full">
             <Doughnut key={rides.toString()} data={ongoingRideStatusData} />
           </Card>
         </div>
       </div>
       <div className="flex justify-between mt-4">
-        <div className="w-1/2 h-[500px] px-3 flex items-center justify-center">
+        <div className="w-1/2 h-5/12 px-3 flex items-center justify-center">
           <Card key="Revenue by months:" title="Revenue by months:" className="m-3 h-full w-full">
             <Bar data={revenueByMonthData} />
           </Card>
         </div>
-        <div className="w-1/2 h-[500px] px-3 flex items-center justify-center">
+        <div className="w-1/2 h-5/12 px-3 flex items-center justify-center">
           <Card
             key="Total kilometres travelled by months:"
             title="Total kilometres travelled by months:"

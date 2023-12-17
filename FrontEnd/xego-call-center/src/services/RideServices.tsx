@@ -44,6 +44,7 @@ export async function editRide(requestDto: {
   id : number;
   driverId: string | null;
   modifiedBy: string;
+  status: string | undefined;
 }) : Promise<IRide | null> {
   try {
     const { ApiUrl, JsonHeader } = getAppConstants();
