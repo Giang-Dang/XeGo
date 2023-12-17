@@ -56,7 +56,7 @@ class _ChooseVehicleTypeScreenState extends State<ChooseVehicleTypeScreen> {
           destinationLocation: widget.destinationLatLng,
           riderLocation: widget.currentRiderLatLng,
           directionGoogleApiDto: widget.directionResponse,
-          markerOutterPadding: 170,
+          markerOutterPadding: 100,
         ),
       ),
       ChooseVehicleTypeSheetWidget(

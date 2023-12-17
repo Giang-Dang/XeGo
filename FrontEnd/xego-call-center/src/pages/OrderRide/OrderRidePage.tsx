@@ -11,6 +11,7 @@ import UserServices from "../../services/UserServices";
 import { createRide } from "../../services/RideServices";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
+import { sendFcmNotification, sendSms } from "../../services/NotificationServices";
 
 
 export function OrderRidePage(): React.ReactElement {
@@ -110,12 +111,60 @@ export function OrderRidePage(): React.ReactElement {
       if (!createRideResponse) {
         throw new Error("Ride creation failed!");
       }
+      
+      const rideId = createRideResponse.id;
+      if (scheduleAvailable) {
+        if (rider) {
+          sendFcmNotification({
+            userId: riderId,
+            title: `Ride ${rideId} Booked`,
+            message: `Ride ${rideId} has been booked successfully!`,
+          });
+          const formattedRiderPhoneNumber = "+84" + findUserByPhoneFormValues.phoneNumber.substring(1);
+          sendSms({
+            phoneNumber: formattedRiderPhoneNumber,
+            message: `Ride ${rideId} has been booked successfully!`,
+          });
+        } else {
+          const formattedPhoneNumber = "+84" + findUserByPhoneFormValues.phoneNumber.substring(1);
+          sendSms({
+            phoneNumber: formattedPhoneNumber,
+            message: `Ride ${rideId} has been booked successfully!`,
+          });
+        }
+      } else {
+        if (rider) {
+          sendFcmNotification({
+            userId: riderId,
+            title: `Ride ${rideId} Ordered`,
+            message: `Ride ${rideId} has been ordered successfully!`,
+          });
+          const formattedPhoneNumber = "+84" + findUserByPhoneFormValues.phoneNumber.substring(1);
+          sendSms({
+            phoneNumber: formattedPhoneNumber,
+            message: `Ride ${rideId} has been ordered successfully!`,
+          });
+        } else {
+          const formattedPhoneNumber = "+84" + findUserByPhoneFormValues.phoneNumber.substring(1);
+          sendSms({
+            phoneNumber: formattedPhoneNumber,
+            message: `Ride ${rideId} has been ordered successfully!`,
+          });
+        }
+      }
 
       Modal.success({
         title: 'Ride Created',
         content: 'Ride has been created successfully!',
         afterClose: () => {
-          navigate('/get-rider', { state: { rideId: createRideResponse.id }});
+          navigate("/get-driver", {
+            state: {
+              ride: createRideResponse,
+              rider: rider,
+              directionApi: directionApi,
+              totalPrice: estimatedPrice,
+            },
+          });
         },
       });
 
@@ -205,7 +254,7 @@ export function OrderRidePage(): React.ReactElement {
             </div>
             <div className="text-end">
               <Button type="primary" onClick={onSubmitClick} loading={isSubmitting}>
-                Submit
+                Choose Driver
               </Button>
             </div>
           </div>

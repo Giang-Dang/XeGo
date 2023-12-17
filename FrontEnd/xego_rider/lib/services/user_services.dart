@@ -1,8 +1,10 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:uuid/uuid.dart';
 import 'package:xego_rider/models/Dto/login_request_dto.dart';
 import 'package:xego_rider/models/Dto/login_response_dto.dart';
 import 'package:xego_rider/models/Dto/registration_request_dto.dart';
@@ -104,6 +106,29 @@ class UserServices {
     }
 
     return null;
+  }
+
+  Future<Response> uploadAvatar(File image, String userId) async {
+    const subApiUrl = 'api/images/avatar';
+    final url = Uri.http(KSecret.kApiIp, subApiUrl, {
+      "userId": userId,
+    });
+
+    const uuid = Uuid();
+    String fileName = '${uuid.v4()}-$userId-${image.path.split('/').last}';
+
+    FormData formData = FormData.fromMap({
+      "imageFile": await MultipartFile.fromFile(image.path, filename: fileName),
+    });
+
+    final response = await _apiServices.post(url.toString(), data: formData);
+
+    if (!response.data['isSuccess']) {
+      log(response.data['message']);
+      return response;
+    }
+
+    return response;
   }
 
   Future<bool> updateRiderType(String userId) async {

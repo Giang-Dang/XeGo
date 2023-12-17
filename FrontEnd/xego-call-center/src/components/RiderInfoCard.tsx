@@ -51,6 +51,7 @@ const RiderInfoCard: React.FC<RiderInfoCardProps> = ({
         selectedUser={rider}
         setSelectedUser={setRider}
         findUserByPhoneForm={findUserByPhoneForm}
+        setIsVip={setIsVip}
       />
       <Form
         className=""

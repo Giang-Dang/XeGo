@@ -75,8 +75,7 @@ class ApiServices {
   }
 
   Future<Response> post(String url,
-      {required Map<String, dynamic> data,
-      Map<String, dynamic>? headers}) async {
+      {Object? data, Map<String, dynamic>? headers}) async {
     return await dio.post(
       url,
       data: data,

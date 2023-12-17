@@ -50,6 +50,15 @@ class _RiderRegistrationScreenState extends State<RiderRegistrationScreen> {
       return;
     }
 
+    if (_selectedImage == null) {
+      _showAlertDialog(
+          'Profile Image Required', "Please take a photo for Profile Image!",
+          () {
+        Navigator.pop(context);
+      });
+      return;
+    }
+
     if (mounted) {
       setState(() {
         _isRegistering = true;
@@ -67,6 +76,17 @@ class _RiderRegistrationScreenState extends State<RiderRegistrationScreen> {
         role: AppConstants.kDefaultRoleValue);
 
     var response = await _userServices.register(registrationRequestDto);
+
+    var imageResponse = await _userServices.uploadAvatar(
+        _selectedImage!, response.data['data']['id']);
+
+    if (!imageResponse.data['isSuccess']) {
+      _showAlertDialog('Upload Image Failed', imageResponse.data['message'],
+          () {
+        Navigator.pop(context);
+      });
+      return;
+    }
 
     if (mounted) {
       setState(() {
