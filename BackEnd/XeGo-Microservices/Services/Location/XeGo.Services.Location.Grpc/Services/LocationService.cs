@@ -21,33 +21,39 @@ namespace XeGo.Services.Location.Grpc.Services
             ServerCallContext context)
         {
             logger.LogInformation($"{nameof(LocationService)}>{nameof(FindNearbyDrivers)}: Begin.");
-            logger.LogInformation($"{nameof(LocationService)}>{nameof(FindNearbyDrivers)} request: {JsonConvert.SerializeObject(request)}");
+            logger.LogInformation($"{nameof(LocationService)}>{nameof(FindNearbyDrivers)} request : {JsonConvert.SerializeObject(request)}");
 
             try
             {
-                var neighborsGeohash = geoHashService.GetNeighbors(request.Latitude, request.Longitude, request.GeoHashSquareSideInMeters, request.MaxRadius);
+                var geoHash = geoHashService.Geohash(request.Latitude, request.Longitude, request.GeoHashSquareSideInMeters);
+                logger.LogInformation($"{nameof(LocationService)}>{nameof(FindNearbyDrivers)} geoHash : {JsonConvert.SerializeObject(geoHash)}");
 
                 var checkingUsersIdList = new List<string>();
-                foreach (var geohash in neighborsGeohash)
-                {
-                    var drivers = await dbContext.DriverLocations.AsNoTracking().Where(u => u.Geohash == geohash).ToListAsync();
-                    SortDriversByDistance(drivers, request.Latitude, request.Longitude);
-                    var driverIds = drivers.Select(d => d.UserId).ToList();
-                    checkingUsersIdList.AddRange(driverIds);
-                }
+
+
+                var drivers = await dbContext.DriverLocations.AsNoTracking().Where(u => u.Geohash == geoHash).ToListAsync();
+                logger.LogInformation($"{nameof(LocationService)}>{nameof(FindNearbyDrivers)} geoHash {geoHash} drivers : {JsonConvert.SerializeObject(drivers)} ");
+
+                SortDriversByDistance(drivers, request.Latitude, request.Longitude);
+                var driverIds = drivers.Select(d => d.UserId).ToList();
+                checkingUsersIdList.AddRange(driverIds);
+
+                logger.LogInformation($"{nameof(LocationService)}>{nameof(FindNearbyDrivers)} checkingUsersIdList : {JsonConvert.SerializeObject(checkingUsersIdList)}");
 
                 var returnedUsersIdList = new List<string>();
 
                 foreach (var userId in checkingUsersIdList)
                 {
                     var vehicle = await vehicleService.GetVehicleByDriverId(userId);
-                    logger.LogInformation($"{nameof(LocationService)}>{nameof(FindNearbyDrivers)} vehicle: {JsonConvert.SerializeObject(vehicle)} (userId: {userId})");
+                    logger.LogInformation($"{nameof(LocationService)}>{nameof(FindNearbyDrivers)} vehicle : {JsonConvert.SerializeObject(vehicle)} (userId: {userId})");
                     if (vehicle == null || vehicle.Data == null)
                     {
                         continue;
                     }
 
                     var vehicleEntity = JsonConvert.DeserializeObject<VehicleDto>(vehicle.Data);
+                    logger.LogInformation($"{nameof(LocationService)}>{nameof(FindNearbyDrivers)} vehicleEntity : {JsonConvert.SerializeObject(vehicleEntity)} (userId: {userId})");
+
                     if (vehicleEntity == null)
                     {
                         logger.LogError($"{nameof(LocationService)}>{nameof(FindNearbyDrivers)}: Cannot DeserializeObject VehicleDto! {userId}");

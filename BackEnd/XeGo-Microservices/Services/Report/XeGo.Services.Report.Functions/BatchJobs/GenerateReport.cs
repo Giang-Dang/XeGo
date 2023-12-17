@@ -17,12 +17,14 @@ namespace XeGo.Services.Report.Functions.BatchJobs
         private readonly ILogger _logger;
         private readonly AppDbContext _db;
         private readonly RideReportGenerator _rideReportGenerator;
+        private readonly RevenueByMonthAndYearReportGenerator _venueByMonthAndYearReportGenerator;
 
         public GenerateReport(ILoggerFactory loggerFactory, AppDbContext db)
         {
             _logger = loggerFactory.CreateLogger<GenerateReport>();
             _db = db;
             _rideReportGenerator = new RideReportGenerator(loggerFactory, db);
+            _venueByMonthAndYearReportGenerator = new RevenueByMonthAndYearReportGenerator(loggerFactory, db);
         }
 
         [Function(FuncConst.GenerateReport)]
@@ -59,6 +61,9 @@ namespace XeGo.Services.Report.Functions.BatchJobs
                 {
                     case ReportTypeConstants.rideReport:
                         await _rideReportGenerator.Generate(reportInfo.Id, body);
+                        break;
+                    case ReportTypeConstants.revenueByMonthAndYearReport:
+                        await _venueByMonthAndYearReportGenerator.Generate(reportInfo.Id, body);
                         break;
                     default:
                         reportInfo.Status = ReportStatusConstants.DoesNotSupport;

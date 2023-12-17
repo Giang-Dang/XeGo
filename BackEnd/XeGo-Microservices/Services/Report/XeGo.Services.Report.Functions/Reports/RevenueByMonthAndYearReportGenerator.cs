@@ -11,19 +11,19 @@ using XeGo.Shared.Lib.Constants;
 
 namespace XeGo.Services.Report.Functions.Reports
 {
-    public class RideReportGenerator
+    public class RevenueByMonthAndYearReportGenerator
     {
         private readonly ILogger _logger;
         private readonly AppDbContext _db;
-        public RideReportGenerator(ILoggerFactory loggerFactory, AppDbContext db)
+        public RevenueByMonthAndYearReportGenerator(ILoggerFactory loggerFactory, AppDbContext db)
         {
-            _logger = loggerFactory.CreateLogger<RideReportGenerator>();
+            _logger = loggerFactory.CreateLogger<RevenueByMonthAndYearReportGenerator>();
             _db = db;
         }
 
         public async Task Generate(int reportId, ParamsReportRequest req)
         {
-            _logger.LogInformation($"Executing Function {nameof(RideReportGenerator)} > {nameof(Generate)} ...");
+            _logger.LogInformation($"Executing Function {nameof(RevenueByMonthAndYearReportGenerator)} > {nameof(Generate)} ...");
             try
             {
                 if (req.StartDate == null || req.EndDate == null)
@@ -42,52 +42,47 @@ namespace XeGo.Services.Report.Functions.Reports
                 await _db.SaveChangesAsync();
 
                 var allRides = await CallApiHelper.GetListFromUrl<RideDto>("http://xego.services.ride.api:8080/api/rides", _logger);
-                _logger.LogInformation($"{nameof(RideReportGenerator)} > {nameof(Generate)} allRides {JsonConvert.SerializeObject(allRides)} ");
+                _logger.LogInformation($"{nameof(RevenueByMonthAndYearReportGenerator)} > {nameof(Generate)} allRides {JsonConvert.SerializeObject(allRides)} ");
 
                 var allPrices = await CallApiHelper.GetListFromUrl<PriceDto>("http://xego.services.price.api:8080/api/price", _logger);
-                _logger.LogInformation($"{nameof(RideReportGenerator)} > {nameof(Generate)} allPrices {JsonConvert.SerializeObject(allPrices)} ");
+                _logger.LogInformation($"{nameof(RevenueByMonthAndYearReportGenerator)} > {nameof(Generate)} allPrices {JsonConvert.SerializeObject(allPrices)} ");
 
                 var allUsers = await CallApiHelper.GetListFromUrl<UserDto>("http://xego.services.auth.api:8080/api/auth/user", _logger);
-                _logger.LogInformation($"{nameof(RideReportGenerator)} > {nameof(Generate)} allUsers {JsonConvert.SerializeObject(allUsers)} ");
+                _logger.LogInformation($"{nameof(RevenueByMonthAndYearReportGenerator)} > {nameof(Generate)} allUsers {JsonConvert.SerializeObject(allUsers)} ");
 
+                List<RevenueByMonthYearReportQueryResponse> rows = new();
 
-                DateTime startDate = DateTime.Parse(req.StartDate, null, System.Globalization.DateTimeStyles.RoundtripKind);
-                DateTime endDate = DateTime.Parse(req.EndDate, null, System.Globalization.DateTimeStyles.RoundtripKind);
-
-                List<RideReportQueryResponse> queryResponse = new();
-                foreach (var ride in allRides)
+                foreach (var price in allPrices)
                 {
-                    _logger.LogInformation($"{nameof(RideReportGenerator)} > {nameof(Generate)} ride {JsonConvert.SerializeObject(ride)} ");
-
-                    if (ride.CreatedDate < startDate || ride.CreatedDate > endDate)
+                    var completedPrice = allRides.FirstOrDefault(r => r.Status == RideStatusConstants.Completed && r.Id == price.RideId);
+                    if (completedPrice == null)
                     {
                         continue;
                     }
 
-                    var price = allPrices.First(p => p.RideId == ride.Id);
-                    var rider = allUsers.FirstOrDefault(u => u.UserId == ride.RiderId);
-                    var driver = allUsers.FirstOrDefault(u => (ride.DriverId != null && u.UserId == ride.DriverId));
+                    var cRow = rows.FirstOrDefault(r => r.Year == price.CreatedDate.Year && r.Month == price.CreatedDate.Month);
 
-                    RideReportQueryResponse query = new(
-                        ride.Id,
-                        rider == null ? "N/A" : (rider.FirstName + ", " + rider.LastName),
-                        driver == null ? "N/A" : (driver.FirstName + ", " + driver.LastName),
-                        ride.DiscountId,
-                        ride.Status,
-                        ride.StartAddress,
-                        ride.DestinationAddress,
-                        ride.PickupTime.ToLongDateString(),
-                        ride.IsScheduleRide,
-                        price.VehicleTypeId,
-                        price.DistanceInMeters,
-                        price.TotalPrice,
-                        ride.CreatedBy,
-                        ride.CreatedDate,
-                        ride.LastModifiedBy,
-                        ride.LastModifiedDate);
-
-                    queryResponse.Add(query);
+                    if (cRow == null)
+                    {
+                        var newRow = new RevenueByMonthYearReportQueryResponse(price.CreatedDate.Year, price.CreatedDate.Month, price.TotalPrice, price.DistanceInMeters);
+                        rows.Add(newRow);
+                    }
+                    else
+                    {
+                        var cIndex = rows.IndexOf(cRow);
+                        rows[cIndex].Revenue += price.TotalPrice;
+                        rows[cIndex].TotalDistanceInMeter += price.DistanceInMeters;
+                    }
                 }
+
+
+                _logger.LogInformation($"{nameof(RevenueByMonthAndYearReportGenerator)} > {nameof(Generate)} RevenueByMonthAndYearReportGenerator_Generate_rows {JsonConvert.SerializeObject(rows)} ");
+
+
+                var sortedQueryResponse = rows.OrderBy(x => x.Year).ThenBy(x => x.Month);
+
+                _logger.LogInformation($"{nameof(RevenueByMonthAndYearReportGenerator)} > {nameof(Generate)} sortedQueryResponse {JsonConvert.SerializeObject(sortedQueryResponse)} ");
+
 
                 using (var workbook = new XLWorkbook())
                 {
@@ -96,34 +91,14 @@ namespace XeGo.Services.Report.Functions.Reports
                     {
                         new[]
                         {
-                            "RIDE_ID",
-                            "RIDER_NAME",
-                            "DRIVER_NAME",
-                            "DISCOUNT_ID",
-                            "STATUS",
-                            "PICKUP_ADDRESS",
-                            "DROPOFF_ADDRESS",
-                            "PICKUP_TIME",
-                            "IS_SCHEDULE_RIDE",
-                            "VEHICLE_TYPE_ID",
-                            "DISTANCE_IN_METERS",
-                            "TOTAL_PRICE",
-                            "CREATED_BY",
-                            "CREATED_DATE",
-                            "LAST_MODIFIED_BY",
-                            "LAST_MODIFIED_DATE"
+                            "YEAR",
+                            "MONTH",
+                            "REVENUE",
+                            "TOTAL_DISTANCE_IN_METERS",
                         }
                     };
 
-                    sheet.Cell(1, 6).InsertData(new List<string[]> { new[] { "RIDE REPORT" } });
-                    sheet.Cell(2, 1).InsertData(new List<string[]> { new[] {
-                        "RIDE CREATED FROM: ",
-                        startDate.ToLongDateString()
-                    }});
-                    sheet.Cell(3, 1).InsertData(new List<string[]> { new[] {
-                        "RIDE CREATED TO: ",
-                        endDate.ToLongDateString()
-                    }});
+                    sheet.Cell(1, 6).InsertData(new List<string[]> { new[] { "REVENUE BY MONTH AND YEAR REPORT" } });
                     sheet.Cell(4, 1).InsertData(new List<string[]> { new[]
                     {
                         "REPORT GENERATION DATE: ",
@@ -131,7 +106,7 @@ namespace XeGo.Services.Report.Functions.Reports
                     }});
 
                     sheet.Cell(6, 1).InsertData(headers);
-                    sheet.Cell(7, 1).InsertData(queryResponse);
+                    sheet.Cell(7, 1).InsertData(sortedQueryResponse);
 
                     //style
                     sheet.Cell(1, 6).Style.Font.Bold = true;
@@ -172,7 +147,7 @@ namespace XeGo.Services.Report.Functions.Reports
                 reportInfo.LastModifiedDate = DateTime.UtcNow;
                 await _db.SaveChangesAsync();
 
-                _logger.LogInformation($"{nameof(RideReportGenerator)} > {nameof(Generate)}: Done!");
+                _logger.LogInformation($"{nameof(RevenueByMonthAndYearReportGenerator)} > {nameof(Generate)}: Done!");
             }
             catch (Exception e)
             {
@@ -184,26 +159,24 @@ namespace XeGo.Services.Report.Functions.Reports
                     reportInfo.LastModifiedDate = DateTime.UtcNow;
                     await _db.SaveChangesAsync();
                 }
-                _logger.LogError($"{nameof(RideReportGenerator)} > {nameof(Generate)} Error: {e.ToString()}");
+                _logger.LogError($"{nameof(RevenueByMonthAndYearReportGenerator)} > {nameof(Generate)} Error: {e.ToString()}");
             }
         }
 
-        private record RideReportQueryResponse(
-            int RideId,
-            string? RiderName,
-            string? DriverName,
-            int? DiscountId,
-            string Status,
-            string StartAddress,
-            string EndAddress,
-            string PickupTime,
-            bool IsScheduleRide,
-            int VehicleTypeId,
-            double DistanceInMeters,
-            double TotalPrice,
-            string CreatedBy,
-            DateTime CreatedDate,
-            string LastModifiedBy,
-            DateTime LastModifiedDate);
+        public class RevenueByMonthYearReportQueryResponse
+        {
+            public int Year { get; set; }
+            public int Month { get; set; }
+            public double Revenue { get; set; }
+            public double TotalDistanceInMeter { get; set; }
+
+            public RevenueByMonthYearReportQueryResponse(int year, int month, double revenue, double totalDistanceInMeter)
+            {
+                Year = year;
+                Month = month;
+                Revenue = revenue;
+                TotalDistanceInMeter = totalDistanceInMeter;
+            }
+        }
     }
 }
